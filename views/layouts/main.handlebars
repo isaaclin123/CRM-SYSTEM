@@ -3,12 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>title</title>
-
+     {{#if title}}
+    <title>{{title}}</title>
+    {{else}}
+    <title>Default title.</title>
+    {{/if}}
+    <link rel="stylesheet" href="./css/{{cssFile}}.css">
+    <script type="module" src="./js/{{jsFile}}.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Varela+Round&family=Zilla+Slab&family=Cabin&display=swap" rel="stylesheet">
+    
 </head>
 
 <body>
-    
+    {{{body}}}
 </body>
 
 </html>

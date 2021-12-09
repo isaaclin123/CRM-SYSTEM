@@ -29,22 +29,19 @@ app.use(cookieParser());
 const path = require("path");
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", function(req,res){
-    res.render("home");
-});
 
 
-// // Use the middleware's addUserToLocals function
-// const { addUserToLocals}=require("./middleware/middleware.js");
-// app.use(addUserToLocals);
+// Use the middleware's addUserToLocals function
+const { addUserToLocals}=require("./middleware/middleware.js");
+app.use(addUserToLocals);
 
 // // Setup newAccount routes
 // const accountRouter = require("./routes/newAccount-routes.js");
 // app.use(accountRouter);
 
-// // Setup login and logout routes
-// const authRouter = require("./routes/login-logout-route.js");
-// app.use(authRouter);
+// Setup login and logout routes
+const authRouter = require("./routes/login_logout_route.js");
+app.use(authRouter);
 
 // app.use(require("./routes/comment-routes.js"));
 

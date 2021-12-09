@@ -1,0 +1,35 @@
+<div id= "login-container">
+    <div id = "arthur-bkg">
+        <h1>Welcome to the CRM tool</h1>
+    </div>
+    <div id = "login-form">
+        
+        <div id = "form-msg">
+            {{#if message}}
+            <p>{{message}}</p>
+            {{/if}}    
+        </div>
+
+        <div id = "form-inner">
+            <h1>Login</h1>
+            <form action="/app/login" method="POST">
+                    <div class = "txtfield">
+                        <input type="text" name="username" id="txtUsername" required>
+                        <span></span>
+                        <label for="txtUsername">Username</label>
+                    </div>
+                    <div class = "txtfield">
+                        <input type="password" name="password" id="txtPassword" required>
+                        <span></span>
+                        <label for="txtPassword">Password</label>
+                    </div>
+                    <div id = "logsub">
+                        <button type="submit">Login</button>
+                    </div>
+                </form>
+            {{!-- <br><div id = "logcrnew"><span>Or Create yours </span><a href="/newAccount"><span>Here</span></a></div>    --}}
+        </div>
+         
+    </div>
+    
+</div>
