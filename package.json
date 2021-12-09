@@ -1,0 +1,22 @@
+
+{ 
+  "name": "crm-system",
+  "version": "1.0.0",
+  "private": false,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.17.1",
+    "express-handlebars": "^6.0.2",
+    "node-pre-gyp": "^0.17.0",
+    "nodemon": "^2.0.15",
+    "sql-template-strings": "^2.2.2",
+    "sqlite": "^4.0.23",
+    "sqlite3": "^5.0.2",
+    "uuid": "^8.3.2"
+  }
+}
