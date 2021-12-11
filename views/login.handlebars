@@ -12,9 +12,9 @@
 
         <div id = "form-inner">
             <h1>Login</h1>
-            <form action="/app/login" method="POST">
+            <form action="/app/login" method="POST" autocomplete="off">
                     <div class = "txtfield">
-                        <input type="text" name="username" id="txtUsername" required>
+                        <input type="text" name="username" id="txtUsername"  required>
                         <span></span>
                         <label for="txtUsername">Username</label>
                     </div>
@@ -27,7 +27,7 @@
                         <button type="submit">Login</button>
                     </div>
                 </form>
-            {{!-- <br><div id = "logcrnew"><span>Or Create yours </span><a href="/newAccount"><span>Here</span></a></div>    --}}
+            <br><div id = "logcrnew"><span>Or Create your </span><a href="/newAccount"><span>new account</span></a></div>   
         </div>
          
     </div>

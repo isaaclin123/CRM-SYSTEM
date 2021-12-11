@@ -1,0 +1,221 @@
+@media screen and (max-width: 800px) {
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  body .sys-message {
+    font-size: 12px;
+    white-space: normal;
+    top: -20px;
+    color: #302b3d;
+  }
+
+  body #newac-form {
+    padding: 0;
+  }
+
+  body #nform-inner {
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  body #nform-inner > h1 {
+    color: rgb(79, 24, 104);
+  }
+
+  body form .txtfield {
+    position: relative;
+    border-bottom: 3px solid rgb(79, 24, 104);
+    margin: 30px 0;
+  }
+  body .txtfield label {
+    color: rgb(79, 24, 104);
+  }
+
+  body .txtfield input {
+    color: rgb(79, 24, 104);
+  }
+
+  body .txtfield input:focus ~ label,
+  body .txtfield input:valid ~ label {
+    color: rgb(243, 127, 224);
+  }
+
+  body #sub-res button[type="submit"] {
+    background: rgba(255, 255, 255, 0.8);
+    color: rgb(79, 24, 104);
+  }
+
+  body #sub-res button[type="reset"]{
+    background: rgba(255, 255, 255, 0.8);
+    color: rgb(79, 24, 104);
+  }
+}
+
+body {
+  margin: 0px;
+}
+
+
+
+.sys-message {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 13px;
+  color: rgb(141, 231, 23);
+  position: absolute;
+  top: 25px;
+  left: 0px;
+  white-space: nowrap;
+}
+
+
+
+body {
+  margin: 0px;
+  background-attachment: fixed;
+  background: url("/images/login-bkg.jpeg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100%;
+  min-height:100vh;
+}
+
+#newac-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 40px;
+}
+
+#error-msg {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  color: rgb(245, 245, 245);
+}
+
+#nform-inner {
+  padding: 40px 70px 40px 70px;
+  border-radius: 40px;
+  box-shadow: 0 0 15px #f7ecec;
+  margin-top: 20px;
+  
+}
+
+#nform-inner > h1 {
+  text-align: center;
+  font-family: 'Josefin Sans', sans-serif;
+  color: #FFEAC9;
+  padding:0 0 20px 0;
+  font-size: 40px;
+  margin-top: 0px;
+}
+
+form .txtfield {
+  position: relative;
+  border-bottom: 3px solid #F7F7F7;
+  margin: 30px 0;
+}
+
+.txtfield input { 
+  width: 100%;
+  padding: 0 5px;
+  height: 20px;
+  font-size: 16px;
+  border: none;
+  background: none;
+  outline: none;  
+  color: white;
+  background-color: none;
+  font-family: 'Josefin Sans', sans-serif;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: #fff !important;
+}
+
+
+.txtfield label {
+  position: absolute;
+  left: 5px;
+  top: 0;
+  font-family: 'Josefin Sans', sans-serif;
+  color: white;
+  width: 250px;
+  font-size: 18px;
+  opacity: 0.9;
+  pointer-events: none;
+  transition: .3s;
+}
+
+.txtfield span::before {
+  content: none;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  transition: .3s;
+}
+
+.txtfield input:focus ~ label,
+.txtfield input:valid ~ label {
+  top: -12px;
+  color: #865df7;
+  font-size: 15px;
+}
+
+.txtfield input:focus ~ span::before,
+.txtfield input:valid ~ span::before {
+  width: 100%;
+} 
+
+#sub-res {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+button[type="submit"], button[type="reset"] {
+  width: 45%;
+  height: 50px;
+  border: none;
+  background: none;
+  box-shadow: 0 0 10px #F7F7F7;
+  border-radius: 20px;
+  font-size: 15px;
+  color: rgb(238, 225, 241);
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+}
+
+button[type="submit"]:hover, button[type="reset"]:hover {
+  box-shadow: 0 0 20px #ffffff;
+  font-size: 17px;
+  transition: .4s;
+}
+
+#logcrnew {
+  margin:0 0 10px 0;
+  text-align: center;
+  font-size: 16px;
+  font-family: 'Josefin Sans', sans-serif;
+  color: #FFEAC9;  
+}
+
+#logcrnew a {
+  color: #c5f73b;
+  text-decoration: none;
+}
+#logcrnew a:hover {
+  text-decoration: underline;
+}
+

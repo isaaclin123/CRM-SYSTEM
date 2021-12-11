@@ -29,7 +29,7 @@ const dbPromise = require("./database.js");
     const db = await dbPromise;
 
     const result = await db.run(SQL`
-        insert into Users (username, fname, lname,DOB,description,avatar_image,isAdmin,hashPassword,saltRounds) values(${user.username}, ${user.fname},${user.lname},${user.DOB},${user.description},${user.avatar_image},${user.isAdmin},${user.hashPassword},${user.saltRounds})`);
+        insert into Users (first_name, last_name, username,hashPassword,saltRounds,isSuperAdmin,isQualifiedCompany,jobTitle) values(${user.first_name},${user.last_name},${user.username},${user.hashPassword},${user.saltRounds},${user.isSuperAdmin},${user.isQualifiedCompany},${user.jobTitle})`);
 
     // Get the auto-generated ID value, and assign it back to the user object.
     user.id = result.lastID;
@@ -59,7 +59,7 @@ const dbPromise = require("./database.js");
 
     await db.run(SQL`
         update Users
-        set username = ${user.username}, fname=${user.fname},lname = ${user.lname},DOB=${user.DOB},description=${user.description}, avatar_image=${user.avatar_image},isAdmin=${user.isAdmin},hashPassword=${user.hashPassword},saltRounds=${user.saltRounds},authToken = ${user.authToken}
+        set username = ${user.username}, first_name=${user.first_name},last_name = ${user.last_name},isSuperAdmin = ${user.isSuperAdmin}, isQualifiedCompany = ${user.isQualifiedCompany},jobTitle=${user.jobTitle},hashPassword=${user.hashPassword},saltRounds=${user.saltRounds},authToken = ${user.authToken}
         where id = ${user.id}`);
 }
 /**

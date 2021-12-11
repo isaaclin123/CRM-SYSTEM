@@ -29,7 +29,9 @@ drop table if EXISTS Users;
 	hashPassword varchar(64),
 	saltRounds INTEGER NOT NULL,
 	authToken varchar(64),
-	isAdmin varchar NOT NULL
+	isSuperAdmin varchar NOT NULL,
+	isQualifiedCompany varchar NOT NULL,
+	jobTitle varchar not null
  );
 
  

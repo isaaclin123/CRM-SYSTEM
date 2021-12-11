@@ -1,0 +1,70 @@
+
+    <div id = "newac-form">
+        
+        <div id= "error-msg">
+            {{#if errorMessage}}
+            {{errorMessage}}
+            {{/if}}     
+        </div>
+   
+        <div id = "nform-inner">
+            <h1>New Account</h1>
+            <form action="/app/newAccount" method="POST">
+
+                <div class = "txtfield">
+                    <input type="text" name="username" id="txtUsername" required>
+                    <span></span>
+                    <label for="txtUsername">Username:</label>
+                    <alert class = "sys-message" id="usernameAvailability"></alert>
+                </div>
+
+                <div class = "txtfield">
+                    <input type="password" name="password1" id="password1" required>
+                    <span></span>
+                    <label for="txtPassword">Password:</label>
+                </div>
+
+                <div class = "txtfield">
+                    <input type="password" name="password2" id="password2" required>
+                    <span></span>
+                    <label for="txtPassword">Re-enter Password:</label>
+                    <alert class = "sys-message" id="passwordConfirmation"></alert>
+                </div>
+
+                <div class = "txtfield">
+                    <input type="text" name="first_name" id="first_name" required>
+                    <span></span>
+                    <label for="first_name">First Name:</label>
+                </div>
+
+                <div class = "txtfield">
+                    <input type="text" name="last_name" id="last_name" required>
+                    <span></span>
+                    <label for="last_name">Last Name:</label>
+                </div>
+
+                <div class = "txtfield">
+                    <input type="text" name="companyName" id="companyName" required>
+                    <span></span>
+                    <label for="companyName">Company Name:</label>
+                    <alert class = "sys-message" id="qualifiedCompany"></alert>
+                </div>
+
+                <div class = "txtfield">
+                    <input type="text" name="jobTitle" id="jobTitle" required>
+                    <label for="jobTitle">Job Title:</label>
+                </div>
+
+
+
+                <div id = "sub-res">
+                    <button type="submit" value = "submit" id="submitButton">Create account</button>
+                    <button type="reset" value = "reset form" id="reset">Reset Form</button>
+                </div>
+            </form>
+            <br><div id = "logcrnew"><span>Already have an account? </span><a href="/"><span>Log in</span></a></div>   
+        </div>
+
+    </div>
+
+</div>

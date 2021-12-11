@@ -8,6 +8,8 @@
 const express = require("express");
 const app = express();
 const port = 3000;
+const sanitizeHtml = require('sanitize-html');
+
 
 // Setup Handlebars
 const handlebars = require("express-handlebars");
@@ -20,6 +22,7 @@ app.set('views', './views');
 // Setup body-parser
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: false }));
+
 
 // Setup cookie-parser
 const cookieParser = require("cookie-parser");
@@ -35,9 +38,9 @@ app.use(express.static(path.join(__dirname, "public")));
 const { addUserToLocals}=require("./middleware/middleware.js");
 app.use(addUserToLocals);
 
-// // Setup newAccount routes
-// const accountRouter = require("./routes/newAccount-routes.js");
-// app.use(accountRouter);
+// Setup newAccount routes
+const accountRouter = require("./routes/newAccount-routes.js");
+app.use(accountRouter);
 
 // Setup login and logout routes
 const authRouter = require("./routes/login_logout_route.js");
@@ -48,9 +51,7 @@ app.use(authRouter);
 
 // app.use(require("./routes/myHomePage-newArticle.js"));
 
-
-// Setup routes
-// app.use(require("./routes/homePage-routes.js"));
+app.use(require("./routes/homePage-route.js"));
 
 // //Setup user routes
 // const userRoute =require("./routes/user-routes.js")
