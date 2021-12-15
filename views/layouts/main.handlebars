@@ -2,8 +2,10 @@
 <html lang="en">
 
 <head>
+    {{!-- <meta http-equiv="refresh" content="3"> --}}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
      {{#if title}}
     <title>{{title}}</title>
     {{else}}
@@ -14,7 +16,7 @@
     {{/if}}
     <link rel="stylesheet" href="./css/{{cssFile}}.css">
     <script type="module" src="./js/{{jsFile}}.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Varela+Round&family=Zilla+Slab&family=Cabin&display=swap" rel="stylesheet">
+    {{!-- <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Varela+Round&family=Zilla+Slab&family=Cabin&display=swap" rel="stylesheet"> --}}
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://cdn.jsdelivr.net/gh/jitbit/HtmlSanitizer@master/HtmlSanitizer.js"></script>
 </head>
@@ -28,12 +30,7 @@
     </div>
     <ul class="nav-list">
       <li>
-          <i class='bx bx-search' ></i>
-         <input type="text" placeholder="Search...">
-         <span class="tooltip">Search</span>
-      </li>
-      <li>
-        <a href="#">
+        <a href="/home">
           <i class='bx bxs-home'></i>
           <span class="links_name">Home</span>
         </a>
@@ -41,13 +38,13 @@
       </li>
       <li>
        <a href="#">
-         <i class='bx bx-user' ></i>
-         <span class="links_name">User</span>
+         <i class='bx bx-user-check'></i>
+         <span class="links_name">Contact Tracker</span>
        </a>
-       <span class="tooltip">User</span>
+       <span class="tooltip">Progress Check</span>
      </li>
      <li>
-       <a href="#">
+       <a href="/contact">
          <i class='bx bxs-contact'></i>
          <span class="links_name">Contact list</span>
        </a>
@@ -63,9 +60,9 @@
      <li>
        <a href="#">
          <i class='bx bx-task' ></i>
-         <span class="links_name">Task management</span>
+         <span class="links_name">Task management&#38;<br> CSV converter</span>
        </a>
-       <span class="tooltip">Task management</span>
+       <span class="tooltip">Task management&#38;CSV converter</span>
      </li>
      <li>
        <a href="#">
@@ -95,7 +92,7 @@
              <div class="job">{{user.jobTitle}}</div>
            </div>
          </div>
-         <a href="./logout"><i class='bx bx-log-out' id="log_out" ></i></a>
+         <a href="/logout" ><i class='bx bx-log-out' id="log_out" ></i></a>
      </li>
     </ul>
   </div>
@@ -103,6 +100,23 @@
       {{{body}}}
   </section>
   <script>
+  function getCookie(cname) {
+      const name = `${cname}=`;
+      const decodedCookie = decodeURIComponent(document.cookie);
+      const cookieArray = decodedCookie.split(";");
+      for(let i = 0; i <cookieArray.length; i++) {
+      let cookie = cookieArray[i].trim();
+      if (cookie.indexOf(name) === 0) {
+      return cookie.substring(name.length);
+      }
+    }
+    return undefined;
+  }
+  let body=document.getElementsByTagName("body")[0];
+  if(!getCookie("authToken")){
+    body.style.display="none";
+    location.replace("/");
+  }
   let sidebar = document.querySelector(".sidebar");
   let closeBtn = document.querySelector("#btn");
   let searchBtn = document.querySelector(".bx-search");
@@ -112,10 +126,10 @@
     menuBtnChange();//calling the function(optional)
   });
 
-  searchBtn.addEventListener("click", ()=>{ // Sidebar open when you click on the search iocn
+  {{!-- searchBtn.addEventListener("click", ()=>{ // Sidebar open when you click on the search iocn
     sidebar.classList.toggle("open");
     menuBtnChange(); //calling the function(optional)
-  });
+  }); --}}
 
   // following are the code to change sidebar button(optional)
   function menuBtnChange() {

@@ -1,0 +1,185 @@
+<div id="content-container">
+    <div id="contact-bkg">
+        <h1>Contact list </h1>
+    </div>
+    <div id="search-box">
+         <input type="search" placeholder="Search..." name="search">
+         <i class='bx bx-search' ></i>
+         {{!-- <span class="tooltip">Search</span> --}}
+    </div>
+    <div id="buttons">
+        <button class="button"></button>
+        <button class="button"></button>
+    </div>
+    <div id="msg">
+            {{#if message}}
+            <h3>{{message}}</h3>
+            {{/if}}
+    </div>
+    <div id="search-table">
+            {{!-- <table id="result-table">
+                 <thead>
+                        <tr>
+                                <th>First name</th>
+                                <th>Last name</th> 
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Country</th>
+                                <th>City</th>
+                                <th>Profession</th>
+                                <th class="none-when-small-screen">Website</th>
+                                <th class="none-when-small-screen"><i class='bx bxl-facebook'></i></th>
+                                <th class="none-when-small-screen"><i class='bx bxl-instagram' ></i></th>
+                                <th class="none-when-small-screen">Other social media</th>
+                                <th>Notes on client</th>
+                                <th>Meet with</th>
+                                <th>Added by</th>
+                                <th><i class='bx bx-grid-small'></i></th>
+                        </tr>
+                </thead>
+                <tbody></tbody>
+            </table> --}}
+            <p>No result found!</p>
+    </div>
+    
+    <div id="add-form">
+        <form action="contact/save" method="post" autocomplete="off" >
+            <input type="password" hidden autocomplete="new-password">
+            <div class = "txtfield">
+                    <input type="text" name="first_name" id="first_name" required >
+                
+                    <label for="first_name">*First name:</label>
+            </div>
+            <div class = "txtfield">
+                    <input type="text" name="last_name" id="last_name" required>
+                    <span></span>
+                    <label for="last_name">*Last name:</label>
+            </div>
+            <div class = "txtfield">
+                    <input type="email" name="email" id="email" required>
+                    <span></span>
+                    <label for="email">*Email:</label>
+            </div>
+            <div class = "txtfield">
+                    <input type="tel" name="phone_number" id="phone_number" >
+                    <span></span>
+                    <label for="phone_number">Phone number:</label>
+            </div>
+            <div class = "txtfield">
+                    <input type="text" name="city" id="city" >
+                    <span></span>
+                    <label for="city">City:</label>
+            </div>
+            <div class = "txtfield">
+                    <input type="text" name="country" id="country" required>
+                    <span></span>
+                    <label for="country">*Country:</label>
+            </div>
+            <div class = "txtfield">
+                    <input type="text" name="profession" id="profession" required>
+                    <span></span>
+                    <label for="profession">*Profession/Industry:</label>
+            </div>
+            <div class = "txtfield">
+                    <input type="text" name="website" id="website" >
+                    <span></span>
+                    <label for="website">Website:</label>
+            </div>
+            <div class = "txtfield">
+                    <input type="text" name="facebook" id="facebook" >
+                    <span></span>
+                    <label for="facebook">Facebook:</label>
+            </div>
+            <div class = "txtfield">
+                    <input type="text" name="instagram" id="instagram" >
+                    <span></span>
+                    <label for="instagram">Instagram:</label>
+            </div>
+            <div class = "txtfield">
+                    <input type="text" name="other_social_media" id="other_social_media" >
+                    <span></span>
+                    <label for="other_social_media">Other social media:</label>
+            </div>
+            <div class = "txtfield ">
+                    <input type="text" name="meet_with" id="meet_with" >
+                    <span></span>
+                    <label for="meet_with">Meet with（employee):</label>
+            </div>
+            <div class = "txtfield no">
+                    <p>Notes on client</p>
+                    <textarea name="notes_on_client" id="notes_on_client" ></textarea>
+            </div>
+            <div id="hint-msg">
+
+            </div>
+            {{!-- <input type="text" name="added_person" value="" hidden> --}}
+
+            <div id = "sub-res">
+                    <button type="submit" value = "submit" id="submitButton">Add client</button>
+                    <button type="reset" value = "reset form" id="reset">Reset</button>
+            </div>
+        </form>
+    </div>
+    <div id="client-table">
+            <div id="inner-table">
+                {{#if Clients}}
+                <table>
+                        <thead>
+                                <tr>
+                                        <th>First name</th>
+                                        <th>Last name</th> 
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Country</th>
+                                        <th>City</th>
+                                        <th>Profession</th>
+                                        <th class="none-when-small-screen">Website</th>
+                                        <th class="none-when-small-screen"><i class='bx bxl-facebook'></i></th>
+                                        <th class="none-when-small-screen"><i class='bx bxl-instagram' ></i></th>
+                                        <th class="none-when-small-screen">Other social media</th>
+                                        <th>Notes on client</th>
+                                        <th>Meet with</th>
+                                        <th>Added by</th>
+                                        <th><i class='bx bx-grid-small'></i></th>
+                                </tr>
+                        </thead>
+                        <tbody>
+                               {{#each Clients}}
+                            <tr data-clientID="{{this.id}}">
+                               <td>{{this.first_name}}</td>
+                               <td>{{this.last_name}}</td>
+                               <td>{{this.email}}</td>
+                               <td>{{this.phone_number}}</td>
+                               <td>{{this.country}}</td>
+                               <td>{{this.city}}</td>
+                               <td>{{this.profession}}</td>
+                               <td class="none-when-small-screen">{{this.website}}</td>
+                                <td class="none-when-small-screen">{{this.facebook}}</td>
+                                <td class="none-when-small-screen">{{this.instagram}}</td>
+                                <td class="none-when-small-screen">{{this.other_social_media}}</td>    
+                               <td>{{this.notes_on_client}}</td>
+                               <td>{{this.meet_with}}</td>
+                               <td>{{this.addedBy}}</td>
+                               <td>
+                                <i class='bx bxs-message-square-x' data-clientID="{{this.id}}"></i>&nbsp;&nbsp;
+                                <i class='bx bxs-edit' data-clientID="{{this.id}}"></i>
+                                <i class='bx bxs-check-circle'data-clientID="{{this.id}}"></i>
+                               </td>
+                               {{/each}}
+                             </tr>
+                        </tbody>
+                {{else}}
+                <h2 style="color: rgba(255, 255, 255, 0.5);">No clients yet</h2>
+                {{/if}}
+                </table>
+            </div>
+    </div>
+</div>
+  <div class="dialogBox" id="dialogBox">
+    <p>Delete client will permanently remove the client from the database,are you sure?
+    </p>
+    <div class="controls">
+    <input type="button" value="Delete" id="delete">
+    <input type="button" value="Cancel" id="cancel">
+    </div>
+  </div>

@@ -9,7 +9,8 @@ router.get("/home",verifyAuthenticated,function(req,res){
     res.render("home",{
         title:"home",
         jsFile:"homePage",
-        cssFile:"homePage2"
+        cssFile:"homePage2",
+        isHomePage:"true"
     })
 })
 

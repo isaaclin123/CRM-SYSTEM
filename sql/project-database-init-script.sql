@@ -18,7 +18,9 @@ drop table if EXISTS Users;
 	facebook varcahr,
 	instagram varchar,
 	other_social_media varchar,
-	notes_on_client varchar
+	notes_on_client varchar,
+	meet_with varchar,
+	addedBy varchar
  );
  
  CREATE TABLE Users(

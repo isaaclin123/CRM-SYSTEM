@@ -7,15 +7,22 @@
  export function checkUsernameAndPassword(url){
  
     window.addEventListener("load",function(){
+        function deleteCookie(cname) {
+            const d = new Date();
+            d.setDate(0);
+            document.cookie = `${cname}= ; expires=${d.toUTCString ()}; path=/`; 
+        }
+        deleteCookie("authToken");
+        document.querySelector("#my_form").reset();
          let inputs =document.getElementsByTagName("input");
          for(let i=0;i<inputs.length;i++){
              inputs[i].addEventListener("keyup",function(){
-                let clean=HtmlSanitizer.SanitizeHtml(inputs[i].value);
+                inputs[i].value=HtmlSanitizer.SanitizeHtml(inputs[i].value);
              })  
          }
          let submitButton =document.querySelector("#submitButton");
          let errorMessage=document.querySelectorAll(".sys-message");
-         let resetButton =document.querySelector("#reset");
+         let resetButton =document.querySelector("#Reset");
          resetButton.addEventListener("click",function(){
              for(let i=0;i<errorMessage.length;i++){
                  errorMessage[i].style.display="none";

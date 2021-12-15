@@ -14,6 +14,7 @@ const sanitizeHtml = require('sanitize-html');
         res.redirect("/home")
     }else{
         res.locals.message=req.query.message;
+        res.clearCookie("authToken");
         res.render("login",{
             title:"Login page",
             jsFile:"loginPage",
@@ -56,7 +57,8 @@ const sanitizeHtml = require('sanitize-html');
 router.get("/logout",verifyAuthenticated, function (req, res) {
     res.clearCookie("authToken");
     res.locals.user = null;
-    res.redirect("./?message=Logout successful!");
+    res.redirect("/");
 });
+
 
 module.exports = router;

@@ -7,8 +7,8 @@ const userDao = require("../database/userDao.js");
 async function addUserToLocals(req, res, next) {
     const user = await userDao.retrieveUserWithAuthToken(req.cookies.authToken);
     // console.log("1 middleware---user is "+user);
-    res.locals.user = user;
-    next();
+        res.locals.user = user;
+        next();
 }
 
 /**
@@ -17,8 +17,7 @@ async function addUserToLocals(req, res, next) {
 function verifyAuthenticated(req, res, next) {
     if (res.locals.user) {
         next();
-    }
-    else {
+    }else {
         res.redirect("/");
     }
 }

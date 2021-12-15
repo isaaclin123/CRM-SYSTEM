@@ -46,7 +46,7 @@ app.use(accountRouter);
 const authRouter = require("./routes/login_logout_route.js");
 app.use(authRouter);
 
-// app.use(require("./routes/comment-routes.js"));
+app.use(require("./routes/contactPage-route.js"));
 
 
 // app.use(require("./routes/myHomePage-newArticle.js"));
