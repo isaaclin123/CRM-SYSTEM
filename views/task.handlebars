@@ -1,0 +1,59 @@
+<div id="header">
+    <h1>Task manager & CSV file Converter</h1>
+    <h5>This simple tool helps you to convert your schedule into a csv file which can be directly imported to Google Calender</h5>
+</div>
+<div id="container">
+    <div id="left-box">
+        <div id="name-box">
+            <label for="project-name"><b>Enter your project/file name:</b></label><br>
+            <div id="project-name" contenteditable="true">
+                
+            </div>
+        </div>
+        <div id="startdate">
+            <label for="date"><b>Choose the start date of the project:</b></label>
+            <input type="date" id="date" name="date">
+        </div>
+        <label for="project-task"><b>Enter your tasks/subject:</b></label>
+        <div id="task-box" >
+            <div id="project-task" contenteditable="true" placeholder="Use 'task+days' format to specify the tasks you want to add and the Duration of the task,eg.'working on site+3'. Press enter to start a newline and type in another task.">
+            </div>
+        </div>
+        <div id="working-hours">
+            <div>
+                 <label for="start-time">Start from:</label>
+                <input type="time" name="start-time" id="start-time" >
+            </div>
+            <div>
+                <label for="end-time">Finish at&nbsp;&nbsp;   :</label>
+             <input type="time" name="end-time" id="end-time" >
+            </div> 
+            <p >To modify start time or end time for individual subject, hover to the time and directly modify it using the default time format,eg'13:00'.</p>
+        </div>
+    </div>
+    <div id="right-box">
+        <div id="button-box">
+            <h3>Tasks preview</h3>
+            <button id="CSV">Export to CSV</button>
+        </div>
+        <div id="table-div">
+            <table id="data">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Duration(days)</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        
+
+    </div>
+</div>

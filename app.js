@@ -49,7 +49,7 @@ app.use(authRouter);
 app.use(require("./routes/contactPage-route.js"));
 
 
-// app.use(require("./routes/myHomePage-newArticle.js"));
+app.use(require("./routes/taskPage-route.js"));
 
 app.use(require("./routes/homePage-route.js"));
 

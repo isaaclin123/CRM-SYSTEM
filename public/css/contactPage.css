@@ -419,9 +419,10 @@ table .bxs-check-circle {
 }
 
 .content-editable {
-  border: 2px solid rgb(39, 33, 33);
+  border: 1px solid rgb(39, 33, 33);
   background-color: #f7f7f7;
   color: black;
+  border-collapse: collapse;
 }
 
 .dialogBox {
