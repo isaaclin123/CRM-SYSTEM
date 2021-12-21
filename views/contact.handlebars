@@ -1,4 +1,9 @@
 <div id="content-container">
+    <div id="msg">
+            {{#if message}}
+            <h3>{{message}}</h3>
+            {{/if}}
+    </div>
     <div id="contact-bkg">
         <h1>Contact list </h1>
     </div>
@@ -8,13 +13,13 @@
          {{!-- <span class="tooltip">Search</span> --}}
     </div>
     <div id="buttons">
-        <button class="button"></button>
-        <button class="button"></button>
-    </div>
-    <div id="msg">
-            {{#if message}}
-            <h3>{{message}}</h3>
-            {{/if}}
+        <ul>
+                <li><i class='bx bx-menu'></i></li>
+                <li><button class="button">Export table as CSV</button></li>
+                <li><button class="button">Import CSV file</button></li>
+                <li><button class="button"></button></li>
+                <li><button class="button"></button></li>
+        </ul>
     </div>
     <div id="search-table">
             {{!-- <table id="result-table">
@@ -86,19 +91,9 @@
                     <label for="website">Website:</label>
             </div>
             <div class = "txtfield">
-                    <input type="text" name="facebook" id="facebook" >
+                    <input type="text" name="social_media" id="social_media" >
                     <span></span>
-                    <label for="facebook">Facebook:</label>
-            </div>
-            <div class = "txtfield">
-                    <input type="text" name="instagram" id="instagram" >
-                    <span></span>
-                    <label for="instagram">Instagram:</label>
-            </div>
-            <div class = "txtfield">
-                    <input type="text" name="other_social_media" id="other_social_media" >
-                    <span></span>
-                    <label for="other_social_media">Other social media:</label>
+                    <label for="social_media">Social media:</label>
             </div>
             <div class = "txtfield ">
                     <input type="text" name="meet_with" id="meet_with" >
@@ -122,7 +117,7 @@
     </div>
     <div id="client-table">
             <div id="inner-table">
-                {{#if Clients}}
+                {{#if realClients}}
                 <table>
                         <thead>
                                 <tr>
@@ -134,9 +129,8 @@
                                         <th>City</th>
                                         <th>Profession</th>
                                         <th class="none-when-small-screen">Website</th>
-                                        <th class="none-when-small-screen"><i class='bx bxl-facebook'></i></th>
-                                        <th class="none-when-small-screen"><i class='bx bxl-instagram' ></i></th>
-                                        <th class="none-when-small-screen">Other social media</th>
+                                        <th class="none-when-small-screen">Social medias</th>
+                                        <th>Progress track</th>
                                         <th>Notes on client</th>
                                         <th>Meet with</th>
                                         <th>Added by</th>
@@ -144,7 +138,7 @@
                                 </tr>
                         </thead>
                         <tbody>
-                               {{#each Clients}}
+                               {{#each realClients}}
                             <tr data-clientID="{{this.id}}">
                                <td>{{this.first_name}}</td>
                                <td>{{this.last_name}}</td>
@@ -154,16 +148,19 @@
                                <td>{{this.city}}</td>
                                <td>{{this.profession}}</td>
                                <td class="none-when-small-screen">{{this.website}}</td>
-                                <td class="none-when-small-screen">{{this.facebook}}</td>
-                                <td class="none-when-small-screen">{{this.instagram}}</td>
-                                <td class="none-when-small-screen">{{this.other_social_media}}</td>    
+                               <td class="none-when-small-screen">{{this.social_media}}</td> 
+                               <td class="not-editable" >
+                                {{this.progress_status}}
+                               </td>   
                                <td>{{this.notes_on_client}}</td>
                                <td>{{this.meet_with}}</td>
                                <td>{{this.addedBy}}</td>
                                <td>
-                                <i class='bx bxs-message-square-x' data-clientID="{{this.id}}"></i>&nbsp;&nbsp;
-                                <i class='bx bxs-edit' data-clientID="{{this.id}}"></i>
-                                <i class='bx bxs-check-circle'data-clientID="{{this.id}}"></i>
+                                <i class='bx bxs-user-x' data-clientID="{{this.id}}" title="Delete client"></i>
+                                <i class='bx bxs-edit' data-clientID="{{this.id}}" title="Edit client information"></i>
+                                <i class='bx bxs-check-circle'data-clientID="{{this.id}}" title="Done"></i>
+                                <i class='bx bx-task add-task' data-clientID="{{this.id}}" title="Add task related to a client"></i>
+                                <i class='bx bxs-spreadsheet' data-clientID="{{this.id}}" title="Check all tasks"></i>
                                </td>
                                {{/each}}
                              </tr>

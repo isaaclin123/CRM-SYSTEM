@@ -5,6 +5,7 @@ const userDao = require("../database/userDao.js");
 const saltRounds =10;
 //Setup sanitizer
 const sanitizeHtml = require('sanitize-html');
+const qualifiedCompany=["superchatpal","universityofauckland"];
 
 /**
  * Create new account
@@ -13,8 +14,9 @@ router.post("/app/newAccount", async function(req, res){
     let password=sanitizeHtml(req.body.password2);
     let company =sanitizeHtml(req.body.companyName);
     let isQualifiedCompany="false";
-    if(company.trim().toLowerCase().replace(/\s/g, "")==="superchatpal"){
-        isQualifiedCompany=company.trim().toLowerCase().replace(/\s/g, "");
+    company=company.trim().toLowerCase().replace(/\s/g, "");
+    if(qualifiedCompany.includes(company)){
+        isQualifiedCompany=company;
         let user={
             username:sanitizeHtml(req.body.username),
             first_name:sanitizeHtml(req.body.first_name),
@@ -39,6 +41,7 @@ router.post("/app/newAccount", async function(req, res){
     }else{
         res.redirect(`/newAccount?errorMessage=Error! Cannot create an account, please try again.`)
     }
+    
 
     
 });     
@@ -71,13 +74,19 @@ router.get("/app/newAccount", function(req,res){
     async function getUsernames(){
         const usernamesOBJ= await userDao.retrieveAllUsernames();
         console.log(usernamesOBJ);
-        for (let i=0;i<usernamesOBJ.length;i++){
-            if(usernamesOBJ[i].username===username){
-                res.send("true"); 
-            }else{
-                res.send("false");
+        if(usernamesOBJ.length>0){
+            for (let i=0;i<usernamesOBJ.length;i++){
+                if(usernamesOBJ[i].username===username){
+                    res.send("true"); 
+                }else{
+                    res.send("false");
+                }
             }
+        }else{
+            res.send("false");
         }
+
+        
 
     }
 });

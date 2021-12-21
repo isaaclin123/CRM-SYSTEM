@@ -33,6 +33,7 @@ const dbPromise = require("./database.js");
 
     // Get the auto-generated ID value, and assign it back to the user object.
     user.id = result.lastID;
+    console.log(user.id);
 }
 /**
  * Gets the user's hash password with the given username from the database.

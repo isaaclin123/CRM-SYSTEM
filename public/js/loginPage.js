@@ -8,7 +8,7 @@ window.addEventListener("load",function(){
     let inputs =document.getElementsByTagName("input");
              for(let i=0;i<inputs.length;i++){
                  inputs[i].addEventListener("keyup",function(){
-                    inputs[i].value=HtmlSanitizer.SanitizeHtml(inputs[i].value);
+                    HtmlSanitizer.SanitizeHtml(inputs[i].value);
                  })  
              }
     var stateObj = { foo: 'bar' };

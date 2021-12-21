@@ -17,7 +17,7 @@
          let inputs =document.getElementsByTagName("input");
          for(let i=0;i<inputs.length;i++){
              inputs[i].addEventListener("keyup",function(){
-                inputs[i].value=HtmlSanitizer.SanitizeHtml(inputs[i].value);
+                HtmlSanitizer.SanitizeHtml(inputs[i].value);
              })  
          }
          let submitButton =document.querySelector("#submitButton");
@@ -35,6 +35,7 @@
          let usernameInput =document.querySelector("#txtUsername");
          usernameInput.addEventListener("keyup",checkUsernameAvailability);
          function checkUsernameAvailability(){
+            //  console.log("here");
              let usernameHintSpan =document.querySelector("#usernameAvailability");
              usernameHintSpan.style.display="inline";
              let username=usernameInput.value;
@@ -43,6 +44,7 @@
              request.onreadystatechange=function(){ 
                  if((request.readyState==4)&&(request.status==200)){
                      let str =request.responseText;
+                    //  console.log(str);
                      if(str=="true"){
                         usernameHintSpan.style.left=0;
                         usernameHintSpan.style.top="25px";
