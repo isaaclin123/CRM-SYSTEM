@@ -25,7 +25,7 @@
 {{#if user}} 
   <div class="sidebar">
     <div class="logo-details">
-        <div class="logo_name">CRM tool</div>
+        <div class="logo_name" style="color: rgb(158, 209, 19);">CRM tool {{user.isQualifiedCompany}}</div>
         <i class='bx bx-menu' id="btn" ></i>
     </div>
     <ul class="nav-list">
@@ -39,16 +39,16 @@
       <li>
        <a href="#">
          <i class='bx bx-user-check'></i>
-         <span class="links_name">Progress Tracker</span>
+         <span class="links_name">User management</span>
        </a>
-       <span class="tooltip">Progress Tracker</span>
+       <span class="tooltip">User management</span>
      </li>
      <li>
        <a href="/contact">
          <i class='bx bxs-contact'></i>
-         <span class="links_name">Contact list</span>
+         <span class="links_name">Client contact list</span>
        </a>
-       <span class="tooltip">Contact list</span>
+       <span class="tooltip">Client contact list</span>
      </li>
      <li>
        <a href="#">
@@ -79,7 +79,7 @@
        <span class="tooltip">Documents</span>
      </li>
      <li>
-       <a href="#">
+       <a href="/setting">
          <i class='bx bx-cog' ></i>
          <span class="links_name">Setting</span>
        </a>

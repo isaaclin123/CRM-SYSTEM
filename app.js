@@ -53,9 +53,7 @@ app.use(require("./routes/taskPage-route.js"));
 
 app.use(require("./routes/homePage-route.js"));
 
-// //Setup user routes
-// const userRoute =require("./routes/user-routes.js")
-// app.use(userRoute);
+app.use(require("./routes/setting-route.js"));
 
 
 

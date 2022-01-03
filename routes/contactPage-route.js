@@ -3,7 +3,10 @@ const router = express.Router();
 const { verifyAuthenticated, addUserToLocals } = require("../middleware/middleware.js");
 const clientDao = require("../database/clientDao.js");
 const sanitizeHtml = require('sanitize-html');
-const cli = require("nodemon/lib/cli");
+const upload=require('../middleware/multer-uploader');
+const fs=require('fs');
+const path=require('path');
+const csvConverter=require('convert-csv-to-json');
 
 router.get("/contact",verifyAuthenticated,async function(req, res){
     let Clients=await clientDao.retrieveAllClients();
@@ -118,6 +121,51 @@ router.post("/contact/updateTask",verifyAuthenticated,async function(req,res){
         res.redirect("/contact?message=Error,can not update task!")
     }
 })
+
+router.post("/uploadCSV",verifyAuthenticated,upload.single("CSVFile"),async function(req,res){
+    const user=res.locals.user;
+    const {filename:CSVFile}=req.file;
+        if(CSVFile.lastIndexOf(".csv")===-1){
+            res.redirect("/contact?message=Error,Please only upload CSV file!")
+        }else{
+            try {
+        
+                // console.log(CSVFile);
+                let CSVData=csvConverter.fieldDelimiter(',').getJsonFromCsv(`${req.file.path}`);
+        
+                for(let i=0;i<CSVData.length;i++){
+                    let tableData=Object.values(CSVData[i]);
+                    let client={
+                        first_name:tableData[0].replace(/^"(.*)"$/, '$1'),
+                        last_name:tableData[1].replace(/^"(.*)"$/, '$1'),
+                        email:tableData[2].replace(/^"(.*)"$/, '$1'),
+                        phone_number:tableData[3].replace(/^"(.*)"$/, '$1'),
+                        city:tableData[4].replace(/^"(.*)"$/, '$1'),
+                        country:tableData[5].replace(/^"(.*)"$/, '$1'),
+                        profession:tableData[6].replace(/^"(.*)"$/, '$1'),
+                        website:tableData[7].replace(/^"(.*)"$/, '$1'),
+                        social_media:tableData[8].replace(/^"(.*)"$/, '$1'),
+                        progress_status:tableData[9].replace(/^"(.*)"$/, '$1'),
+                        notes_on_client:tableData[10].replace(/^"(.*)"$/, '$1'),
+                        meet_with:tableData[11].replace(/^"(.*)"$/, '$1'),
+                        addedBy:tableData[12].replace(/^"(.*)"$/, '$1'),
+                        belong_company:user.isQualifiedCompany
+                        
+                    };
+                    console.log(client);
+                    await clientDao.createClient(client);
+                };
+                res.redirect("/contact?message=file upload and client added successfully!")
+            } catch (error) {
+                console.log(error.message);
+                res.redirect("/contact?message=Error,can not upload the file!")
+            }
+
+        }
+ 
+});
+
+
 
 
 

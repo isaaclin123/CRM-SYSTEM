@@ -23,7 +23,8 @@ router.post("/app/newAccount", async function(req, res){
             last_name:sanitizeHtml(req.body.last_name),
             isSuperAdmin:"false",
             isQualifiedCompany:sanitizeHtml(isQualifiedCompany),
-            jobTitle:(req.body.jobTitle),
+            jobTitle:sanitizeHtml(req.body.jobTitle),
+            email:sanitizeHtml(req.body.email),
             saltRounds:saltRounds
         }
         console.log(user.first_name);
@@ -67,27 +68,29 @@ router.get("/newAccount",function(req, res){
 /**
  * Check username availability
  */
-router.get("/app/newAccount", function(req,res){
+ router.get("/app/newAccount", function(req,res){
     const username = sanitizeHtml(req.query.username);
     console.log(username);
     getUsernames();
     async function getUsernames(){
         const usernamesOBJ= await userDao.retrieveAllUsernames();
         console.log(usernamesOBJ);
+        let flag=false;
         if(usernamesOBJ.length>0){
             for (let i=0;i<usernamesOBJ.length;i++){
                 if(usernamesOBJ[i].username===username){
-                    res.send("true"); 
-                }else{
-                    res.send("false");
+                    flag=true; 
+                    break;
                 }
+            }
+            if(flag===true){
+                res.send("true");
+            }else{
+                res.send("false");
             }
         }else{
             res.send("false");
         }
-
-        
-
     }
 });
 

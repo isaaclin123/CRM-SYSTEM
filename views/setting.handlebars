@@ -1,0 +1,27 @@
+{{#if message}}
+<div id="msg">
+    <h3>{{message}}</h3>
+</div>  
+{{/if}}
+<div class="container">
+    <div class="setting-box">
+        <div class="nav">
+            <ul>
+                <li >Edit profile<i class='bx bx-right-arrow-circle'></i></li>
+                <li >Edit password<i class='bx bx-right-arrow-circle'></i></li>
+                <li>Delete Account<i class='bx bx-right-arrow-circle'></i></li>
+            </ul>
+        </div>
+        <div class="setting-content">
+           
+        </div>
+    </div>
+</div>
+<div class="dialogBox" id="dialogBox">
+        <p>Delete account will permanently remove your account from the database,are you sure?
+        </p>
+        <div class="controls">
+                <input type="button" value="Delete" id="delete">
+                <input type="button" value="Cancel" id="cancel">
+        </div>
+</div>

@@ -31,7 +31,18 @@ const dbPromise = require("./database.js");
         insert into TaskForClient (task_name, task_description,clientID, task_start_date,task_end_date) values(${clientTask.task_name},${clientTask.task_description},${clientTask.clientID},${clientTask.task_start_date},${clientTask.task_end_date})`);
 
     // Get the auto-generated ID value, and assign it back to the client object.
+    
     clientTask.id = result.lastID;
+
+    let userTask={
+        taskID:clientTask.id,
+        userID:clientTask.responsible_person_id
+    }
+
+    const taskForUser = await db.run(SQL`
+        insert into TaskForUser(taskID, userID) values (${userTask.taskID},${userTask.userID})`);
+
+    userTask.id=taskForUser.lastID;
 }
 
 /**
@@ -83,6 +94,16 @@ const dbPromise = require("./database.js");
         where clientID = ${id}`);
 
     return tasks;
+} 
+
+async function retrieveUserByTaskID(id) {
+    const db = await dbPromise;
+
+    const tasks = await db.all(SQL`
+        select * from TaskForUser
+        where taskID = ${id}`);
+
+    return tasks;
 }
 /**
  * Deletes the task with the given id from the database.
@@ -131,5 +152,6 @@ module.exports = {
     retrieveClientTasksByClientID,
     deleteTask,
     deleteAllClientTasks,
-    updateClientTask
+    updateClientTask,
+    retrieveUserByTaskID
 };

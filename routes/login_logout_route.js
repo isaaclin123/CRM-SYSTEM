@@ -9,10 +9,11 @@ const sanitizeHtml = require('sanitize-html');
 /**
  * Render the log in page
  */
- router.get("/",function(req, res){
+ router.get("/",async function(req, res){
     if(res.locals.user){
         res.redirect("/home")
     }else{
+       
         res.locals.message=req.query.message;
         res.clearCookie("authToken");
         res.render("login",{

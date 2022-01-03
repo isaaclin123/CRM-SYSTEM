@@ -154,8 +154,8 @@
                                </td>   
                                <td>{{this.notes_on_client}}</td>
                                <td>{{this.meet_with}}</td>
-                               <td>{{this.addedBy}}</td>
-                               <td>
+                               <td class="uneditable">{{this.addedBy}}</td>
+                               <td class="uneditable">
                                 <i class='bx bxs-user-x' data-clientID="{{this.id}}" title="Delete client"></i>
                                 <i class='bx bxs-edit' data-clientID="{{this.id}}" title="Edit client information"></i>
                                 <i class='bx bxs-check-circle'data-clientID="{{this.id}}" title="Done"></i>
@@ -172,11 +172,17 @@
             </div>
     </div>
 </div>
-  <div class="dialogBox" id="dialogBox">
-    <p>Delete client will permanently remove the client from the database,are you sure?
-    </p>
-    <div class="controls">
-    <input type="button" value="Delete" id="delete">
-    <input type="button" value="Cancel" id="cancel">
-    </div>
-  </div>
+<div class="dialogBox" id="dialogBox">
+        <p>Delete client will permanently remove the client from the database,are you sure?
+        </p>
+        <div class="controls">
+                <input type="button" value="Delete" id="delete">
+                <input type="button" value="Cancel" id="cancel">
+        </div>
+</div>
+<div class="direction">
+        <i class='bx bx-arrow-to-top' title="go to the top"></i>
+        <br>
+        <i class='bx bx-arrow-from-top' title="go to the bottom"></i>
+</div>
+  

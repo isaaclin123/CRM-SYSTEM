@@ -3,6 +3,7 @@
  * It should contain all DROP TABLE and CREATE TABLE statments, and any INSERT statements
  * required.
  */
+ drop TABLE if EXISTS TaskForUser;
  drop TABLE if EXISTS ClientBelongTo;
  drop TABLE if EXISTS TaskForClient;
 drop table if EXISTS Clients;
@@ -18,7 +19,8 @@ drop table if EXISTS Users;
 	authToken varchar(64),
 	isSuperAdmin varchar NOT NULL,
 	isQualifiedCompany varchar NOT NULL,
-	jobTitle varchar not null
+	jobTitle varchar not null,
+	email varchar not null
  );
  
  CREATE TABLE Clients(
@@ -58,6 +60,17 @@ drop table if EXISTS Users;
 	task_end_date date not null,
 	FOREIGN KEY (clientID) REFERENCES Clients (id)
  );
+ 
+ CREATE TABLE TaskForUser(
+	id INTEGER NOT null PRIMARY KEY,
+	taskID INTEGER NOT NULL,
+	userID INTEGER NOT NULL,
+	FOREIGN KEY (taskID) REFERENCES TaskForClient (id),
+	FOREIGN KEY (userID) REFERENCES Users (id)
+ 
+ );
+ 
+
  
 
 

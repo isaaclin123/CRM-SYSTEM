@@ -1,4 +1,4 @@
-// import {HtmlSanitizer} from "./HtmlSanitizer.js";
+import {changeLocationHref} from "./helper.js";
 window.addEventListener("load",function(){
     let exportButton =document.querySelectorAll("#buttons .button")[0];
     exportButton.classList.add("hide");
@@ -8,6 +8,7 @@ window.addEventListener("load",function(){
     let inputs =document.querySelectorAll("input");
     let table=document.getElementById("inner-table");
     let tbody=document.querySelector("#inner-table table tbody");
+
     /**
      * toggle the button's ui
      */
@@ -55,7 +56,7 @@ window.addEventListener("load",function(){
                 event.target.style.display="none";
                 event.target.nextElementSibling.style.display="inline";
                 let clientID=event.target.getAttribute("data-clientID");
-                let tds=document.querySelectorAll(`tr[data-clientID="${clientID}"] td:not(tr[data-clientID="${clientID}"] td:last-child)`);
+                let tds=document.querySelectorAll(`tr[data-clientID="${clientID}"] td:not(tr[data-clientID="${clientID}"] .uneditable)`);
                 tds.forEach(element =>{
                     if(element.className!=="not-editable"){
                         element.setAttribute("contenteditable","true");
@@ -97,7 +98,8 @@ window.addEventListener("load",function(){
      */
     function donLink(donLinks){
         doneLinks.forEach(element => {
-            element.addEventListener("click",function(event){
+            element.addEventListener("click",async function(event){
+                let user=await getUser();
                 event.target.style.display="none";
                 event.target.previousElementSibling.style.display="inline";
                 let clientID=event.target.getAttribute("data-clientID");
@@ -122,7 +124,7 @@ window.addEventListener("load",function(){
                         social_media:tds[8].textContent,
                         meet_with:tds[10].textContent,
                         notes_on_client:tds[11].textContent,
-                        addedBy:tds[12].textContent
+                        addedBy:tds[12].innerText
                     }
                     if(i!==9){
                         tds[i].setAttribute("contenteditable","false");
@@ -133,6 +135,8 @@ window.addEventListener("load",function(){
                 // console.log(client.progress_status);
                 tds[9].innerText=client.progress_status;
                 // console.log(client.progress_status);
+                client.addedBy=`${user.first_name} ${user.last_name}`;
+                tds[12].innerText=client.addedBy;
                 request=new XMLHttpRequest();
                 request.open("POST",`/contact/edit`);
                 request.setRequestHeader("Content-Type","application/json");
@@ -171,7 +175,7 @@ window.addEventListener("load",function(){
                     // tableChildrenCount--;
                     // console.log(tableChildrenCount);
                     tr.classList.add("transition-effect");
-                    setTimeout(function(){tr.parentNode.removeChild(tr);},1000);
+                    setTimeout(function(){tr.style.display="none";},1000);
                     dialogBox.classList.remove("display");
                     request =new XMLHttpRequest();
                     // request.open("GET",`/newArticle?html=`+html,true);
@@ -263,7 +267,7 @@ window.addEventListener("load",function(){
     let AddTaskButtons=document.querySelectorAll(".add-task");
     const section=document.querySelector("section");
     AddTaskButtons.forEach(button=>{
-        button.addEventListener("click",function(event){
+        button.addEventListener("click",async function(event){
             let clientID=event.target.getAttribute("data-clientID");
             let tr=document.querySelector(`tr[data-clientID="${clientID}"]`);
             let taskDiv=document.createElement("div");
@@ -303,6 +307,7 @@ window.addEventListener("load",function(){
             let checkTaskButton=document.querySelectorAll(".task-box button")[1];
             let notNullMsg=document.querySelector("#not-null-msg");
             let inputs=document.querySelectorAll("#task-form input");
+            let user=await getUser();
             submitButton.addEventListener("click",function(event){
                 event.preventDefault();
                 notNullMsg.innerHTML="";
@@ -311,9 +316,10 @@ window.addEventListener("load",function(){
                     task_name:HtmlSanitizer.SanitizeHtml(document.querySelector("#task_name").value),
                     task_description:HtmlSanitizer.SanitizeHtml(document.querySelector("#task_description").value),
                     task_end_date:HtmlSanitizer.SanitizeHtml(document.querySelector("#task_end_date").value),
-                    task_start_date:HtmlSanitizer.SanitizeHtml(document.querySelector("#task_start_date").value)
+                    task_start_date:HtmlSanitizer.SanitizeHtml(document.querySelector("#task_start_date").value),
+                    responsible_person_id:user.id
                 }
-                // console.log(clientTask);
+                console.log(clientTask);
                 if(!clientTask.task_name||!clientTask.task_description||!clientTask.task_start_date||!clientTask.task_end_date){
                     // console.log("here");
                     submitButton.disabled=true;
@@ -389,10 +395,12 @@ window.addEventListener("load",function(){
                                                                                     <div>Task name:<span>${task.task_name}</span></div>
                                                                                     <div>Task start date:<span>${task.task_start_date}</span></div>
                                                                                     <div>Task end date:<span>${task.task_end_date}</span></div>
+                                                                                    <div>Responsible person:<span>${task.task_end_date}</span></div>
                                                                                     <div>Task description:<span>${task.task_description}</span></div>
                                                                                 </div>
                                                                                 `;
                         });
+                        limitClickTime();
                         document.querySelectorAll(".each-task .bxs-check-circle").forEach(doneButton =>{
                             doneButton.classList.add("hide");
                         })
@@ -402,7 +410,7 @@ window.addEventListener("load",function(){
                                 // console.log(taskID);
                                 let targetTask=document.querySelector(`.each-task[data-taskID="${taskID}"]`);
                                 targetTask.classList.add("transition-effect");
-                                setTimeout(function(){targetTask.parentNode.removeChild(targetTask);},1000)
+                                setTimeout(function(){targetTask.style.display="none";},1000)
                                 
                                 let deleteRequest= new XMLHttpRequest();
                                 deleteRequest.open("GET",`/contact/deleteTask?taskID=${taskID}`,true);
@@ -458,6 +466,8 @@ window.addEventListener("load",function(){
             request.open("POST",`/contact/getTasks`);
             request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
             request.send(`clientID=${clientID}`);
+            
+            
 
             close();
              
@@ -516,6 +526,7 @@ window.addEventListener("load",function(){
         uploadDiv.innerHTML=`<div><i class='bx bx-x'></i></div>
                              <div id="uploadCSV">
                                 <h3>Import you client csv file and convert the data to the table</h3>
+                                <span><a href="./examples/client-table.csv">CSV file template</a></span>
                                 <form action="/uploadCSV" method="POST" enctype="multipart/form-data">
                                     <span><label for="file-upload"><i class='bx bx-upload'></i></label><input id="file-upload" type="file" name="CSVFile" accept=".csv" class="custom-file-input" required></span>
                                     <br>
@@ -524,6 +535,32 @@ window.addEventListener("load",function(){
                              </div>`;
         close();
     })
+
+    document.querySelector(".direction i:nth-child(1)").addEventListener("click",function(){
+        window.scrollTo(0,0);
+    })
+    document.querySelector(".direction i:nth-child(3)").addEventListener("click",function(){
+        window.scrollTo(0,document.body.scrollHeight);
+    })
+
+    limitClickTime();
+
+    function limitClickTime(){
+        let clientButtons=document.querySelectorAll("section i:not(.add-task,.bxs-spreadsheet,.bx-arrow-to-top,.bx-arrow-from-top,.bx-menu,.bx-x,.bx-list-plus,.bx-search)");
+        for(let i=0;i<clientButtons.length;i++){
+            clientButtons[i].addEventListener("click",function(){
+                clientButtons.forEach(button => {
+                    button.classList.add("unclickable");
+                });
+                setTimeout(function(){
+                    clientButtons.forEach(button => {
+                        button.classList.remove("unclickable");
+                    });
+                },4000)
+            })
+        }
+    }
+    
 
 
     
@@ -535,14 +572,14 @@ window.addEventListener("load",function(){
         })
        
     }
-    let msg =document.querySelector("#msg h3");
-    if(msg){
-        const nextURL = '/contact';
-        const nextTitle = 'Contact page';
-        const nextState = { additionalInformation: 'Updated the URL with JS' };
-        window.history.replaceState(nextState, nextTitle, nextURL);
-        // This will replace the current entry in the browser's history, without reloading
+
+    async function getUser(){
+        const userObj =await fetch(`http://localhost:3000/user`);
+        const user= await userObj.json();
+        return user;
     }
+
+    changeLocationHref();
 
     
     
