@@ -17,8 +17,22 @@ router.get("/setting",verifyAuthenticated,function(req, res){
     })
 })
 
-router.get("/user",verifyAuthenticated,function(req,res){
-    res.json(res.locals.user);
+router.get("/user",verifyAuthenticated,async function(req,res){
+    if(req.query.id){
+
+        let user =await userDao.retrieveUserById(req.query.id);
+        res.json(user)
+   
+    }else{
+
+        res.json(res.locals.user);
+    }
+  
+})
+
+router.get("/users",verifyAuthenticated,async function(req,res){
+    let allUsers= await userDao.retrieveAllUsers();
+    res.json(allUsers);
 })
 
 router.get("/checkUser",verifyAuthenticated,function(req,res){
@@ -104,16 +118,10 @@ router.post("/updateUserPassword",verifyAuthenticated,function(req,res){
 })
 
 router.get("/deleteUser",verifyAuthenticated,async function(req,res){
-    const Clients=await clientDao.retrieveAllClients();
-    const currentName =res.locals.user.first_name+" "+res.locals.user.last_name;
+    // const Clients=await clientDao.retrieveAllClients();
+    // const currentName =res.locals.user.first_name+" "+res.locals.user.last_name;
     const userID=res.locals.user.id;
     try {
-        for(let i=0;i<Clients.length;i++){
-            if(Clients[i].addedBy===currentName){
-                Clients[i].addedBy=`${currentName} (deleted)`;
-                await clientDao.updateClient(Clients[i]);
-            }  
-        }
         await userDao.deleteUser(userID);
         res.redirect("/");
     } catch (error) {

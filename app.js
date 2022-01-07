@@ -55,6 +55,8 @@ app.use(require("./routes/homePage-route.js"));
 
 app.use(require("./routes/setting-route.js"));
 
+app.use(require("./routes/userManagement-route.js"));
+
 
 
 // Start the server running.

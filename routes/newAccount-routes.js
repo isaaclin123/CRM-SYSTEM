@@ -21,7 +21,7 @@ router.post("/app/newAccount", async function(req, res){
             username:sanitizeHtml(req.body.username),
             first_name:sanitizeHtml(req.body.first_name),
             last_name:sanitizeHtml(req.body.last_name),
-            isSuperAdmin:"false",
+            isSuperAdmin:"0",
             isQualifiedCompany:sanitizeHtml(isQualifiedCompany),
             jobTitle:sanitizeHtml(req.body.jobTitle),
             email:sanitizeHtml(req.body.email),

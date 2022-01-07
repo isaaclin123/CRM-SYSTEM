@@ -8,6 +8,16 @@ async function addUserToLocals(req, res, next) {
     const user = await userDao.retrieveUserWithAuthToken(req.cookies.authToken);
     // console.log("1 middleware---user is "+user);
         res.locals.user = user;
+        if(user){
+            if(user.isSuperAdmin==='0'){
+                res.locals.admin=0;
+                // console.log(res.locals.admin);
+            }else if(user.isSuperAdmin==='1'){
+               res.locals.admin=1; 
+            //    console.log(res.locals.admin);
+            }
+        }
+        
         next();
 }
 

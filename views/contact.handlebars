@@ -22,28 +22,6 @@
         </ul>
     </div>
     <div id="search-table">
-            {{!-- <table id="result-table">
-                 <thead>
-                        <tr>
-                                <th>First name</th>
-                                <th>Last name</th> 
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Country</th>
-                                <th>City</th>
-                                <th>Profession</th>
-                                <th class="none-when-small-screen">Website</th>
-                                <th class="none-when-small-screen"><i class='bx bxl-facebook'></i></th>
-                                <th class="none-when-small-screen"><i class='bx bxl-instagram' ></i></th>
-                                <th class="none-when-small-screen">Other social media</th>
-                                <th>Notes on client</th>
-                                <th>Meet with</th>
-                                <th>Added by</th>
-                                <th><i class='bx bx-grid-small'></i></th>
-                        </tr>
-                </thead>
-                <tbody></tbody>
-            </table> --}}
             <p>No result found!</p>
     </div>
     
@@ -100,6 +78,11 @@
                     <span></span>
                     <label for="meet_with">Meet with（employee):</label>
             </div>
+            <div class = "txtfield ">
+                    <input type="text" name="tag" id="tag" >
+                    <span></span>
+                    <label for="tag">Tag:</label>
+            </div>
             <div class = "txtfield no">
                     <p>Notes on client</p>
                     <textarea name="notes_on_client" id="notes_on_client" ></textarea>
@@ -133,8 +116,8 @@
                                         <th>Progress track</th>
                                         <th>Notes on client</th>
                                         <th>Meet with</th>
-                                        <th>Added by</th>
-                                        <th><i class='bx bx-grid-small'></i></th>
+                                        <th class="tag">Tag</th>
+                                        <th><i class='bx bx-grid-small'title="Select clients"></i><i class='bx bx-x-circle delete-selected-users' title="Delete selected clients"></i></th>
                                 </tr>
                         </thead>
                         <tbody>
@@ -154,13 +137,14 @@
                                </td>   
                                <td>{{this.notes_on_client}}</td>
                                <td>{{this.meet_with}}</td>
-                               <td class="uneditable">{{this.addedBy}}</td>
-                               <td class="uneditable">
+                               <td class="uneditable tag" >{{this.tag}}</td>
+                               <td class="uneditable clientManagementTools" >
                                 <i class='bx bxs-user-x' data-clientID="{{this.id}}" title="Delete client"></i>
                                 <i class='bx bxs-edit' data-clientID="{{this.id}}" title="Edit client information"></i>
                                 <i class='bx bxs-check-circle'data-clientID="{{this.id}}" title="Done"></i>
                                 <i class='bx bx-task add-task' data-clientID="{{this.id}}" title="Add task related to a client"></i>
                                 <i class='bx bxs-spreadsheet' data-clientID="{{this.id}}" title="Check all tasks"></i>
+                                <input type="checkbox" class="clientIDs" value="{{this.id}}">
                                </td>
                                {{/each}}
                              </tr>

@@ -36,13 +36,15 @@
         </a>
          <span class="tooltip">Home</span>
       </li>
-      <li>
-       <a href="#">
+      {{#if ./admin}}
+      <li class="admin">
+       <a href="/manageUsers">
          <i class='bx bx-user-check'></i>
          <span class="links_name">User management</span>
        </a>
        <span class="tooltip">User management</span>
      </li>
+     {{/if}}
      <li>
        <a href="/contact">
          <i class='bx bxs-contact'></i>
@@ -60,9 +62,9 @@
      <li>
        <a href="/task">
          <i class='bx bx-task' ></i>
-         <span class="links_name">Task management&#38;<br> CSV converter</span>
+         <span class="links_name">Project timeline&#38;<br> CSV converter</span>
        </a>
-       <span class="tooltip">Task management&#38;CSV converter</span>
+       <span class="tooltip">Project timeline&#38;CSV converter</span>
      </li>
      <li>
        <a href="#">

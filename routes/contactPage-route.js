@@ -1,11 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { verifyAuthenticated, addUserToLocals } = require("../middleware/middleware.js");
+const { verifyAuthenticated } = require("../middleware/middleware.js");
 const clientDao = require("../database/clientDao.js");
 const sanitizeHtml = require('sanitize-html');
 const upload=require('../middleware/multer-uploader');
-const fs=require('fs');
-const path=require('path');
 const csvConverter=require('convert-csv-to-json');
 
 router.get("/contact",verifyAuthenticated,async function(req, res){
@@ -39,7 +37,7 @@ router.post("/contact/save",verifyAuthenticated,async function(req,res){
         social_media:sanitizeHtml(req.body.social_media),
         meet_with:sanitizeHtml(req.body.meet_with),
         notes_on_client:sanitizeHtml(req.body.notes_on_client),
-        addedBy:user.first_name+" "+user.last_name,
+        tag:sanitizeHtml(req.body.tag),
         belong_company:user.isQualifiedCompany,
         progress_status:"Establish contact"
     }
@@ -55,15 +53,31 @@ router.post("/contact/save",verifyAuthenticated,async function(req,res){
 })
 
 router.post("/contact/delete",verifyAuthenticated,async function(req,res){
-    let clientID=req.body.clientID;
-    try {
-        await clientDao.deleteClient(clientID);
-        await clientDao.deleteAllClientTasks(clientID);
-        // console.log("delete");
-    } catch (error) {
-        console.log(error.message);
-        res.redirect("/contact?message=Error,can not delete a client!")
+    if(req.body.clientID){
+        let clientID=req.body.clientID;
+            try {
+                await clientDao.deleteAllClientTasks(clientID);
+                await clientDao.deleteClient(clientID);
+                // console.log("delete");
+            } catch (error) {
+                console.log(error.message);
+                res.redirect("/contact?message=Error,can not delete a client!")
+            }
+    }else if(req.body){
+        let clientIDs=req.body;
+        console.log(clientIDs);
+        for(let i=0;i<clientIDs.length;i++){
+            try {
+                await clientDao.deleteAllClientTasks(clientIDs[i]);
+                await clientDao.deleteClient(clientIDs[i]);
+                console.log("delete");
+            } catch (error) {
+                console.log(error.message);
+                res.redirect("/contact?message=Error,can not delete clients!")
+            }
+        }
     }
+    
 
 })
 router.post("/contact/edit",verifyAuthenticated,async function(req,res){
@@ -78,8 +92,8 @@ router.post("/contact/edit",verifyAuthenticated,async function(req,res){
 })
 
 router.post("/contact/createTask",verifyAuthenticated,async function(req,res){
-    console.log(req.body, "here");
     let clientTask=JSON.parse(sanitizeHtml(JSON.stringify(req.body)));
+    console.log(clientTask, "here");
     try {
         await clientDao.createClientTask(clientTask);
     } catch (error) {
@@ -92,7 +106,7 @@ router.post("/contact/getTasks",verifyAuthenticated,async function(req,res){
     let clientID=req.body.clientID;
     try {
         let tasks=await clientDao.retrieveClientTasksByClientID(clientID);
-        // console.log(tasks);
+        // console.log(tasks);        
         res.send(tasks);
     } catch (error) {
         console.log(error.message);
@@ -103,6 +117,7 @@ router.post("/contact/getTasks",verifyAuthenticated,async function(req,res){
 router.get("/contact/deleteTask",verifyAuthenticated,async function(req,res){
     let taskID=req.query.taskID;
     try {
+
         await clientDao.deleteTask(taskID);
         // console.log("delete task");
     } catch (error) {
@@ -120,6 +135,17 @@ router.post("/contact/updateTask",verifyAuthenticated,async function(req,res){
         console.log(error.message);
         res.redirect("/contact?message=Error,can not update task!")
     }
+})
+router.get("/contact/updateTaskCompleted",verifyAuthenticated,async function(req,res){
+    let taskID=req.query.taskID;
+    let isCompleted=req.query.isCompleted;
+    try {
+        await clientDao.updateIsCompletedTask(taskID,isCompleted);
+    } catch (error) {
+        console.log(error.message);
+        res.redirect("/contact?message=Error,can not update task!")
+    }
+
 })
 
 router.post("/uploadCSV",verifyAuthenticated,upload.single("CSVFile"),async function(req,res){
@@ -145,10 +171,10 @@ router.post("/uploadCSV",verifyAuthenticated,upload.single("CSVFile"),async func
                         profession:tableData[6].replace(/^"(.*)"$/, '$1'),
                         website:tableData[7].replace(/^"(.*)"$/, '$1'),
                         social_media:tableData[8].replace(/^"(.*)"$/, '$1'),
-                        progress_status:tableData[9].replace(/^"(.*)"$/, '$1'),
+                        progress_status:tableData[9].replace(/^"(.*)"$/, '$1')||"Establish contact",
                         notes_on_client:tableData[10].replace(/^"(.*)"$/, '$1'),
                         meet_with:tableData[11].replace(/^"(.*)"$/, '$1'),
-                        addedBy:tableData[12].replace(/^"(.*)"$/, '$1'),
+                        tag:tableData[12].replace(/^"(.*)"$/, '$1')||user.first_name+" "+user.last_name,
                         belong_company:user.isQualifiedCompany
                         
                     };

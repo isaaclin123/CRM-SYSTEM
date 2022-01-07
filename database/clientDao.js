@@ -12,7 +12,7 @@ const dbPromise = require("./database.js");
     const db = await dbPromise;
 
     const result = await db.run(SQL`
-        insert into Clients (first_name, last_name, email,phone_number,city,country,profession,website,social_media,notes_on_client,meet_with,addedBy,belong_company,progress_status) values(${client.first_name},${client.last_name},${client.email},${client.phone_number},${client.city},${client.country},${client.profession},${client.website},${client.social_media},${client.notes_on_client},${client.meet_with},${client.addedBy},${client.belong_company},${client.progress_status})`);
+        insert into Clients (first_name, last_name, email,phone_number,city,country,profession,website,social_media,notes_on_client,meet_with,tag,belong_company,progress_status) values(${client.first_name},${client.last_name},${client.email},${client.phone_number},${client.city},${client.country},${client.profession},${client.website},${client.social_media},${client.notes_on_client},${client.meet_with},${client.tag},${client.belong_company},${client.progress_status})`);
 
     // Get the auto-generated ID value, and assign it back to the client object.
     client.id = result.lastID;
@@ -28,21 +28,21 @@ const dbPromise = require("./database.js");
     const db = await dbPromise;
 
     const result = await db.run(SQL`
-        insert into TaskForClient (task_name, task_description,clientID, task_start_date,task_end_date) values(${clientTask.task_name},${clientTask.task_description},${clientTask.clientID},${clientTask.task_start_date},${clientTask.task_end_date})`);
+        insert into TaskForClient (task_name, task_description,clientID, task_start_date,task_end_date,userID,isCompleted) values(${clientTask.task_name},${clientTask.task_description},${clientTask.clientID},${clientTask.task_start_date},${clientTask.task_end_date},${clientTask.userID},${clientTask.isCompleted})`);
 
     // Get the auto-generated ID value, and assign it back to the client object.
     
     clientTask.id = result.lastID;
 
-    let userTask={
-        taskID:clientTask.id,
-        userID:clientTask.responsible_person_id
-    }
+    // let userTask={
+    //     taskID:clientTask.id,
+    //     userID:clientTask.responsible_person_id
+    // }
 
-    const taskForUser = await db.run(SQL`
-        insert into TaskForUser(taskID, userID) values (${userTask.taskID},${userTask.userID})`);
+    // const taskForUser = await db.run(SQL`
+    //     insert into TaskForUser(taskID, userID) values (${userTask.taskID},${userTask.userID})`);
 
-    userTask.id=taskForUser.lastID;
+    // userTask.id=taskForUser.lastID;
 }
 
 /**
@@ -77,7 +77,7 @@ const dbPromise = require("./database.js");
 
     await db.run(SQL`
         update Clients
-        set first_name = ${client.first_name}, last_name=${client.last_name},email = ${client.email},phone_number = ${client.phone_number}, city = ${client.city},country=${client.country},profession=${client.profession},website=${client.website},social_media = ${client.other_social_media},notes_on_client =${client.notes_on_client},meet_with = ${client.meet_with},addedBy = ${client.addedBy},progress_status=${client.progress_status}
+        set first_name = ${client.first_name}, last_name=${client.last_name},email = ${client.email},phone_number = ${client.phone_number}, city = ${client.city},country=${client.country},profession=${client.profession},website=${client.website},social_media = ${client.other_social_media},notes_on_client =${client.notes_on_client},meet_with = ${client.meet_with},tag = ${client.tag},progress_status=${client.progress_status}
         where id = ${client.id}`);
 }
 /**
@@ -96,12 +96,12 @@ const dbPromise = require("./database.js");
     return tasks;
 } 
 
-async function retrieveUserByTaskID(id) {
+async function retrieveTasksByUserID(id) {
     const db = await dbPromise;
 
     const tasks = await db.all(SQL`
-        select * from TaskForUser
-        where taskID = ${id}`);
+        select * from TaskForClient
+        where userID = ${id}`);
 
     return tasks;
 }
@@ -116,6 +116,7 @@ async function retrieveUserByTaskID(id) {
     await db.run(SQL`
         delete from TaskForClient
         where id = ${id}`);
+
 }
 /**
  * Deletes the task with the given ClientID from the database.
@@ -139,8 +140,16 @@ async function retrieveUserByTaskID(id) {
 
     await db.run(SQL`
         update TaskForClient
-        set task_name = ${clientTask.task_name}, task_description=${clientTask.task_description},task_start_date = ${clientTask.task_start_date},task_end_date = ${clientTask.task_end_date}
+        set task_name = ${clientTask.task_name}, task_description=${clientTask.task_description},task_start_date = ${clientTask.task_start_date},task_end_date = ${clientTask.task_end_date},userID=${clientTask.userID}
         where id = ${clientTask.taskID}`);
+}
+async function updateIsCompletedTask(taskID, isCompleted) {
+    const db = await dbPromise;
+
+    await db.run(SQL`
+        update TaskForClient
+        set isCompleted=${isCompleted}
+        where id = ${taskID}`);
 }
 
 module.exports = {
@@ -153,5 +162,6 @@ module.exports = {
     deleteTask,
     deleteAllClientTasks,
     updateClientTask,
-    retrieveUserByTaskID
+    retrieveTasksByUserID,
+    updateIsCompletedTask
 };

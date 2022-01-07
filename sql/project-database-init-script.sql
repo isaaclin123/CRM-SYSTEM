@@ -36,7 +36,7 @@ drop table if EXISTS Users;
 	social_media varchar,
 	notes_on_client varchar,
 	meet_with varchar,
-	addedBy varchar,
+	tag varchar,
 	belong_company varchar NOT null,
 	progress_status varchar,
 	FOREIGN KEY (belong_company) REFERENCES Users (isQualifiedCompany)
@@ -56,19 +56,15 @@ drop table if EXISTS Users;
 	task_name varchar not null,
 	task_description varchar not null,
 	clientID INTEGER not null,
+	userID INTEGER not null,
 	task_start_date date not null,
 	task_end_date date not null,
-	FOREIGN KEY (clientID) REFERENCES Clients (id)
+	isCompleted varchar,
+	FOREIGN KEY (clientID) REFERENCES Clients (id),
+	FOREIGN KEY (userID) REFERENCES Users(id)
  );
  
- CREATE TABLE TaskForUser(
-	id INTEGER NOT null PRIMARY KEY,
-	taskID INTEGER NOT NULL,
-	userID INTEGER NOT NULL,
-	FOREIGN KEY (taskID) REFERENCES TaskForClient (id),
-	FOREIGN KEY (userID) REFERENCES Users (id)
- 
- );
+
  
 
  
