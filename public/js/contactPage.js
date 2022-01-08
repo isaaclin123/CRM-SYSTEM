@@ -1,4 +1,4 @@
-import {changeLocationHref} from "./helper.js";
+import {changeLocationHref,direction} from "./helper.js";
 window.addEventListener("load",function(){
     let exportButton =document.querySelectorAll("#buttons .button")[0];
     exportButton.classList.add("hide");
@@ -705,12 +705,10 @@ window.addEventListener("load",function(){
         close();
     })
 
-    document.querySelector(".direction i:nth-child(1)").addEventListener("click",function(){
-        window.scrollTo(0,0);
-    })
-    document.querySelector(".direction i:nth-child(3)").addEventListener("click",function(){
-        window.scrollTo(0,document.body.scrollHeight);
-    })
+
+    direction();
+
+    
 
     limitClickTime();
 

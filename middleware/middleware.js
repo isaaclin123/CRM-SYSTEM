@@ -9,12 +9,11 @@ async function addUserToLocals(req, res, next) {
     // console.log("1 middleware---user is "+user);
         res.locals.user = user;
         if(user){
-            if(user.isSuperAdmin==='0'){
+            if(user.isSuperAdmin!=='1'){
                 res.locals.admin=0;
                 // console.log(res.locals.admin);
             }else if(user.isSuperAdmin==='1'){
                res.locals.admin=1; 
-            //    console.log(res.locals.admin);
             }
         }
         

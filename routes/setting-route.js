@@ -120,14 +120,35 @@ router.post("/updateUserPassword",verifyAuthenticated,function(req,res){
 router.get("/deleteUser",verifyAuthenticated,async function(req,res){
     // const Clients=await clientDao.retrieveAllClients();
     // const currentName =res.locals.user.first_name+" "+res.locals.user.last_name;
-    const userID=res.locals.user.id;
-    try {
-        await userDao.deleteUser(userID);
-        res.redirect("/");
-    } catch (error) {
-        console.log(error.message);
-        res.redirect("/setting?message=Error! can not delete");
+    let userID;
+    if(req.query.userID){
+        userID=req.query.userID;
+        try {
+            await userDao.deleteUser(userID);
+            let userTasks=await clientDao.retrieveTasksByUserID(userID);
+            for(let i=0;i<userTasks.length;i++){
+                await clientDao.updateDeletedUserID(-1,userTasks[i].id);
+            }
+            res.redirect("/manageUsers?message=User deleted!");
+        } catch (error) {
+            console.log(error.message);
+            res.redirect("/manageUsers?message=Error! can not delete");
+        }
+    }else{
+        userID=res.locals.user.id;
+        try {
+            await userDao.deleteUser(userID);
+            let userTasks=await clientDao.retrieveTasksByUserID(userID);
+            for(let i=0;i<userTasks.length;i++){
+                await clientDao.updateDeletedUserID(-1,userTasks[i].id);
+            }
+            res.redirect("/");
+        } catch (error) {
+            console.log(error.message);
+            res.redirect("/setting?message=Error! can not delete");
+        }
     }
+    
 })
 
 module.exports = router;

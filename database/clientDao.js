@@ -151,6 +151,14 @@ async function updateIsCompletedTask(taskID, isCompleted) {
         set isCompleted=${isCompleted}
         where id = ${taskID}`);
 }
+async function updateDeletedUserID(userID,taskID) {
+    const db = await dbPromise;
+
+    await db.run(SQL`
+        update TaskForClient
+        set userID=${userID}
+        where id = ${taskID}`);
+}
 
 module.exports = {
     createClient,
@@ -163,5 +171,6 @@ module.exports = {
     deleteAllClientTasks,
     updateClientTask,
     retrieveTasksByUserID,
-    updateIsCompletedTask
+    updateIsCompletedTask,
+    updateDeletedUserID
 };

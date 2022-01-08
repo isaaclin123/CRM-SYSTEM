@@ -100,6 +100,13 @@ async function getIDByUsername(username){
 
     return users;
 }
+async function retrieveAllUsersByCompany(company) {
+    const db = await dbPromise;
+
+    const users = await db.all(SQL`select * from Users where isQualifiedCompany=${company}`);
+
+    return users;
+}
 /**
  * Gets an array of all usernames from the database.
  */
@@ -149,6 +156,7 @@ module.exports = {
     retrieveAllUsers,
     deleteUser,
     retrieveAllUsernames,
-    retrieveUserWithHashPassword
+    retrieveUserWithHashPassword,
+    retrieveAllUsersByCompany
     
 };

@@ -1,3 +1,86 @@
 <div class="users-box">
-    
+    <div id="msg">
+            {{#if message}}
+            <h3>{{message}}</h3>
+            {{/if}}
+    </div>
+    <div class="heading-div">
+      <h2 class="heading">
+        User managements
+      </h2>
+    </div>
+    {{!-- <div id="search-box">
+         <input type="search" placeholder="Search user name..." name="search">
+         <i class='bx bx-search' ></i>
+    </div> --}}
+
+    <div class="allUsers-names">
+        <ul>
+            {{#each users}}
+            <li data-userID="{{this.id}}">
+                {{this.first_name}}
+                {{#if this.isSuperAdmin}}
+                <i class='bx bxs-certification'></i>
+                {{/if}}
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+
+    <div class="allUsers-container">
+        {{#each users}}
+        <div class="eachUser" data-userID="{{this.id}}">
+            <div class="card">
+                <div class="card__side card__side--front">
+                    <div class="card__title">
+                    <h4 class="card__heading">{{this.first_name}}</h4>
+                    {{#if this.isSuperAdmin}}
+                    <i class='bx bxs-certification'></i>
+                    {{/if}}
+                    </div>
+
+                    <div class="card__details">
+                    <ul>
+                        <li>{{this.username}}</li>
+                        <li>{{this.first_name}}</li>
+                        <li>{{this.last_name}}</li>
+                        <li>{{this.jobTitle}}</li>
+                        <li>{{this.email}}</li>
+                    </ul>
+                    </div>
+                </div>
+                <div class="card__side card__side--back ">
+                    <i class='bx bx-x'></i>
+                    <div class="card__cta" data-userID="{{this.id}}">
+                        <a  class="btn btn--white delete-user">Delete user</a>
+                        <a  class="btn btn--white update-admin">
+                            {{#if this.isSuperAdmin}}
+                            Unset admin
+                            {{else}}
+                            Set as admin
+                            {{/if}}
+                        </a>
+                        <a  class="btn btn--white check-tasks">Check tasks</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+{{!-- <div class="buttons">
+    <i class='bx bxs-user-detail' title="Check all users"></i>
+</div> --}}
+<div class="direction">
+        <i class='bx bx-arrow-to-top' title="go to the top"></i>
+        <br>
+        <i class='bx bx-arrow-from-top' title="go to the bottom"></i>
+</div>
+<div class="dialogBox" id="dialogBox">
+        <p>Delete user will permanently remove the user from the database,are you sure?
+        </p>
+        <div class="controls">
+                <input type="button" value="Delete" id="delete">
+                <input type="button" value="Cancel" id="cancel">
+        </div>
 </div>

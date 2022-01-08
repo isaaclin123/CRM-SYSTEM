@@ -1,21 +1,5 @@
 @media screen and (max-width: 1000px) {
-  /* #content-container{
-     display: grid;
-     grid-template-columns:2fr 5fr 1fr;
-     grid-template-rows:auto;
-     grid-template-areas:
-            ". buttons ." 
-            ". form .";
-    }
-    #buttons{
-        grid-area: buttons;
-        text-align: center;
-        display: flex;  
-    }
-    #buttons button{
-        margin-top: 10px;
 
-    }*/
   #add-form form {
     display: block;
   }
@@ -109,12 +93,13 @@ body {
 #contact-bkg {
   grid-area: co;
   text-align: center;
-  font-size: 70px;
+  font-size: 300%;
   margin-top: 200px;
   margin-bottom: 50px;
 }
 #contact-bkg h1 {
   color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
   /* text-shadow: 1px 1px 5px rgba(66, 43, 43, 1); */
 }
 #search-box {

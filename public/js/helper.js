@@ -109,4 +109,13 @@ function changeLocationHref(){
         // This will replace the current entry in the browser's history, without reloading
     }
 }
- export {checkUsernameAvailability,test,sanitizer,changeLocationHref};
+
+function direction(){
+    document.querySelector(".direction i:nth-child(1)").addEventListener("click",function(){
+        window.scrollTo(0,0);
+    })
+    document.querySelector(".direction i:nth-child(3)").addEventListener("click",function(){
+        window.scrollTo(0,document.body.scrollHeight);
+    })
+}
+ export {checkUsernameAvailability,test,sanitizer,changeLocationHref,direction};
