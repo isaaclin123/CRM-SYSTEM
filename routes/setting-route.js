@@ -31,7 +31,7 @@ router.get("/user",verifyAuthenticated,async function(req,res){
 })
 
 router.get("/users",verifyAuthenticated,async function(req,res){
-    let allUsers= await userDao.retrieveAllUsers();
+    let allUsers= await userDao.retrieveAllUsersByCompany(res.locals.user.isQualifiedCompany);
     res.json(allUsers);
 })
 
@@ -78,9 +78,7 @@ router.post("/checkOldPassword",verifyAuthenticated,async function(req,res){
 })
 
 router.post("/updateUser",verifyAuthenticated,async function(req,res){
-    const Clients=await clientDao.retrieveAllClients();
     const user =res.locals.user;
-    const currentName =res.locals.user.first_name+" "+res.locals.user.last_name;
     console.log(req.body);
     user.username=sanitizeHtml(req.body.username);
     user.first_name=sanitizeHtml(req.body.first_name);
@@ -89,18 +87,13 @@ router.post("/updateUser",verifyAuthenticated,async function(req,res){
     user.email=sanitizeHtml(req.body.email);
     try {
         await userDao.updateUser(user);
-        for(let i=0;i<Clients.length;i++){
-            if(Clients[i].addedBy===currentName){
-                Clients[i].addedBy=`${user.first_name} ${user.last_name}`;
-                await clientDao.updateClient(Clients[i]);
-            }  
-        }
         res.redirect("/setting?message=Update successfully");
     } catch (error) {
         console.log(error.message)
         res.redirect("/setting?message=Error! can not update");
     }
 })
+
 
 router.post("/updateUserPassword",verifyAuthenticated,function(req,res){
     const password =sanitizeHtml(req.body.password2);
@@ -118,8 +111,6 @@ router.post("/updateUserPassword",verifyAuthenticated,function(req,res){
 })
 
 router.get("/deleteUser",verifyAuthenticated,async function(req,res){
-    // const Clients=await clientDao.retrieveAllClients();
-    // const currentName =res.locals.user.first_name+" "+res.locals.user.last_name;
     let userID;
     if(req.query.userID){
         userID=req.query.userID;

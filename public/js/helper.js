@@ -94,7 +94,7 @@ function sanitizer(){
 
 function changeLocationHref(){
     let msg =document.querySelector("#msg h3");
-    if(msg){
+    if(msg||location.href.indexOf("userID=")!==-1){
         let nextURL;
         let nextTitle;
         if(location.href.includes("/contact")){
@@ -103,6 +103,15 @@ function changeLocationHref(){
         }else if(location.href.includes("/setting")){
             nextURL = '/setting';
             nextTitle = 'Setting page';
+        }else if(location.href.includes("/manageUsers")){
+            nextURL = '/manageUsers';
+            nextTitle = 'User management';
+        }else if(location.href.includes("/taskManagement")){
+            nextURL = '/taskManagement';
+            nextTitle = 'Task management';
+        }else if(location.href.includes("/userTasks")){
+            nextURL = '/userTasks';
+            nextTitle = 'User task management';
         }
         const nextState = { additionalInformation: 'Updated the URL with JS' };
         window.history.replaceState(nextState, nextTitle, nextURL);
@@ -118,4 +127,150 @@ function direction(){
         window.scrollTo(0,document.body.scrollHeight);
     })
 }
- export {checkUsernameAvailability,test,sanitizer,changeLocationHref,direction};
+
+async function getUser(){
+    const userObj =await fetch(`http://localhost:3000/user`);
+    const user= await userObj.json();
+    return user;
+}
+
+async function getUserByID(id){
+    let user;
+    try {
+        const userObj =await fetch(`http://localhost:3000/user?id=${id}`);
+        user= await userObj.json();
+    } catch (error) {
+        console.log(error.message);
+    }
+    
+    return user;
+}
+async function getAllUsers(){
+    const userObj =await fetch(`http://localhost:3000/users`);
+    console.log(userObj);
+    const users= await userObj.json();
+    console.log(users);
+    return users;
+}
+
+async function getClientNameByID(clientID){
+    let clientName;
+    try {
+        const clientObj =await fetch(`http://localhost:3000/task/clientName?clientID=${clientID}`);
+        clientName= await clientObj.json();
+    } catch (error) {
+        console.log(error.message);
+    }
+    return clientName;
+}
+
+function toggleManagementTools(){
+    const managementTools=document.querySelectorAll(`.managementTools i`), checkboxes=document.querySelectorAll(`input[type="checkbox"]`),delete_selected_users=document.querySelector(".delete-selected-users"),grid=document.querySelector(".bx-grid-small");
+    delete_selected_users.classList.add("hide");
+    checkboxes.forEach(checkbox=>{checkbox.classList.add("hide")});
+    function displayManagementTools(){
+        grid.classList.remove("hide");
+        delete_selected_users.classList.add("hide");
+        managementTools.forEach(element=>{
+            element.classList.remove("hide");
+        })
+        checkboxes.forEach(checkbox=>{
+            checkbox.classList.add("hide");
+        });
+    }
+    grid.addEventListener("click",function(event){
+        managementTools.forEach(element=>{
+            element.classList.add("hide");
+        })
+        checkboxes.forEach(checkbox=>{checkbox.classList.remove("hide")});
+        delete_selected_users.classList.remove("hide"); 
+        grid.classList.add("hide") 
+    })
+
+    return {displayManagementTools:displayManagementTools,delete_selected_users:delete_selected_users,checkboxes:checkboxes};
+}
+
+async function search(rowAttribute,buttonOrder,userID){
+    const searchInput=document.querySelector("#search-box input");
+    const searchIcon=document.querySelector("#search-box i");
+    let trs=document.querySelectorAll(`tr[${rowAttribute}]`);
+    const pop_msg=document.querySelector("#search-table p");
+    const gettableButton=document.querySelectorAll("#buttons .button")[`${buttonOrder}`];
+    const table=document.getElementById("inner-table");
+    if(userID){
+        const user =await getUserByID(userID);
+        searchInput.value=user.first_name+user.last_name;
+        searchInput.focus();
+        let trs=document.querySelectorAll(`tr:not(tr[data-userID="${userID}"],.theadTr)`);
+        let tasks=document.querySelectorAll(`tr[data-userID="${userID}"]`);
+        if(tasks.length>0){
+            trs.forEach(tr=>{
+                table.style.display="block";
+                tr.classList.add("hide");
+            })
+        }else{
+            pop_msg.classList.add("display");
+        }
+        
+         
+    }
+    searchInput.addEventListener("keyup",function(event){
+        let inputValue=HtmlSanitizer.SanitizeHtml(searchInput.value);
+        trs.forEach(element => {
+            element.classList.remove("hide");
+        });
+        searchIcon.click();
+        if(inputValue===""){
+            pop_msg.classList.remove("display");
+        }  
+    })
+    searchIcon.addEventListener("click",async function(){
+        gettableButton.classList.add("disable");
+        gettableButton.classList.add("hide");
+        table.classList.remove("hide");
+        let inputValue=HtmlSanitizer.SanitizeHtml(searchInput.value);
+        let flag=false;
+        for(let i=0;i<trs.length;i++){
+            let lowerCaseInnerText=trs[i].innerText.toLowerCase().replace(/\s/g, "");
+            if(lowerCaseInnerText.includes(inputValue.toLowerCase().replace(/\s/g, ""))&&inputValue!==""){
+                flag=true;
+                table.style.display="block";
+            }else{
+
+                trs[i].classList.add("hide");
+            }
+        }
+        if(!flag){
+            pop_msg.classList.add("display");
+            table.style.display="none";
+            table.classList.add("hide");
+        }else{
+            pop_msg.classList.remove("display");
+            
+        }
+        if(!inputValue){
+            gettableButton.classList.remove("disable");
+            gettableButton.classList.remove("hide");
+            trs.forEach(element => {
+                element.classList.remove("hide");
+            });
+        }
+        if(inputValue===""){
+            table.classList.toggle("hide");
+        }
+    })
+
+    async function getUserByID(id){
+        let user;
+        try {
+            const userObj =await fetch(`http://localhost:3000/user?id=${id}`);
+            user= await userObj.json();
+        } catch (error) {
+            console.log(error.message);
+        }
+        
+        return user;
+    }
+}
+
+ export {checkUsernameAvailability,test,sanitizer,changeLocationHref,direction,getUser,getAllUsers,getUserByID,getClientNameByID,toggleManagementTools,search};

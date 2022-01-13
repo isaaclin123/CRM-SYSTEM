@@ -1,0 +1,206 @@
+<div id="content-container">
+    <div id="msg">
+            {{#if message}}
+            <h3>{{message}}</h3>
+            {{/if}}
+    </div>
+    <div id="contact-bkg">
+        <h1>Task management</h1>
+    </div>
+    <div id="search-box">
+         <input type="search" placeholder="Search tasks..." name="search">
+         <i class='bx bx-search' ></i>
+         {{!-- <span class="tooltip">Search</span> --}}
+    </div>
+    <div id="buttons">
+        <ul>
+                <li><i class='bx bx-menu'></i></li>
+                {{!-- <li><button class="button">Export table as CSV</button></li>
+                <li><button class="button">Import CSV file</button></li> --}}
+                <li><button class="button"></button></li>
+                <li><button class="button"></button></li>
+        </ul>
+    </div>
+    <div id="search-table">
+            <p>No result found!</p>
+    </div>
+    
+    <div id="add-form">
+        <form action="/task/createTask" method="post" autocomplete="off" >
+            <input type="password" hidden autocomplete="new-password">
+            <div class = "txtfield">
+                    <input type="text" name="task_name" id="task_name" required >
+                
+                    <label for="task_name">Task name:</label>
+            </div>
+            <div class = "txtfield">
+                    <select name="clientID" id="clientID">
+                        <option value="-1" selected>None</option>
+                        {{#each clients}}
+                        <option value="{{this.id}}">{{this.first_name}} {{this.last_name}}</option>
+                        {{/each}}
+                    </select>
+                    <label for="clientID">Client name:</label>
+            </div>
+            <div class = "txtfield">
+                    <select name="userID" id="userID" required>
+                        <option value="-1" selected>None</option>
+                        {{#each users}}
+                        <option value="{{this.id}}">{{this.first_name}} {{this.last_name}}</option>
+                        {{/each}}
+                    </select>
+                    <label for="userID">Staff name:</label>
+            </div>
+            <div class = "txtfield">
+                    <input type="date" name="task_start_date" id="task_start_date" required>
+                    <span></span>
+                    <label for="task_start_date">Task start date:</label>
+            </div>
+            <div class = "txtfield">
+                    <input type="date" name="task_end_date" id="task_end_date" required>
+                    <span></span>
+                    <label for="task_end_date">Task start date:</label>
+            </div>
+            {{!-- <div class = "txtfield ">
+                    <input type="text" name="tag" id="tag" >
+                    <span></span>
+                    <label for="tag">Tag:</label>
+            </div> --}}
+            <div class = "txtfield no">
+                    <p>Task description</p>
+                    <textarea name="task_description" id="task_description" required></textarea>
+            </div>
+            <div id="hint-msg">
+
+            </div>
+            {{!-- <input type="text" name="added_person" value="" hidden> --}}
+
+            <div id = "sub-res">
+                    <button type="submit" value = "submit" id="submitButton">Add task</button>
+                    <button type="reset" value = "reset form" id="reset">Reset</button>
+            </div>
+        </form>
+    </div>
+    <div id="task-table">
+            <div id="inner-table">
+                {{#if tasks}}
+                <table>
+                        <thead>
+                                <tr class="theadTr">
+                                    <th>Task name</th>
+                                    <th>Client name</th> 
+                                    <th>Responsible person name</th>
+                                    <th>Start date</th>
+                                    <th>End date</th>
+                                     <th>Is completed</th>
+                                    <th>Task description</th>
+                                    <th><i class='bx bx-grid-small'title="Select clients"></i><i class='bx bx-x-circle delete-selected-users' title="Delete selected clients"></i></th>
+                                </tr>
+                        </thead>
+                        <tbody>
+                               {{#each tasks}}
+                            <tr data-taskID="{{this.id}}" data-userID="{{this.userID}}">
+                               <td >{{this.task_name}}</td>
+                               <td data-clientID="{{this.clientID}}"></td>
+                               <td data-userID="{{this.userID}}"></td>
+                               <td>{{this.task_start_date}}</td>
+                               <td>{{this.task_end_date}}</td>
+                               <td>{{this.isCompleted}}</td>
+                               <td >{{this.task_description}}</td>
+                               {{!-- <td class="uneditable tag" >{{this.tag}}</td> --}}
+                               <td class="managementTools" data-taskID="{{this.id}}">
+                                    <i class='bx bx-task-x' title="Delete Task"></i>
+                                    <i class='bx bxs-edit'  title="Edit client information"></i>
+                                    <input type="checkbox" class="taskIDs" value="{{this.id}}">
+                               </td>
+                               {{/each}}
+                             </tr>
+                        </tbody>
+                {{else}}
+                <h2 style="color: rgba(255, 255, 255, 0.5);">No tasks yet</h2>
+                {{/if}}
+                </table>
+            </div>
+    </div>
+</div>
+<div class="dialogBox" id="dialogBox">
+        <p>Deleting this will permanently remove the data from the database,are you sure?
+        </p>
+        <div class="controls">
+                <input type="button" value="Delete" id="delete">
+                <input type="button" value="Cancel" id="cancel">
+        </div>
+</div>
+<div class="direction">
+        <i class='bx bx-arrow-to-top' title="go to the top"></i>
+        <br>
+        <i class='bx bx-arrow-from-top' title="go to the bottom"></i>
+</div>
+<div class="edit_task">
+    <i class='bx bx-x'></i>
+    <h2>Edit task</h2>
+    <div class="inner-task-form">
+        <form action="#" class="edit_task_form" method="POST" autocomplete="off">
+                        <input type="password" hidden autocomplete="new-password">
+                <div class = "txtfield">
+                        <input type="text" name="task_name" id="task_name_edit" required >
+                    
+                        <label for="task_name_edit">Task name:</label>
+                </div>
+                <div class = "txtfield">
+                        <select name="clientID" id="clientID_edit">
+                            <option value="-1" selected>None</option>
+                            {{#each clients}}
+                            <option value="{{this.id}}">{{this.first_name}} {{this.last_name}}</option>
+                            {{/each}}
+                        </select>
+                        <label for="clientID_edit">Client name:</label>
+                </div>
+                <div class = "txtfield">
+                        <select name="userID" id="userID_edit" required>
+                            <option value="-1" selected>None</option>
+                            {{#each users}}
+                            <option value="{{this.id}}">{{this.first_name}} {{this.last_name}}</option>
+                            {{/each}}
+                        </select>
+                        <label for="userID_edit">Staff name:</label>
+                </div>
+                <div class = "txtfield">
+                        <input type="date" name="task_start_date" id="task_start_date_edit" required>
+                        <span></span>
+                        <label for="task_start_date_edit">Task start date:</label>
+                </div>
+                <div class = "txtfield">
+                        <input type="date" name="task_end_date" id="task_end_date_edit" required>
+                        <span></span>
+                        <label for="task_end_date_edit">Task start date:</label>
+                </div>
+                <div class = "txtfield">
+                        <select name="isCompleted" id="isCompleted_edit" required>
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+                        <label for="isCompleted_edit">Is task completed:</label>
+                </div>
+                {{!-- <div class = "txtfield ">
+                        <input type="text" name="tag" id="tag" >
+                        <span></span>
+                        <label for="tag">Tag:</label>
+                </div> --}}
+                <div class = "txtfield no">
+                        <p>Task description</p>
+                        <textarea name="task_description" id="task_description_edit" required></textarea>
+                </div>
+                <div class="hint-msg">
+
+                </div>
+                {{!-- <input type="text" name="added_person" value="" hidden> --}}
+
+                <div id = "sub-res">
+                        <button type="submit" value = "submit" id="submitButton_edit">Edit task</button>
+                        <button type="reset" value = "reset form" id="reset_edit">Reset</button>
+                </div>
+        </form>
+    </div>
+</div>
+  

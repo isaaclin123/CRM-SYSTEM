@@ -1,4 +1,4 @@
-import {changeLocationHref,direction} from "./helper.js";
+import {changeLocationHref,direction,getAllUsers,getUser,getUserByID} from "./helper.js";
 window.addEventListener("load",function(){
     // const checkUserButton =document.querySelector(".bxs-user-detail");
     const allNames =document.querySelectorAll("li[data-userID]");
@@ -38,8 +38,36 @@ window.addEventListener("load",function(){
         cancelDelete();
         
     })
-    
+    const setAdminButtons =document.querySelectorAll(".update-admin");
+    setAdminButtons.forEach(button=>{
+        button.addEventListener("click",async function(event){
+            let userID=event.target.parentNode.getAttribute("data-userID");
+            let user =await getUserByID(userID);
+            console.log(user);
+            let text=event.target.innerText;
+            console.log(text);
+            if(text==="UNSET ADMIN"){
+                user.isSuperAdmin="";
+            }else if(text==="SET AS ADMIN"){
+                user.isSuperAdmin="1";
+            }
+            let request=new XMLHttpRequest();
+            request.open("POST",`/updateAdmin`);
+            request.setRequestHeader("Content-Type","application/json");
+            request.send(JSON.stringify(user));
+            location.replace("/manageUsers?message=Update successfully");
+        })
+    })
+    const checkTasksButton=document.querySelectorAll(".check-tasks");
+    checkTasksButton.forEach(button=>{
+        button.addEventListener("click",function(event){
+            const userID=event.target.parentNode.getAttribute("data-userID");
+            location.replace(`/taskManagement?userID=${userID}`);
+        })
+        
+    })
 
 
     direction();
+    changeLocationHref();
 })

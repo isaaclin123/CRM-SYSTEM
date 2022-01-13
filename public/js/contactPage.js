@@ -1,13 +1,12 @@
-import {changeLocationHref,direction} from "./helper.js";
+import {changeLocationHref,direction,getAllUsers,getUser,getUserByID,sanitizer,toggleManagementTools,search} from "./helper.js";
 window.addEventListener("load",function(){
-    let exportButton =document.querySelectorAll("#buttons .button")[0];
+    const exportButton =document.querySelectorAll("#buttons .button")[0];
     exportButton.classList.add("hide");
-    let displayButton=document.querySelectorAll('#buttons .button')[2];
-    let gettableButton=document.querySelectorAll("#buttons .button")[3];
-    let form =document.querySelector("#add-form");
-    let inputs =document.querySelectorAll("input");
-    let table=document.getElementById("inner-table");
-    let tbody=document.querySelector("#inner-table table tbody");
+    const displayButton=document.querySelectorAll('#buttons .button')[2];
+    const gettableButton=document.querySelectorAll("#buttons .button")[3];
+    const form =document.querySelector("#add-form");
+    const table=document.getElementById("inner-table");
+
 
     
 
@@ -25,12 +24,8 @@ window.addEventListener("load",function(){
         displayButton.classList.toggle("changeButton");
     })
 
-    for(let i=0;i<inputs.length;i++){
-        inputs[i].addEventListener("input",function(){
-            HtmlSanitizer.SanitizeHtml(inputs[i].value);
-         })  
-    }
-    let textarea=document.querySelector("textarea");
+    sanitizer();
+    const textarea=document.querySelector("textarea");
     textarea.addEventListener("keyup",function(){
         HtmlSanitizer.SanitizeHtml(textarea.value);
     })
@@ -151,7 +146,7 @@ window.addEventListener("load",function(){
     donLink(doneLinks);
     
     //Creating the variables and getting elements from DOM
-    let dialogBox = document.getElementById("dialogBox"),
+    const dialogBox = document.getElementById("dialogBox"),
     deleteButton  = document.getElementById("delete"),
     cancelButton = document.getElementById("cancel");
 
@@ -210,29 +205,9 @@ window.addEventListener("load",function(){
     /**
      * delete multiple client
      */
-    let clientManagementTools=document.querySelectorAll(`.clientManagementTools i`), checkboxes=document.querySelectorAll(`input[type="checkbox"]`),delete_selected_users=document.querySelector(".delete-selected-users"),grid=document.querySelector(".bx-grid-small");
-    delete_selected_users.classList.add("hide");
-    checkboxes.forEach(checkbox=>{checkbox.classList.add("hide")});
-
-    function displayManagementTools(){
-        grid.classList.remove("hide");
-        delete_selected_users.classList.add("hide");
-        clientManagementTools.forEach(element=>{
-            element.classList.remove("hide");
-        })
-        checkboxes.forEach(checkbox=>{
-            checkbox.classList.add("hide");
-        });
-    }
-    grid.addEventListener("click",function(event){
-        clientManagementTools.forEach(element=>{
-            element.classList.add("hide");
-        })
-        checkboxes.forEach(checkbox=>{checkbox.classList.remove("hide")});
-        delete_selected_users.classList.remove("hide"); 
-        grid.classList.add("hide") 
-    })
-    delete_selected_users.addEventListener("click",function(event){
+     const managementToolObj=toggleManagementTools();
+    
+    managementToolObj.delete_selected_users.addEventListener("click",function(event){
         let clientIDs=[];
         document.querySelectorAll(`input[type="checkbox"]:checked`).forEach(checkedBox=>{
             clientIDs.push(checkedBox.value);
@@ -252,16 +227,20 @@ window.addEventListener("load",function(){
                     setTimeout(function(){tr.style.display="none";},1000);
                 }
                 dialogBox.classList.remove("display");
-                displayManagementTools();
+                managementToolObj.displayManagementTools();
             })
             
             cancelButton.addEventListener("click",function(){
                 dialogBox.classList.remove("display");
-                displayManagementTools();
+                managementToolObj.displayManagementTools();
+                clientIDs=[];
+                managementToolObj.checkboxes.forEach(checkBox=>{
+                    checkBox.checked=false;
+                })
     
             })
         }else{
-            displayManagementTools();
+            managementToolObj.displayManagementTools();
         }
 
 
@@ -269,62 +248,8 @@ window.addEventListener("load",function(){
     /**
      * search client base on the input and toggle the table's visibility and the button's ui
      */
-    let searchInput=document.querySelector("#search-box input");
-    let searchIcon=this.document.querySelector("#search-box i")
-    let trs=document.querySelectorAll(`tr[data-clientID]`);
-    let pop_msg=document.querySelector("#search-table p");
-    searchInput.addEventListener("input",function(event){
-        let inputValue=HtmlSanitizer.SanitizeHtml(searchInput.value);
-        trs.forEach(element => {
-            element.classList.remove("hide");
-        });
-        searchIcon.click();
-        if(inputValue===""){
-            pop_msg.classList.remove("display");
-        }  
-    })
-    searchIcon.addEventListener("click",function(){
-        gettableButton.classList.add("disable");
-        gettableButton.classList.add("hide");
-        table.classList.remove("hide");
-
-        let inputValue=HtmlSanitizer.SanitizeHtml(searchInput.value);
-        // console.log(inputValue);
-        // let array=inputValue.split(" ");
-        // console.log(array);
-
-        let flag=false;
-        for(let i=0;i<trs.length;i++){
-            let lowerCaseInnerText=trs[i].innerText.toLowerCase().replace(/\s/g, "");
-            if(lowerCaseInnerText.includes(inputValue.toLowerCase().replace(/\s/g, ""))&&inputValue!==""){
-                flag=true;
-                table.style.display="block";
-            }else{
-
-                trs[i].classList.add("hide");
-            }
-        }
-
-
-        if(!flag){
-            pop_msg.classList.add("display");
-            table.style.display="none";
-            table.classList.add("hide");
-        }else{
-            pop_msg.classList.remove("display");
-            
-        }
-        if(!inputValue){
-            gettableButton.classList.remove("disable");
-            gettableButton.classList.remove("hide");
-            trs.forEach(element => {
-                element.classList.remove("hide");
-            });
-        }
-        if(inputValue===""){
-            table.classList.toggle("hide");
-        }
-    })
+    
+    search("data-clientID",3);
 
     /**
      * Add task to complete for this client
@@ -463,7 +388,7 @@ window.addEventListener("load",function(){
                             if(user){
                                 ResponsiblePerson=`${user.first_name} ${user.last_name}`;
                             }else{
-                                ResponsiblePerson=`Previous responsible person is no longer in the system,please choose one or delete the task`;
+                                ResponsiblePerson=`No responsible person or previous responsible person is no longer in the system,please choose one or delete the task`;
                             }
                             document.querySelector(".check-task-box").innerHTML+=
                             `<div class="each-task" data-taskID="${task.id}">
@@ -538,10 +463,11 @@ window.addEventListener("load",function(){
                                 let targetTask=document.querySelector(`.each-task[data-taskID="${taskID}"]`);
                                 targetTask.classList.add("transition-effect");
                                 setTimeout(function(){targetTask.style.display="none";},1000)
-                                
+                                dialogBox.classList.remove("display");
                                 let deleteRequest= new XMLHttpRequest();
                                 deleteRequest.open("GET",`/contact/deleteTask?taskID=${taskID}`,true);
-                                deleteRequest.send();   
+                                deleteRequest.send();
+                                    
                             })   
                         });
                         document.querySelectorAll(".bx-edit-alt").forEach(editTaskButton =>{
@@ -604,7 +530,7 @@ window.addEventListener("load",function(){
                                         task_start_date:HtmlSanitizer.SanitizeHtml(spans[1].textContent),
                                         task_end_date:HtmlSanitizer.SanitizeHtml(spans[2].textContent),
                                         userID:userID,
-                                        taskID:taskID
+                                        taskID:taskID,
                                     };
                                     spans[i].setAttribute("contenteditable","false");
                                     spans[i].classList.remove("content-editable-span");
@@ -705,11 +631,7 @@ window.addEventListener("load",function(){
         close();
     })
 
-
     direction();
-
-    
-
     limitClickTime();
 
     function limitClickTime(){
@@ -727,10 +649,7 @@ window.addEventListener("load",function(){
             })
         }
     }
-    
 
-
-    
     function close(){
         document.querySelectorAll(".bx-x").forEach(element =>{
             element.addEventListener("click",function(event){
@@ -739,33 +658,6 @@ window.addEventListener("load",function(){
         })
        
     }
-
-    async function getUser(){
-        const userObj =await fetch(`http://localhost:3000/user`);
-        const user= await userObj.json();
-        return user;
-    }
-
-    async function getUserByID(id){
-        let user;
-        try {
-            const userObj =await fetch(`http://localhost:3000/user?id=${id}`);
-            user= await userObj.json();
-        } catch (error) {
-            console.log(error.message);
-        }
-        
-        return user;
-    }
-    async function getAllUsers(){
-        const userObj =await fetch(`http://localhost:3000/users`);
-        console.log(userObj);
-        const users= await userObj.json();
-        console.log(users);
-        return users;
-    }
-
-    
 
     changeLocationHref();
 

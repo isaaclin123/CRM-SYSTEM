@@ -15,5 +15,19 @@ router.get("/manageUsers",verifyAuthenticated,async function(req, res){
     })
 })
 
+router.post("/updateAdmin",verifyAuthenticated,async function(req,res){
+    const user=req.body;
+    try {
+        await userDao.updateUser(user);
+        /**
+         * The problem might not lie with the backend, but with the frontend. If you are using AJAX to send the POST request, it is specifically designed to not change your url.
+         */
+    } catch (error) {
+        console.log(error.message)
+        res.redirect("/manageUsers?message=Error! can not update");
+    }
+
+})
+
 module.exports=router;
 

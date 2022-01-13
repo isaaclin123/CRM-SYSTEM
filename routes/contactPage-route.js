@@ -7,7 +7,7 @@ const upload=require('../middleware/multer-uploader');
 const csvConverter=require('convert-csv-to-json');
 
 router.get("/contact",verifyAuthenticated,async function(req, res){
-    let Clients=await clientDao.retrieveAllClients();
+    let Clients=await clientDao.retrieveAllClients(res.locals.user.isQualifiedCompany);
     let user=res.locals.user;
     Clients=Clients.filter(function(client){
         return client.belong_company===user.isQualifiedCompany;
@@ -66,16 +66,17 @@ router.post("/contact/delete",verifyAuthenticated,async function(req,res){
     }else if(req.body){
         let clientIDs=req.body;
         console.log(clientIDs);
-        for(let i=0;i<clientIDs.length;i++){
-            try {
+        try {
+            for(let i=0;i<clientIDs.length;i++){
                 await clientDao.deleteAllClientTasks(clientIDs[i]);
                 await clientDao.deleteClient(clientIDs[i]);
-                console.log("delete");
-            } catch (error) {
-                console.log(error.message);
-                res.redirect("/contact?message=Error,can not delete clients!")
             }
+            console.log("delete");
+        } catch (error) {
+            console.log(error.message);
+            res.redirect("/contact?message=Error,can not delete clients!")
         }
+        
     }
     
 
@@ -117,14 +118,20 @@ router.post("/contact/getTasks",verifyAuthenticated,async function(req,res){
 router.get("/contact/deleteTask",verifyAuthenticated,async function(req,res){
     let taskID=req.query.taskID;
     try {
-
         await clientDao.deleteTask(taskID);
         // console.log("delete task");
     } catch (error) {
-        console.log(error.message);
-        res.redirect("/contact?message=Error,can not delete task!")
+        if(req.query.page){
+            console.log(error.message);
+            res.redirect("/taskManagement?message=Error,can not delete task!")
+        }else{
+            console.log(error.message);
+            res.redirect("/contact?message=Error,can not delete task!")
+        }
+        
     }
 })
+
 
 router.post("/contact/updateTask",verifyAuthenticated,async function(req,res){
     let clientTask=JSON.parse(sanitizeHtml(JSON.stringify(req.body)));
@@ -139,11 +146,19 @@ router.post("/contact/updateTask",verifyAuthenticated,async function(req,res){
 router.get("/contact/updateTaskCompleted",verifyAuthenticated,async function(req,res){
     let taskID=req.query.taskID;
     let isCompleted=req.query.isCompleted;
+    console.log(isCompleted);
     try {
         await clientDao.updateIsCompletedTask(taskID,isCompleted);
+        console.log("here");
     } catch (error) {
-        console.log(error.message);
-        res.redirect("/contact?message=Error,can not update task!")
+        if(req.query.page){
+            console.log(error.message);
+            res.redirect("/userTasks?message=Error,can not update task!")
+        }else{
+            console.log(error.message);
+            res.redirect("/contact?message=Error,can not update task!");
+        }
+       
     }
 
 })

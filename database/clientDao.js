@@ -33,27 +33,25 @@ const dbPromise = require("./database.js");
     // Get the auto-generated ID value, and assign it back to the client object.
     
     clientTask.id = result.lastID;
-
-    // let userTask={
-    //     taskID:clientTask.id,
-    //     userID:clientTask.responsible_person_id
-    // }
-
-    // const taskForUser = await db.run(SQL`
-    //     insert into TaskForUser(taskID, userID) values (${userTask.taskID},${userTask.userID})`);
-
-    // userTask.id=taskForUser.lastID;
 }
 
 /**
  * Gets an array of all Clients from the database.
  */
- async function retrieveAllClients() {
+ async function retrieveAllClients(company) {
     const db = await dbPromise;
 
-    const Clients = await db.all(SQL`select * from Clients`);
+    const Clients = await db.all(SQL`select * from Clients where belong_company=${company}`);
 
     return Clients;
+}
+
+async function retrieveAllTasks() {
+    const db = await dbPromise;
+
+    const tasks = await db.all(SQL`select * from TaskForClient`);
+
+    return tasks;
 }
 /**
  * Deletes the client with the given id from the database.
@@ -140,7 +138,7 @@ async function retrieveTasksByUserID(id) {
 
     await db.run(SQL`
         update TaskForClient
-        set task_name = ${clientTask.task_name}, task_description=${clientTask.task_description},task_start_date = ${clientTask.task_start_date},task_end_date = ${clientTask.task_end_date},userID=${clientTask.userID}
+        set task_name = ${clientTask.task_name}, task_description=${clientTask.task_description},task_start_date = ${clientTask.task_start_date},task_end_date = ${clientTask.task_end_date},userID=${clientTask.userID},clientID=${clientTask.clientID},isCompleted=${clientTask.isCompleted}
         where id = ${clientTask.taskID}`);
 }
 async function updateIsCompletedTask(taskID, isCompleted) {
@@ -160,6 +158,17 @@ async function updateDeletedUserID(userID,taskID) {
         where id = ${taskID}`);
 }
 
+async function retrieveClientNameByID(clientID) {
+    const db = await dbPromise;
+
+    const clientName=await db.get(SQL`
+        select first_name, last_name from Clients
+        where id = ${clientID}`);
+    
+        return clientName;
+
+}
+
 module.exports = {
     createClient,
     retrieveAllClients,
@@ -172,5 +181,7 @@ module.exports = {
     updateClientTask,
     retrieveTasksByUserID,
     updateIsCompletedTask,
-    updateDeletedUserID
+    updateDeletedUserID,
+    retrieveAllTasks,
+    retrieveClientNameByID
 };
