@@ -36,10 +36,12 @@ body {
   transition: all 0.5s ease;
   min-height: 100vh;
   overflow: visible;
+  scrollbar-width: none !important;
 }
 .sidebar.open{
   width: 250px;
   overflow: auto;
+  scrollbar-width: none !important;
 }
 .sidebar::-webkit-scrollbar {
   display: none;

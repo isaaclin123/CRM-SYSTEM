@@ -595,6 +595,9 @@ table .bxs-check-circle {
 .taskBox::-webkit-scrollbar {
   display: none;
 }
+.taskBox {
+  scrollbar-width: none !important;
+}
 
 
 /* creating a transparent page wrapper */

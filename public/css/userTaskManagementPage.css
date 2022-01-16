@@ -336,6 +336,7 @@ body {
     overflow-y: auto;
     scrollbar-width: 0;
     line-height: 35px;
+    scrollbar-width: none !important;
 
   }
   
@@ -357,7 +358,7 @@ body {
     word-wrap: break-word;
     overflow-y: auto;
     max-height:340px;
-    scrollbar-width: 0;
+    scrollbar-width: none;
 
   }
   .card__details::-webkit-scrollbar,
@@ -673,6 +674,9 @@ textarea {
   .taskBox::-webkit-scrollbar {
     display: none;
   }
+  .taskBox {
+    scrollbar-width: none !important;
+  }
   /* creating a transparent page wrapper */
   .edit_task::before{
     content: "";
@@ -756,6 +760,8 @@ textarea {
   #buttons i:hover{
     color:#888;
   }
+
+  
   
   
 

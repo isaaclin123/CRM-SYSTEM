@@ -26,7 +26,7 @@ div{
     grid-template-areas: 
         ". l r .";
     margin: 0 0 30px 0;
-    scrollbar-width: 0;
+    scrollbar-width: none;
     color: azure;
 }
 #left-box {
@@ -53,6 +53,7 @@ div{
     height: 500px;
     overflow-y: scroll;
     border-bottom: 1px solid black;
+    scrollbar-width: none !important;
 }
 #project-name{
 
@@ -64,6 +65,7 @@ div{
     background-color:rgba(0, 255, 255, 0.5);
     margin-bottom:5px;
     scroll-behavior: smooth;
+    scrollbar-width: none !important;
 }
 #project-name:focus,
 #project-task:focus {
@@ -114,6 +116,7 @@ td {
     height:675px;
     overflow-y: scroll;
     /* border: 1px solid black; */
+    scrollbar-width: none !important;
 }
 
 #button-box{
