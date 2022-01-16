@@ -63,6 +63,7 @@ window.addEventListener("load",function(){
                         // console.log(temp);
                         element.innerHTML=`<div class="selectItem">
                         <select  name="progress_status" class="progress_status">
+                                <option value="None" >None</option>
                                 <option value="Establish contact" >Establish contact</option>
                                 <option value="Contact made">Contact made</option>
                                 <option value="1 to 1 meeting scheduled">1 to 1 meeting scheduled</option>
@@ -248,8 +249,13 @@ window.addEventListener("load",function(){
     /**
      * search client base on the input and toggle the table's visibility and the button's ui
      */
-    
-    search("data-clientID",3);
+     let clientID;
+     const index=location.href.indexOf("clientID=")
+     if(index!==-1){
+         clientID=location.href.substring(index+9);
+         console.log(clientID);
+     }
+    search("data-clientID",3,"",clientID);
 
     /**
      * Add task to complete for this client
@@ -398,8 +404,8 @@ window.addEventListener("load",function(){
                                     <i class='bx bx-edit-alt' data-taskID="${task.id}" data-userID="${task.userID}" title="Edit task"></i>
                                 </div>
                                 <div>Task name:<span>${task.task_name}</span></div>
-                                <div>Task start date:<span>${task.task_start_date}</span></div>
-                                <div>Task end date:<span>${task.task_end_date}</span></div>
+                                <div >Task start date:<span class="task-date ">${task.task_start_date}</span></div>
+                                <div >Task end date:<span class="task-date ">${task.task_end_date}</span></div>
                                 <div data-userID="${task.userID}">Responsible person:<span data-userID="${user?user.id:"none"}">${ResponsiblePerson}</span></div>
                                 <div>Task description:<span>${task.task_description}</span></div>
                                 <div class="isCompleted" data-taskID="${task.id}" data-userID="${task.userID}"><i class='bx bxs-wink-smile' title="task completed,click to change it as uncompleted"></i><i class='bx bxs-meh-blank' title="task not completed,click to change it as completed"></i></div>
@@ -478,10 +484,15 @@ window.addEventListener("load",function(){
                                 event.target.classList.add("hide");
                                 event.target.previousElementSibling.classList.remove("hide");
                                 let taskID=event.target.getAttribute("data-taskID");
+                                document.querySelector(`.each-task[data-taskID="${taskID}"] .isCompleted`).classList.add("hide");
                                 // let targetTask=document.querySelector(`.each-task[data-taskID="${taskID}"]`);
-                                document.querySelectorAll(`.each-task[data-taskID="${taskID}"] span:not(span[data-userID])`).forEach(span =>{
+                                document.querySelectorAll(`.each-task[data-taskID="${taskID}"] span:not(span[data-userID], .task-date)`).forEach(span =>{
                                     span.setAttribute("contenteditable","true");
                                     span.classList.add("content-editable-span");
+                                })
+                                document.querySelectorAll(".task-date").forEach(date=>{
+                                    let tempDate=date.innerText;
+                                    date.innerHTML=`<input type="date" value="${tempDate}">`;
                                 })
                                 let tempResponsiblePerson=document.querySelector(`.each-task[data-taskID="${taskID}"] span[data-userID]`).innerText;
 
@@ -511,6 +522,7 @@ window.addEventListener("load",function(){
                                 let spans=document.querySelectorAll(`.each-task[data-taskID="${taskID}"] span`);
                                 let ResponsiblePerson=document.querySelector(`.each-task[data-taskID="${taskID}"] span[data-userID] select`);
                                 console.log(ResponsiblePerson);
+                                document.querySelector(`.each-task[data-taskID="${taskID}"] .isCompleted`).classList.remove("hide");
                                 let userID=event.target.getAttribute("data-userID");
                                 if(ResponsiblePerson){
                                     if(ResponsiblePerson.options[ResponsiblePerson.selectedIndex]){
@@ -520,30 +532,45 @@ window.addEventListener("load",function(){
                                     //     userID=event.target.getAttribute("data-userID");
                                     // }
                                 }
-                                console.log(userID);
                                 // console.log(userID);
-                                for(let i=0;i<spans.length;i++){
-                                    clientTask={
-                                        task_name:HtmlSanitizer.SanitizeHtml(spans[0].textContent),
-                                        task_description:HtmlSanitizer.SanitizeHtml(spans[4].textContent),
-                                        clientID:clientID,
-                                        task_start_date:HtmlSanitizer.SanitizeHtml(spans[1].textContent),
-                                        task_end_date:HtmlSanitizer.SanitizeHtml(spans[2].textContent),
-                                        userID:userID,
-                                        taskID:taskID,
-                                    };
-                                    spans[i].setAttribute("contenteditable","false");
-                                    spans[i].classList.remove("content-editable-span");
-                                    if(i===3&&ResponsiblePerson){
-                                        if(ResponsiblePerson.value){
-                                            spans[i].innerText=`${ResponsiblePerson.value}`;
-                                        }else{
-                                            spans[i].innerText=`Please choose a responsible person or delete the task`;
-                                        }
-                                        
-                                    }
+                                // console.log(userID);
+                                console.log(document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date input`)[1].value);
+                                let isCompleted;
+                                let unCompletedIcon=document.querySelector(`.each-task[data-taskID="${taskID}"] .isCompleted .bxs-meh-blank`);
+                                let completedIcon =document.querySelector(`.each-task[data-taskID="${taskID}"] .isCompleted .bxs-wink-smile`);
+                                if(unCompletedIcon.classList.contains("hide")){
+                                    isCompleted="true";
+                                }else if(completedIcon.classList.contains("hide")){
+                                    isCompleted="false";
                                 }
-                                // console.log(clientTask);
+                                
+                                clientTask={
+                                    task_name:HtmlSanitizer.SanitizeHtml(spans[0].textContent),
+                                    task_description:HtmlSanitizer.SanitizeHtml(spans[4].textContent),
+                                    clientID:clientID,
+                                    userID:userID,
+                                    taskID:taskID,
+                                    isCompleted:isCompleted
+                                };
+                                spans[0].setAttribute("contenteditable","false");
+                                spans[0].classList.remove("content-editable-span");
+                                spans[4].setAttribute("contenteditable","false");
+                                spans[4].classList.remove("content-editable-span");
+                                if(ResponsiblePerson){
+                                    if(ResponsiblePerson.value){
+                                        spans[3].innerText=`${ResponsiblePerson.value}`;
+                                    }else{
+                                        spans[3].innerText=`Please choose a responsible person or delete the task`;
+                                    } 
+                                }
+                                console.log(document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date input`));
+                                spans[1].innerText=document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date input`)[0].value;
+                                console.log(document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date input`));
+                                spans[2].innerText=document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date input`)[0].value;
+                                
+                                clientTask.task_start_date=spans[1].innerText;
+                                clientTask.task_end_date=spans[2].innerText;
+                                console.log(clientTask);
                                 let updateRequest=new XMLHttpRequest();
                                 updateRequest.open("POST",`/contact/updateTask`);
                                 updateRequest.setRequestHeader("Content-Type","application/json");

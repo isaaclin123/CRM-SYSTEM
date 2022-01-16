@@ -47,7 +47,7 @@
             <div class = "txtfield">
                     <input type="date" name="task_end_date" id="task_end_date" required>
                     <span></span>
-                    <label for="task_end_date">Task start date:</label>
+                    <label for="task_end_date">Task end date:</label>
             </div>
             {{!-- <div class = "txtfield ">
                     <input type="text" name="tag" id="tag" >
@@ -83,12 +83,12 @@
                     </div>
 
                     <div class="card__details" data-taskID="{{this.id}}" >
-                    <ul>
-                        <li data-clientID="{{this.clientID}}">{{this.clientID}}</li>
-                        <li>Start date: {{this.task_start_date}}</li>
-                        <li>End date: {{this.task_end_date}}</li>
-                        <li>{{this.task_description}}</li>
-                    </ul>
+                        <ul>
+                                <li data-clientID="{{this.clientID}}">{{this.clientID}}</li>
+                                <li>Start date: {{this.task_start_date}}</li>
+                                <li>End date: {{this.task_end_date}}</li>
+                                <li>{{this.task_description}}</li>
+                        </ul>
                     </div>
                 </div>
                 <div class="card__side card__side--back " data-taskID="{{this.id}}">
@@ -156,7 +156,7 @@
                 <div class = "txtfield">
                         <input type="date" name="task_end_date" id="task_end_date_edit" required>
                         <span></span>
-                        <label for="task_end_date_edit">Task start date:</label>
+                        <label for="task_end_date_edit">Task end date:</label>
                 </div>
                 <div class = "txtfield">
                         <select name="isCompleted" id="isCompleted_edit" required>

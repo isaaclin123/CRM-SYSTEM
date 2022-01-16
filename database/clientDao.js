@@ -1,6 +1,13 @@
-const cli = require("nodemon/lib/cli");
+
 const SQL = require("sql-template-strings");
 const dbPromise = require("./database.js");
+function getCurrentTime(){
+    let today = new Date();
+    let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    // let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    // let dateTime = date+' '+time;
+    return date;
+};
 
 /**
  * Inserts the given client into the database. Then, reads the ID which the database auto-assigned, and adds it
@@ -45,6 +52,13 @@ const dbPromise = require("./database.js");
 
     return Clients;
 }
+async function retrieveAllClientsNumbers(company) {
+    const db = await dbPromise;
+
+    const Clients = await db.get(SQL`select count(*) from Clients where belong_company=${company}`);
+
+    return Clients;
+}
 
 async function retrieveAllTasks() {
     const db = await dbPromise;
@@ -52,6 +66,31 @@ async function retrieveAllTasks() {
     const tasks = await db.all(SQL`select * from TaskForClient`);
 
     return tasks;
+}
+async function retrieveAllTasksNumberIfCompletedByUserID(isCompleted,userID) {
+    const db = await dbPromise;
+
+    const tasksNumber = await db.get(SQL`select count(*) from TaskForClient where isCompleted=${isCompleted} and userID=${userID}`);
+
+    return tasksNumber;
+}
+async function retrieveFirstDueTasksByEndDate(userID) {
+    const db = await dbPromise;
+
+    const task = await db.get(SQL`select * from TaskForClient group by id having task_end_date>=Date('now') order by task_end_date asc limit 1`);
+    
+    const sameDueDateTasks=await db.all(SQL`select * from TaskForClient where task_end_date=${task.task_end_date} and isCompleted="false" and userID=${userID}`);
+    // console.log(sameDueDateTasks,"here");
+    return sameDueDateTasks;
+    
+}
+async function retrieveRecentClients(company) {
+    const db = await dbPromise;
+
+    const clients = await db.all(SQL`select * from Clients where belong_company=${company} group by id order by id desc limit 4 `);
+    
+    return clients;
+    
 }
 /**
  * Deletes the client with the given id from the database.
@@ -183,5 +222,9 @@ module.exports = {
     updateIsCompletedTask,
     updateDeletedUserID,
     retrieveAllTasks,
-    retrieveClientNameByID
+    retrieveClientNameByID,
+    retrieveAllClientsNumbers,
+    retrieveAllTasksNumberIfCompletedByUserID,
+    retrieveFirstDueTasksByEndDate,
+    retrieveRecentClients
 };

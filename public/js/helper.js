@@ -94,7 +94,7 @@ function sanitizer(){
 
 function changeLocationHref(){
     let msg =document.querySelector("#msg h3");
-    if(msg||location.href.indexOf("userID=")!==-1){
+    if(msg||location.href.indexOf("userID=")!==-1||location.href.indexOf("login")===-1){
         let nextURL;
         let nextTitle;
         if(location.href.includes("/contact")){
@@ -112,6 +112,9 @@ function changeLocationHref(){
         }else if(location.href.includes("/userTasks")){
             nextURL = '/userTasks';
             nextTitle = 'User task management';
+        }else if(location.href.includes("/home")){
+            nextURL = '/home?login=1';
+            nextTitle = 'Home page';
         }
         const nextState = { additionalInformation: 'Updated the URL with JS' };
         window.history.replaceState(nextState, nextTitle, nextURL);
@@ -190,7 +193,7 @@ function toggleManagementTools(){
     return {displayManagementTools:displayManagementTools,delete_selected_users:delete_selected_users,checkboxes:checkboxes};
 }
 
-async function search(rowAttribute,buttonOrder,userID){
+async function search(rowAttribute,buttonOrder,userID,clientID){
     const searchInput=document.querySelector("#search-box input");
     const searchIcon=document.querySelector("#search-box i");
     let trs=document.querySelectorAll(`tr[${rowAttribute}]`);
@@ -210,9 +213,22 @@ async function search(rowAttribute,buttonOrder,userID){
             })
         }else{
             pop_msg.classList.add("display");
-        }
-        
-         
+        }    
+    }
+    if(clientID){
+        const clientName=await getClientNameByID(clientID);
+        searchInput.value=clientName.first_name+clientName.last_name;
+        searchInput.focus();
+        let trs=document.querySelectorAll(`tr:not(tr[data-clientID="${clientID}"],.theadTr)`);
+        let client=document.querySelector(`tr[data-clientID="${clientID}"]`);
+        if(client){
+            trs.forEach(tr=>{
+                table.style.display="block";
+                tr.classList.add("hide");
+            })
+        }else{
+            pop_msg.classList.add("display");
+        }  
     }
     searchInput.addEventListener("keyup",function(event){
         let inputValue=HtmlSanitizer.SanitizeHtml(searchInput.value);

@@ -39,6 +39,17 @@ window.addEventListener("load",function(){
         
     })
     const setAdminButtons =document.querySelectorAll(".update-admin");
+    removeButton();
+    async function removeButton(){
+        let currentUser=await getUser();
+        for(let i=0;i<setAdminButtons.length;i++){
+            let userID=setAdminButtons[i].parentNode.getAttribute("data-userID");
+            if(Number(userID)===currentUser.id){
+                setAdminButtons[i].classList.add("hide");
+                deleteButtons[i].classList.add("hide");
+            }
+        }
+    }
     setAdminButtons.forEach(button=>{
         button.addEventListener("click",async function(event){
             let userID=event.target.parentNode.getAttribute("data-userID");
@@ -62,6 +73,7 @@ window.addEventListener("load",function(){
     checkTasksButton.forEach(button=>{
         button.addEventListener("click",function(event){
             const userID=event.target.parentNode.getAttribute("data-userID");
+            history.pushState(null, 'User management', '/taskManagement'); 
             location.replace(`/taskManagement?userID=${userID}`);
         })
         

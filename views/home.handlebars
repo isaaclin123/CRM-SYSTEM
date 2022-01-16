@@ -1,5 +1,132 @@
-<div class="content-container" style="color: aliceblue;">
-    {{#if user}}
-   {{user.id}}
-   {{/if}}
+<div class="content-container" >
+    <div class="notification">
+        <i class='bx bxs-bell'></i>
+        <span>{{dueTasksNumber}}</span>
+    </div>
+    <div class="heading">
+        <h1>
+            <span>Welcome back</span>
+            <span>{{user.first_name}}</span>
+        </h1>
+    </div>
+    <div class="content">
+        <div class="recent-added-client">
+            <div class="logo">
+                <i class='bx bx-group'></i>
+                <span>Recent added clients</span>
+            </div>
+            <div class="clients" id="slider">
+                <ul>
+                    {{#if recentClients}}
+                    {{#each recentClients}}
+                    <li data-clientName="{{this.first_name}} {{this.last_name}}">
+                        <div class="slider-container" >
+                            <div class="inner-container">
+                                <div class="icon"><i class='bx bx-user'></i></div>
+                                <div class="client_details">
+                                    <h3 data-clientID="{{this.id}}">{{this.first_name}} {{this.last_name}}</h3>
+                                    <div>
+                                        <span>{{this.phone_number}}</span>
+                                        <span>{{this.email}}</span>
+                                        <span>{{this.profession}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </li>
+                    {{/each}}
+                     <li>
+                         <div class="slider-container">
+                             <h3>Add more client</h3>
+                        </div>
+                    </li>
+                    <li>
+                         <div class="slider-container">
+                             <h3>Add more client</h3>
+                        </div>
+                    </li>
+                    <li>
+                         <div class="slider-container">
+                             <h3>Add more client</h3>
+                        </div>
+                    </li>
+                    <li>
+                         <div class="slider-container">
+                             <h3>Add more client</h3>
+                        </div>
+                    </li>
+                    {{else}}
+                    <li>
+                         <div class="slider-container">
+                             <h3>Add more client</h3>
+                        </div>
+                    </li>
+                    <li>
+                         <div class="slider-container">
+                             <h3>Add more client</h3>
+                        </div>
+                    </li>
+                    <li>
+                         <div class="slider-container">
+                             <h3>Add more client</h3>
+                        </div>
+                    </li>
+                    <li>
+                         <div class="slider-container">
+                             <h3>Add more client</h3>
+                        </div>
+                    </li>
+                    {{/if}}
+                </ul>
+
+            </div>
+        </div>
+        <div class="uncompleted-task-clients">
+            <div class="uncompleted-task">
+                 <div class="logo">
+                    <i class='bx bxs-briefcase-alt'></i>
+                    <span>To-do Tasks</span>
+                </div>
+                <div class="taskNumber">{{uncompletedTask}}</div>
+            </div>
+            <div class="client">
+                <div class="logo">
+                    <i class='bx bxs-face'></i>
+                    <span>Clients</span>
+                </div>
+                <div class="clientNumber">{{clientNumbers}}</div>    
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dialogBox" id="dialogBox">
+        <h3>Due Task</h3><i class='bx bxs-notification'></i>
+        <div class="due-task">
+            {{#if dueTasks}}
+            {{#each dueTasks}}
+            <div class="card__side card__side--front" data-taskID="{{this.id}}">
+                    <div class="card__title">
+                    <h6 class="card__heading" data-taskID="{{this.id}}">{{this.task_name}}</h6>
+                    </div>
+
+                    <div class="card__details" data-taskID="{{this.id}}" >
+                        <ul>
+                                <li data-clientID="{{this.clientID}}">{{this.clientName}}</li>
+                                <li>Start date: {{this.task_start_date}}</li>
+                                <li>End date: {{this.task_end_date}}</li>
+                                <li>{{this.task_description}}</li>
+                        </ul>
+                    </div>
+            </div>
+            {{/each}}
+            {{else}}
+            <h2>No task yet, create some!</h2>
+            {{/if}}
+        </div>
+        <div class="controls">
+                <input type="button" value="Got it" id="cancel">
+                <input type="button" value="Check tasks" id="redirect">
+        </div>
 </div>
