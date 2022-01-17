@@ -1,12 +1,13 @@
 import {changeLocationHref,getClientNameByID} from "./helper.js";
 window.addEventListener("load",function(){
     document.querySelector(".uncompleted-task span").addEventListener("click",()=>{
-        location.replace("/userTasks");
         setBackwardPage();
+        location.replace("/userTasks");
+        
     })
     document.querySelector(".client span").addEventListener("click",()=>{
-        location.replace("/contact");
         setBackwardPage();
+        location.replace("/contact");
     })
     const dialogBox = document.getElementById("dialogBox"),
     redirectButton  = document.getElementById("redirect"),
@@ -23,8 +24,9 @@ window.addEventListener("load",function(){
         setTimeout(()=>{
             dialogBox.classList.add("display");},1000);
             redirectButton.addEventListener("click",()=>{
-                location.replace("/userTasks");
                 setBackwardPage();
+                location.replace("/userTasks");
+                
             })
         cancel();  
     }
@@ -32,8 +34,9 @@ window.addEventListener("load",function(){
     bell.addEventListener("click",()=>{
         dialogBox.classList.add("display");
         redirectButton.addEventListener("click",()=>{
-            location.replace("/userTasks");
             setBackwardPage();
+            location.replace("/userTasks");
+            
         })
         cancel(); 
     })

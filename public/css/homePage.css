@@ -42,6 +42,7 @@ body {
   width: 250px;
   overflow: auto;
   scrollbar-width: none !important;
+  
 }
 .sidebar::-webkit-scrollbar {
   display: none;

@@ -254,13 +254,13 @@ h1 span {
 .dialogBox .due-task {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   overflow:auto;
   width: 480px;
   height: 350px;
   text-align:center;
   padding:0;
-  scrollbar-width: none !important;
+  scrollbar-width: none;
 }
 
 .card__side {
@@ -278,7 +278,6 @@ h1 span {
   border-radius: 10px;
   box-shadow:0 0 2px 2px rgba(121, 116, 116, 0.4);
   scrollbar-width: none;
-  scrollbar-color: rgba(0,0,0,0);
 }
 
 /* .card__side--front {
@@ -292,7 +291,6 @@ h1 span {
   word-break: break-all;
   word-wrap: break-word;
   overflow: auto;
-  scrollbar-width: 0;
   line-height: 35px;
   scrollbar-width: none;
 
@@ -324,11 +322,9 @@ h1 span {
 .card__title::-webkit-scrollbar,
 .dialogBox .due-task::-webkit-scrollbar, 
 .dialogBox::-webkit-scrollbar,
-.card__side::-webkit-scrollbar,
-.card__details::-moz-scrollbar {
+.card__side::-webkit-scrollbar {
   display: none;
-  scrollbar-width: none;
-  scrollbar-color: rgba(0,0,0,0);
+
 }
 
 .card__details ul {
@@ -340,7 +336,7 @@ h1 span {
 .card__details ul li {
   text-align: center;
   font-size: normal;
-  padding: 1rem;
+  padding: 5px;
   
 }
 
@@ -482,18 +478,23 @@ h1 span {
   top: 0;
   color: rgba(250, 242, 242, 0.5);
   transition: all ease 0.5s;
-  margin-right: 10px;
+  margin-right: 5px;
 }
 .notification:hover {
   cursor: pointer;
-  animation: bell 1S ease forwards;
+  animation: bell 1S linear infinite alternate-reverse ;
+  transform-origin: center bottom;
 
 }
 @keyframes bell {
   0%{
-    transform:rotate(20deg);
-  }33%{
-    transform:rotate(-10deg);
+    transform: rotate(0);
+  }25%{
+    transform:rotate(5deg);
+  }50%{
+    transform:rotate(-5deg);
+  }75%{
+    transform:rotate(5deg);
   }100%{
     transform:rotate(0);
   }

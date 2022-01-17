@@ -23,9 +23,8 @@ router.get("/home",verifyAuthenticated,async function(req,res){
             
         }
         const recentAddedClients=await clientDao.retrieveRecentClients(res.locals.user.isQualifiedCompany);
-        console.log(recentAddedClients);
         res.locals.recentClients=recentAddedClients;
-        // console.log(dueTasks);
+        console.log(dueTasks);
         res.locals.dueTasks=dueTasks;
         res.locals.dueTasksNumber=dueTasks.length;
     } catch (error) {

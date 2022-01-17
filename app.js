@@ -1,7 +1,7 @@
 /**
  * Main application file.
  * 
- * NOTE: This file contains many required packages, but not all of them - you may need to add more!
+ *
  */
 
 // Setup Express
@@ -9,6 +9,8 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const sanitizeHtml = require('sanitize-html');
+
+
 
 
 // Setup Handlebars
@@ -56,6 +58,20 @@ app.use(require("./routes/homePage-route.js"));
 app.use(require("./routes/setting-route.js"));
 
 app.use(require("./routes/userManagement-route.js"));
+
+process.on('uncaughtException',function(error){
+    console.log(error.message);
+    process.exit(1);
+    
+})
+
+// let child =new (forever.Monitor)('app.js');
+
+// child.on('exit',function(){
+//     console.log("......exit by error");
+// })
+
+// child.start(true);
 
 
 

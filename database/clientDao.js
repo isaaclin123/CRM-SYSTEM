@@ -77,9 +77,10 @@ async function retrieveAllTasksNumberIfCompletedByUserID(isCompleted,userID) {
 async function retrieveFirstDueTasksByEndDate(userID) {
     const db = await dbPromise;
 
-    const task = await db.get(SQL`select * from TaskForClient group by id having task_end_date>=Date('now') order by task_end_date asc limit 1`);
+    // const task = await db.get(SQL`select * from TaskForClient where userID=${userID} group by id having task_end_date>=Date('now','localtime') order by task_end_date asc limit 1`);
+    // // console.log(task,"here");
     
-    const sameDueDateTasks=await db.all(SQL`select * from TaskForClient where task_end_date=${task.task_end_date} and isCompleted="false" and userID=${userID}`);
+    const sameDueDateTasks=await db.all(SQL`select * from TaskForClient where task_end_date>=Date('now','localtime') and isCompleted="false" and userID=${userID}`);
     // console.log(sameDueDateTasks,"here");
     return sameDueDateTasks;
     
