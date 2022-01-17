@@ -132,7 +132,7 @@ function direction(){
 }
 
 async function getUser(){
-    const userObj =await fetch(`http://localhost:3000/user`);
+    const userObj =await fetch(`/user`);
     const user= await userObj.json();
     return user;
 }
@@ -140,7 +140,7 @@ async function getUser(){
 async function getUserByID(id){
     let user;
     try {
-        const userObj =await fetch(`http://localhost:3000/user?id=${id}`);
+        const userObj =await fetch(`/user?id=${id}`);
         user= await userObj.json();
     } catch (error) {
         console.log(error.message);
@@ -149,7 +149,7 @@ async function getUserByID(id){
     return user;
 }
 async function getAllUsers(){
-    const userObj =await fetch(`http://localhost:3000/users`);
+    const userObj =await fetch(`/users`);
     console.log(userObj);
     const users= await userObj.json();
     console.log(users);
@@ -159,7 +159,7 @@ async function getAllUsers(){
 async function getClientNameByID(clientID){
     let clientName;
     try {
-        const clientObj =await fetch(`http://localhost:3000/task/clientName?clientID=${clientID}`);
+        const clientObj =await fetch(`/task/clientName?clientID=${clientID}`);
         clientName= await clientObj.json();
     } catch (error) {
         console.log(error.message);
@@ -279,7 +279,7 @@ async function search(rowAttribute,buttonOrder,userID,clientID){
     async function getUserByID(id){
         let user;
         try {
-            const userObj =await fetch(`http://localhost:3000/user?id=${id}`);
+            const userObj =await fetch(`/user?id=${id}`);
             user= await userObj.json();
         } catch (error) {
             console.log(error.message);
