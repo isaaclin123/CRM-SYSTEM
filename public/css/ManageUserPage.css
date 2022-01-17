@@ -3,6 +3,26 @@
         font-size:200% !important;
     }
 }
+@media (max-width: 600px){
+    .allUsers-container,.heading-div{
+      transform: scale(0.8);
+      -webkit-transform: scale(0.8);
+      -moz-transform: scale(0.8);
+      -ms-transform: scale(0.8);
+      -o-transform: scale(0.8);
+
+  }
+  .dialogBox {
+    transform: scale(0.7);
+    -webkit-transform: scale(0.7);
+    -moz-transform: scale(0.7);
+    -ms-transform: scale(0.7);
+    -o-transform: scale(0.7);
+  }
+  .heading-div {
+    margin-top: 0 !important;
+  }
+}
 
 body {
     -webkit-box-sizing: border-box;

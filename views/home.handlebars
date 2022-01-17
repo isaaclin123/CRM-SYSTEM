@@ -22,7 +22,7 @@
                     <li data-clientName="{{this.first_name}} {{this.last_name}}">
                         <div class="slider-container" >
                             <div class="inner-container">
-                                <div class="icon"><i class='bx bx-user'></i></div>
+                                <div class="icon none-when-small"><i class='bx bx-user'></i></div>
                                 <div class="client_details">
                                     <h3 data-clientID="{{this.id}}">{{this.first_name}} {{this.last_name}}</h3>
                                     <div>
@@ -84,15 +84,15 @@
         </div>
         <div class="uncompleted-task-clients">
             <div class="uncompleted-task">
-                 <div class="logo">
-                    <i class='bx bxs-briefcase-alt'></i>
+                 <div class="logo ">
+                    <i class='bx bxs-briefcase-alt none-when-small'></i>
                     <span>To-do Tasks</span>
                 </div>
                 <div class="taskNumber">{{uncompletedTask}}</div>
             </div>
             <div class="client">
-                <div class="logo">
-                    <i class='bx bxs-face'></i>
+                <div class="logo ">
+                    <i class='bx bxs-face none-when-small'></i>
                     <span>Clients</span>
                 </div>
                 <div class="clientNumber">{{clientNumbers}}</div>    

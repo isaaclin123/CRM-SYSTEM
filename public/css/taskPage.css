@@ -178,4 +178,20 @@ p{
     font-size: 0.8em;
 }
 
+@media (max-width: 600px){
+    #header h1{
+        font-size: 200%;
+    }
+    #header h5 {
+        font-size:0.8em;
+    }
+    #container {
+        transform: scale(0.6) translateY(-30%) translateX(-20%);
+        -webkit-transform: scale(0.6) translateY(-30%) translateX(-20%);
+        -moz-transform: scale(0.6) translateY(-30%) translateX(-20%);
+        -ms-transform: scale(0.6) translateY(-30%) translateX(-20%);
+        -o-transform: scale(0.6) translateY(-30%) translateX(-20%);
+}
+}
+
 

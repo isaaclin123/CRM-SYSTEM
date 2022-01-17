@@ -194,6 +194,17 @@ window.addEventListener("load",()=>{
         })
     })
 
+    const closeCardButtons=document.querySelectorAll(".eachTask .bx-x");
+    closeCardButtons.forEach(button=>{
+        button.addEventListener("click",(event)=>{
+            console.log(event.target.parentNode.parentNode.parentNode);
+            let taskID=event.target.parentNode.getAttribute("data-taskID");
+            event.target.parentNode.parentNode.parentNode.classList.remove("display");
+            document.querySelector(`.card__side--front[data-taskID="${taskID}"]`).classList.toggle("turnBack");
+            document.querySelector(`.card__side--back[data-taskID="${taskID}"]`).classList.toggle("turnFront");
+        })
+    })
+
 
     
     direction();

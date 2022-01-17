@@ -293,3 +293,14 @@ form .txtfield {
 .display {
   display: block !important;
 }
+
+@media screen and (max-width: 600px) {
+  .setting-box, .bx-error {
+    transform:scale(0.7)  ;
+    -webkit-transform:scale(0.7)  ;
+    -moz-transform:scale(0.7)  ;
+    -ms-transform:scale(0.7)  ;
+    -o-transform:scale(0.7)  ;
+    min-width: none;
+}
+}

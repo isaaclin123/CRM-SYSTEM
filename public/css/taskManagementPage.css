@@ -72,10 +72,46 @@
       color: rgb(79, 24, 104);
     }
 
-    .direction {
+    /* .direction {
       display: none;
-    }
+    } */
   }
+
+  @media screen and (max-width: 600px) {
+       #add-form, .dialogBox {
+        transform: scale(0.8);
+        -webkit-transform: scale(0.8);
+        -moz-transform: scale(0.8);
+        -ms-transform: scale(0.8);
+        -o-transform: scale(0.8);
+      }
+      #task-table {
+        transform: scale(0.9);
+        -webkit-transform: scale(0.9);
+        -moz-transform: scale(0.9);
+        -ms-transform: scale(0.9);
+        -o-transform: scale(0.9);
+      }
+      .edit_task {
+        transform: scale(0.6);
+        -webkit-transform: scale(0.6);
+        -moz-transform: scale(0.6);
+        -ms-transform: scale(0.6);
+        -o-transform: scale(0.6);
+      }
+
+      .none-when-extra-small-screen {
+        width: 0;
+        font-size: 0.1px;
+        padding: 0;
+        /* display: none; */
+      }
+
+      #contact-bkg{
+        margin-top: 0 !important;
+      }
+  }
+
   
   body {
     margin: 0px;

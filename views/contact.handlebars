@@ -108,14 +108,14 @@
                                         <th>Last name</th> 
                                         <th>Email</th>
                                         <th>Phone</th>
-                                        <th>Country</th>
-                                        <th>City</th>
-                                        <th>Profession</th>
+                                        <th class="none-when-extra-small-screen ">Country</th>
+                                        <th class="none-when-extra-small-screen " >City</th>
+                                        <th class="none-when-extra-small-screen ">Profession</th>
                                         <th class="none-when-small-screen">Website</th>
                                         <th class="none-when-small-screen">Social medias</th>
                                         <th>Progress track</th>
-                                        <th>Notes on client</th>
-                                        <th>Meet with</th>
+                                        <th class="none-when-extra-small-screen ">Notes on client</th>
+                                        <th class="none-when-extra-small-screen ">Meet with</th>
                                         <th class="tag">Tag</th>
                                         <th><i class='bx bx-grid-small'title="Select clients"></i><i class='bx bx-x-circle delete-selected-users' title="Delete selected clients"></i></th>
                                 </tr>
@@ -127,16 +127,16 @@
                                <td>{{this.last_name}}</td>
                                <td>{{this.email}}</td>
                                <td>{{this.phone_number}}</td>
-                               <td>{{this.country}}</td>
-                               <td>{{this.city}}</td>
-                               <td>{{this.profession}}</td>
+                               <td class="none-when-extra-small-screen ">{{this.country}}</td>
+                               <td class="none-when-extra-small-screen ">{{this.city}}</td>
+                               <td class="none-when-extra-small-screen ">{{this.profession}}</td>
                                <td class="none-when-small-screen">{{this.website}}</td>
                                <td class="none-when-small-screen">{{this.social_media}}</td> 
                                <td class="not-editable" >
                                 {{this.progress_status}}
                                </td>   
-                               <td>{{this.notes_on_client}}</td>
-                               <td>{{this.meet_with}}</td>
+                               <td class="none-when-extra-small-screen ">{{this.notes_on_client}}</td>
+                               <td class="none-when-extra-small-screen ">{{this.meet_with}}</td>
                                <td class="uneditable tag" >{{this.tag}}</td>
                                <td class="uneditable managementTools" >
                                 <i class='bx bxs-user-x' data-clientID="{{this.id}}" title="Delete client"></i>

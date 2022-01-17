@@ -473,7 +473,7 @@ h1 span {
 }
 
 .notification {
-  position: absolute;
+  position: fixed;
   right: 0;
   top: 0;
   color: rgba(250, 242, 242, 0.5);
@@ -569,4 +569,32 @@ h1 span {
       right: 12PX;
       top: 8PX;
     }
+}
+@media (max-width: 600px){
+  .none-when-small{
+    display:none;
+  }
+
+  .recent-added-client {
+    min-width: 180px;
+  }
+  .uncompleted-task {
+    margin-top: 0;
+  }
+  .heading, .content{
+    transform: scale(0.8);
+    -webkit-transform: scale(0.8);
+    -moz-transform: scale(0.8);
+    -ms-transform: scale(0.8);
+    -o-transform: scale(0.8);
+}
+  .dialogBox {
+    transform: scale(0.6);
+    -webkit-transform: scale(0.6);
+    -moz-transform: scale(0.6);
+    -ms-transform: scale(0.6);
+    -o-transform: scale(0.6);
+}
+
+  
 }
