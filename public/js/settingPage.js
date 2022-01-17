@@ -163,7 +163,7 @@ window.addEventListener("load",function(){
     })
 
     async function getUser(){
-        const userObj =await fetch(`http://localhost:3000/user`);
+        const userObj =await fetch(`/user`);
         const user= await userObj.json();
         return user;
     }
