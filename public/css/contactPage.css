@@ -31,9 +31,7 @@
     margin-right: 2px ;
     padding: 0px;
   }
-  #buttons:hover {
-    overflow: visible;
-  }
+
   #buttons ul li i {
     font-size: 20px;
     text-align:right;
@@ -359,13 +357,7 @@ button[type="reset"]:hover,
   transition: all ease .4s;
   
 }
-#buttons:hover {
-  /* display:inline-block; */
-  min-height: fit-content;
-  overflow: visible;
-  z-index:999;
-  
-}
+
 #buttons ul li {
   list-style: none;
 }

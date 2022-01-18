@@ -306,4 +306,15 @@ form .txtfield {
   .home-section, .sidebar.open ~ .home-section{
     left: 20px;   
   }
+  .setting-content form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 40px 50px 40px 0px;
+    /* box-shadow: 0 0 15px #f7ecec; */
+    height: 100%;
+    min-width: 260px;
+    /* margin-top: 20px; */
+}
 }

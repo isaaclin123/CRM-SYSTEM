@@ -32,9 +32,6 @@
       margin-right: 2px ;
       padding: 0px;
     }
-    #buttons:hover {
-      height: 100% !important;
-    }
     #buttons ul li i {
       font-size: 20px;
       text-align:right;
@@ -403,11 +400,6 @@
     overflow-y: hidden;
     /* min-width: 220px; */
     transition: all ease .4s;
-    
-  }
-  #buttons:hover {
-    /* display:inline-block; */
-    overflow: visible;
     
   }
   #buttons ul li {
