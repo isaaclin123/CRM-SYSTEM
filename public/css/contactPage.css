@@ -32,7 +32,7 @@
     padding: 0px;
   }
   #buttons:hover {
-    height: 100% !important;
+    overflow: visible;
   }
   #buttons ul li i {
     font-size: 20px;
@@ -72,7 +72,19 @@
   }
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 600px) {
+  #content-container {
+    display: grid;
+    grid-template-columns:1fr !important;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "msg"
+      "co"
+      "se"
+      "st"
+      "form"
+      "table" !important;
+  }
     #add-form, .direction {
       transform: scale(0.8);
       -webkit-transform: scale(0.8);
@@ -86,23 +98,31 @@
       -moz-transform: scale(0.9);
       -ms-transform: scale(0.9);
       -o-transform: scale(0.9);
+      margin: 0 !important;
     }
     .dialogBox, .taskDiv, .taskBox, .uploadDiv {
-      transform: scale(0.6);
-      -webkit-transform: scale(0.6);
-      -moz-transform: scale(0.6);
-      -ms-transform: scale(0.6);
-      -o-transform: scale(0.6);
+      transform: scale(0.5);
+      -webkit-transform: scale(0.5);
+      -moz-transform: scale(0.5);
+      -ms-transform: scale(0.5);
+      -o-transform: scale(0.5);
+      position: fixed;
+      top: 3% !important;
+      left: -13% !important;
 }
 
     .none-when-extra-small-screen {
-      width: 0;
+      /* width: 0;
       font-size: 0.1px;
-      padding: 0;
-      /* display: none; */
+      padding: 0; */
+      display: none;
     }
     #contact-bkg{
       margin-top: 0 !important;
+      
+    }
+    #contact-bkg h1 {
+      font-size: 30px !important;
     }
 }
 
@@ -342,7 +362,7 @@ button[type="reset"]:hover,
 #buttons:hover {
   /* display:inline-block; */
   min-height: fit-content;
-  height: 285px;
+  overflow: visible;
   z-index:999;
   
 }

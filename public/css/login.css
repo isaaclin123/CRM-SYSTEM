@@ -1,20 +1,56 @@
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 600px){
     body #login-container {
-        background: url("/images/login-bkg.jpeg");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position:center;
-        background-attachment: fixed;
-        display: grid;
-        grid-template-columns: 1fr ;
-        grid-template-rows: auto;
-        grid-template-areas:"img" "form";
+        display: flex !important;
+        flex-direction: column;
+        justify-content:center;
+        text-align: center;
+        margin: 0 auto;
+        transform: translateX(-50%) !important;
+        -webkit-transform: translateX(15%) !important;
+        -moz-transform: translateX(-50%) !important;
+        -ms-transform: translateX(-50%) !important;
+        -o-transform: translateX(-50%) !important;
+        margin-left:-50%;
+}
 
+}
+@media screen and (max-width: 800px) {
+    body { 
+        width:fit-content;
+        text-align: center;
+    }
+    body #login-container {
+        display: flex !important;
+        flex-direction: column;
+        justify-content:center;
+        text-align: center;
+        margin: 0 auto;
+        transform: translateX(50%);
+        -webkit-transform: translateX(50%);
+        -moz-transform: translateX(50%);
+        -ms-transform: translateX(50%);
+        -o-transform: translateX(50%);
+        margin-left:-50%;
+    }
+    #arthur-bkg h1{
+        font-size: 25px !important;
+        width: fit-content;
+        min-width: none;
+    }
+    #arthur-bkg {
+        width: fit-content;
+        min-width: none;
     }
 
     body #form-inner {
         background: rgb(236, 236, 236, 0.7);
-    }
+        transform: scale(0.9);
+        -webkit-transform: scale(0.9);
+        -moz-transform: scale(0.9);
+        -ms-transform: scale(0.9);
+        -o-transform: scale(0.9);
+        padding: 40px;
+}
 
     body #form-inner > h1 {
         color: rgb(39, 24, 104);
@@ -62,6 +98,7 @@ body {
     background-position: center;
     height: 100%;
     min-height:100vh;
+    /* min-width: 100vh; */
 }
 
 #login-container {
@@ -75,9 +112,6 @@ body {
 #arthur-bkg {
     grid-area: img;
     width: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
     position: relative;
     display:flex;
     align-items: center;

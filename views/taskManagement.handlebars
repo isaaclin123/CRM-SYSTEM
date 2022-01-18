@@ -90,8 +90,8 @@
                                     <th>Task name</th>
                                     <th>Client name</th> 
                                     <th>Responsible person name</th>
-                                    <th>Start date</th>
-                                    <th>End date</th>
+                                    <th class="none-when-extra-small-screen">Start date</th>
+                                    <th class="none-when-extra-small-screen">End date</th>
                                      <th class="none-when-extra-small-screen">Is completed</th>
                                     <th class="none-when-extra-small-screen">Task description</th>
                                     <th><i class='bx bx-grid-small'title="Select clients"></i><i class='bx bx-x-circle delete-selected-users' title="Delete selected clients"></i></th>
@@ -103,8 +103,8 @@
                                <td >{{this.task_name}}</td>
                                <td data-clientID="{{this.clientID}}"></td>
                                <td data-userID="{{this.userID}}"></td>
-                               <td>{{this.task_start_date}}</td>
-                               <td>{{this.task_end_date}}</td>
+                               <td class="none-when-extra-small-screen">{{this.task_start_date}}</td>
+                               <td class="none-when-extra-small-screen">{{this.task_end_date}}</td>
                                <td class="none-when-extra-small-screen">{{this.isCompleted}}</td>
                                <td class="none-when-extra-small-screen">{{this.task_description}}</td>
                                {{!-- <td class="uneditable tag" >{{this.tag}}</td> --}}

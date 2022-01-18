@@ -302,5 +302,8 @@ form .txtfield {
     -ms-transform:scale(0.7)  ;
     -o-transform:scale(0.7)  ;
     min-width: none;
-}
+  }
+  .home-section, .sidebar.open ~ .home-section{
+    left: 20px;   
+  }
 }

@@ -7,6 +7,18 @@ window.addEventListener("load",function(){
     const form =document.querySelector("#add-form");
     const table=document.getElementById("inner-table");
 
+    const menuButton=document.querySelector("#buttons .bx-menu");
+    const navList=document.querySelector("#buttons");
+    menuButton.addEventListener("click",function(){
+        if(navList.classList.contains("visible")){
+            navList.style.overflow="hidden";
+            navList.classList.remove("visible");
+        }else{
+            navList.style.overflow="visible";
+            navList.classList.add("visible");
+        }
+    })
+
 
     
 

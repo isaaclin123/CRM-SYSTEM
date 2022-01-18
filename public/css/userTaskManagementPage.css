@@ -37,6 +37,17 @@
 }
 
 @media screen and (max-width: 600px){
+  section .users-box {
+    display: grid;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto;
+    grid-template-areas: 
+    "msg"
+    "h"
+    "au"
+    "form"
+    "u" !important;
+}
   .heading-div {
     margin-top: 0 !important;
   }
@@ -47,13 +58,24 @@
     -ms-transform: scale(0.8);
     -o-transform: scale(0.8);
   }
+  .allTasks-container {
+    transform: translateY(-10%) scale(0.8);
+    -webkit-transform: translateY(-10%) scale(0.8);
+    -moz-transform: translateY(-10%) scale(0.8);
+    -ms-transform: translateY(-10%) scale(0.8);
+    -o-transform: translateY(-10%) scale(0.8);
+    margin: 0 !important;
+  }
 
   .edit_task {
-    transform: scale(0.6);
-    -webkit-transform: scale(0.6);
-    -moz-transform: scale(0.6);
-    -ms-transform: scale(0.6);
-    -o-transform: scale(0.6);
+    transform: scale(0.5);
+    -webkit-transform: scale(0.5);
+    -moz-transform: scale(0.5);
+    -ms-transform: scale(0.5);
+    -o-transform: scale(0.5);
+    position: fixed;
+    top: 3% !important;
+    left: -13% !important;
   }
 }
 

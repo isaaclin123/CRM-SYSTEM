@@ -78,6 +78,18 @@
   }
 
   @media screen and (max-width: 600px) {
+    #content-container {
+      display: grid;
+      grid-template-columns:1fr !important;
+      grid-template-rows: auto;
+      grid-template-areas:
+        "msg"
+        "co"
+        "se"
+        "st"
+        "form"
+        "table" !important;
+    }
        #add-form, .dialogBox {
         transform: scale(0.8);
         -webkit-transform: scale(0.8);
@@ -91,24 +103,28 @@
         -moz-transform: scale(0.9);
         -ms-transform: scale(0.9);
         -o-transform: scale(0.9);
+        margin: 0 !important;
       }
       .edit_task {
-        transform: scale(0.6);
-        -webkit-transform: scale(0.6);
-        -moz-transform: scale(0.6);
-        -ms-transform: scale(0.6);
-        -o-transform: scale(0.6);
+        transform: scale(0.5);
+        -webkit-transform: scale(0.5);
+        -moz-transform: scale(0.5);
+        -ms-transform: scale(0.5);
+        -o-transform: scale(0.5);
+        position: fixed;
+        top: 3% !important;
+        left: -13% !important;
       }
 
       .none-when-extra-small-screen {
-        width: 0;
-        font-size: 0.1px;
-        padding: 0;
-        /* display: none; */
+        display: none;
       }
 
       #contact-bkg{
         margin-top: 0 !important;
+      }
+      #contact-bkg h1 {
+        font-size: 30px !important;
       }
   }
 
@@ -163,6 +179,7 @@
     margin-left: 40px;
     border-bottom: 2px solid white;
     color: #f7f7f7;
+
   }
   #search-box input:focus {
     outline: none;
@@ -241,6 +258,7 @@
     color: rgb(225, 238, 43);
     background-color: none;
     font-family: "Josefin Sans", sans-serif;
+    min-width: 146px;
   }
   
   input:-webkit-autofill,

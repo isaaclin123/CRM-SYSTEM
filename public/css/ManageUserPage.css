@@ -4,13 +4,35 @@
     }
 }
 @media (max-width: 600px){
-    .allUsers-container,.heading-div{
+  section .users-box {
+    display: grid;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+    grid-template-areas: 
+    "msg"
+    "h"
+    "au"
+    "u" !important;
+  }
+    .heading-div{
       transform: scale(0.8);
       -webkit-transform: scale(0.8);
       -moz-transform: scale(0.8);
       -ms-transform: scale(0.8);
       -o-transform: scale(0.8);
 
+  }
+
+  .allUsers-container{
+    margin: 0 !important;
+    transform: translate(-10%) scale(0.8);
+    -webkit-transform: translate(-10%) scale(0.8);
+    -moz-transform: translate(-10%) scale(0.8);
+    -ms-transform: translate(-10%) scale(0.8);
+    -o-transform: translate(-10%) scale(0.8);
+}
+  .allUsers-names {
+    font-size: 10px;
   }
   .dialogBox {
     transform: scale(0.7);

@@ -571,6 +571,15 @@ h1 span {
     }
 }
 @media (max-width: 600px){
+  .content-container {
+    display: grid;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !;
+    grid-template-areas: 
+    "h"
+    "c" !important;
+  }
+
   .none-when-small{
     display:none;
   }
@@ -595,6 +604,13 @@ h1 span {
     -ms-transform: scale(0.6);
     -o-transform: scale(0.6);
 }
+  .heading {
+    font-size:15px;
+  }
+
+  .home-section ,.sidebar.open ~ .home-section{
+    left: 35px;   
+  }
 
   
 }

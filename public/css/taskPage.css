@@ -186,12 +186,14 @@ p{
         font-size:0.8em;
     }
     #container {
-        transform: scale(0.6) translateY(-30%) translateX(-20%);
-        -webkit-transform: scale(0.6) translateY(-30%) translateX(-20%);
-        -moz-transform: scale(0.6) translateY(-30%) translateX(-20%);
-        -ms-transform: scale(0.6) translateY(-30%) translateX(-20%);
-        -o-transform: scale(0.6) translateY(-30%) translateX(-20%);
-}
+        transform: scale(0.6) translateY(-30%) translateX(-30%);
+        -webkit-transform: scale(0.6) translateY(-30%) translateX(-30%);
+        -moz-transform: scale(0.6) translateY(-30%) translateX(-30%);
+        -ms-transform: scale(0.6) translateY(-30%) translateX(-30%);
+        -o-transform: scale(0.6) translateY(-30%) translateX(-30%);
+        
+    }
+
 }
 
 
