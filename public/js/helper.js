@@ -289,4 +289,20 @@ async function search(rowAttribute,buttonOrder,userID,clientID){
     }
 }
 
- export {checkUsernameAvailability,test,sanitizer,changeLocationHref,direction,getUser,getAllUsers,getUserByID,getClientNameByID,toggleManagementTools,search};
+function toggleMenu(){
+    const menuButton=document.querySelector("#buttons .bx-menu");
+    const navList=document.querySelector("#buttons");
+    menuButton.addEventListener("click",function(){
+        if(navList.classList.contains("visible")){
+            navList.style.overflow="hidden";
+            navList.classList.remove("visible");
+            menuButton.classList.replace("bx-menu-alt-right","bx-menu")
+        }else{
+            navList.style.overflow="visible";
+            navList.classList.add("visible");
+            menuButton.classList.replace("bx-menu","bx-menu-alt-right")
+        }
+    })
+}
+
+ export {checkUsernameAvailability,test,sanitizer,changeLocationHref,direction,getUser,getAllUsers,getUserByID,getClientNameByID,toggleManagementTools,search,toggleMenu};

@@ -407,9 +407,7 @@
   }
   #buttons:hover {
     /* display:inline-block; */
-    min-height: fit-content;
-    height: 285px;
-    z-index:999;
+    overflow: visible;
     
   }
   #buttons ul li {

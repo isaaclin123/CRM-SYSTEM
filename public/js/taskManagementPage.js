@@ -1,4 +1,4 @@
-import {changeLocationHref,direction,getAllUsers,getUser,getUserByID,sanitizer,getClientNameByID,toggleManagementTools,search} from "./helper.js";
+import {changeLocationHref,direction,getAllUsers,getUser,getUserByID,sanitizer,getClientNameByID,toggleManagementTools,search,toggleMenu} from "./helper.js";
 window.addEventListener("load",function(){
     const displayButton=document.querySelectorAll('#buttons .button')[0];
     const gettableButton=document.querySelectorAll("#buttons .button")[1];
@@ -7,17 +7,7 @@ window.addEventListener("load",function(){
     const clientNames=document.querySelectorAll("td[data-clientID]");
     const userNames=document.querySelectorAll("td[data-userID]");
 
-    const menuButton=document.querySelector("#buttons .bx-menu");
-    const navList=document.querySelector("#buttons");
-    menuButton.addEventListener("click",function(){
-        if(navList.classList.contains("visible")){
-            navList.style.overflow="hidden";
-            navList.classList.remove("visible");
-        }else{
-            navList.style.overflow="visible";
-            navList.classList.add("visible");
-        }
-    })
+    toggleMenu();
 
     
 
