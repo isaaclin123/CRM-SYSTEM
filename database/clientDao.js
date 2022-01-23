@@ -1,231 +1,206 @@
 
 const SQL = require("sql-template-strings");
-const dbPromise = require("./database.js");
+const pool = require("./database.js");
 function getCurrentTime(){
     let today = new Date();
-    let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    let month=today.getMonth()+1;
+    if(month<10){
+        month='0'+month;
+    }
+    let day=today.getDate();
+    if(day<10){
+        day='0'+day;
+    }
+    let date = Number(today.getFullYear()+''+month+''+day);
     // let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     // let dateTime = date+' '+time;
+    
     return date;
 };
 
-/**
- * Inserts the given client into the database. Then, reads the ID which the database auto-assigned, and adds it
- * to the client.
- * 
- * @param client the client to insert
- */
- async function createClient(client) {
-    const db = await dbPromise;
-
-    const result = await db.run(SQL`
-        insert into Clients (first_name, last_name, email,phone_number,city,country,profession,website,social_media,notes_on_client,meet_with,tag,belong_company,progress_status) values(${client.first_name},${client.last_name},${client.email},${client.phone_number},${client.city},${client.country},${client.profession},${client.website},${client.social_media},${client.notes_on_client},${client.meet_with},${client.tag},${client.belong_company},${client.progress_status})`);
-
-    // Get the auto-generated ID value, and assign it back to the client object.
-    client.id = result.lastID;
-}
-
-/**
- * Inserts the given clientTask into the database. Then, reads the ID which the database auto-assigned, and adds it
- * to the client task.
- * 
- * @param clientTask the clientTask to insert
- */
- async function createClientTask(clientTask) {
-    const db = await dbPromise;
-
-    const result = await db.run(SQL`
-        insert into TaskForClient (task_name, task_description,clientID, task_start_date,task_end_date,userID,isCompleted) values(${clientTask.task_name},${clientTask.task_description},${clientTask.clientID},${clientTask.task_start_date},${clientTask.task_end_date},${clientTask.userID},${clientTask.isCompleted})`);
-
-    // Get the auto-generated ID value, and assign it back to the client object.
+async function createClientPostgre(client) {
     
-    clientTask.id = result.lastID;
-}
+    const text =(SQL`
+        insert into Clients (first_name, last_name, email,phone_number,city,country,profession,website,social_media,notes_on_client,meet_with,tag,belong_company,progress_status) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) returning id`);
+    const values=[client.first_name,client.last_name,client.email,client.phone_number,client.city,client.country,client.profession,client.website,client.social_media,client.notes_on_client,client.meet_with,client.tag,client.belong_company,client.progress_status];
 
-/**
- * Gets an array of all Clients from the database.
- */
- async function retrieveAllClients(company) {
-    const db = await dbPromise;
-
-    const Clients = await db.all(SQL`select * from Clients where belong_company=${company}`);
-
-    return Clients;
-}
-async function retrieveAllClientsNumbers(company) {
-    const db = await dbPromise;
-
-    const Clients = await db.get(SQL`select count(*) from Clients where belong_company=${company}`);
-
-    return Clients;
-}
-
-async function retrieveAllTasks() {
-    const db = await dbPromise;
-
-    const tasks = await db.all(SQL`select * from TaskForClient`);
-
-    return tasks;
-}
-async function retrieveAllTasksNumberIfCompletedByUserID(isCompleted,userID) {
-    const db = await dbPromise;
-
-    const tasksNumber = await db.get(SQL`select count(*) from TaskForClient where isCompleted=${isCompleted} and userID=${userID}`);
-
-    return tasksNumber;
-}
-async function retrieveFirstDueTasksByEndDate(userID) {
-    const db = await dbPromise;
-
-    // const task = await db.get(SQL`select * from TaskForClient where userID=${userID} group by id having task_end_date>=Date('now','localtime') order by task_end_date asc limit 1`);
-    // // console.log(task,"here");
-    
-    const sameDueDateTasks=await db.all(SQL`select * from TaskForClient where task_end_date>=Date('now','localtime') and isCompleted="false" and userID=${userID}`);
-    // console.log(sameDueDateTasks,"here");
-    return sameDueDateTasks;
+    return pool.query(text,values);
     
 }
-async function retrieveRecentClients(company) {
-    const db = await dbPromise;
 
-    const clients = await db.all(SQL`select * from Clients where belong_company=${company} group by id order by id desc limit 4 `);
+
+async function createClientTaskPostgre(clientTask) {
+
+    const text=(SQL`
+        insert into TaskForClient (task_name, task_description,clientID, task_start_date,task_end_date,userID,isCompleted) values($1,$2,$3,$4,$5,$6,$7) returning id`);
+    const values=[clientTask.task_name,clientTask.task_description,clientTask.clientid,clientTask.task_start_date,clientTask.task_end_date,clientTask.userid,clientTask.iscompleted]
+    return pool.query(text,values);
+}
+
+async function retrieveAllClientsByCompanyPostgre(company) {
+
+    const text =(SQL`select * from Clients where belong_company=$1`);
+    const values=[company];
+    return pool.query(text,values);
+}
+
+async function retrieveAllClientsNumbersPostgre(company) {
+
+    const text =(SQL`select count(*) from Clients where belong_company=$1`);
+    const values=[company];
+
+    return pool.query(text,values);
+}
+
+async function retrieveAllTasksPostgre() {
+
+    const text=(SQL`select * from TaskForClient`);
+
+    return pool.query(text);
+}
+async function retrieveAllTasksNumberIfCompletedByUserIDPostgre(isCompleted,userID) {
+
+    const text=(SQL`select count(*) from TaskForClient where iscompleted=$1 and userid=$2`);
+    const values=[isCompleted,userID];
+    return pool.query(text,values);
+}
+async function retrieveFirstDueTasksByEndDatePostgre(userID) {
     
-    return clients;
+    const text=(SQL`select * from TaskForClient
+     where task_end_date>=$1 and iscompleted=$2 and userid=$3`);
+    const values=[getCurrentTime(),`false`,userID];
+    return pool.query(text,values);   
+}
+
+async function retrieveRecentClientsPostgre(company) {
+
+    const text=(SQL`select * from Clients where belong_company=$1 group by id order by id desc limit 4 `);
+    const values=[company];
+    
+    return pool.query(text,values);
     
 }
-/**
- * Deletes the client with the given id from the database.
- * 
- * @param {number} id the client's id
- */
- async function deleteClient(id) {
-    const db = await dbPromise;
 
-    await db.run(SQL`
+async function deleteClientPostgre(id) {
+
+    const text=(SQL`
         delete from Clients
-        where id = ${id}`);
+        where id = $1`);
+    const values=[id];
+    return pool.query(text,values);
 }
-/**
- * Updates the given client in the database
- * 
- * @param user the user to update
- */
- async function updateClient(client) {
-    const db = await dbPromise;
 
-    await db.run(SQL`
+
+async function updateClientPostgre(client) {
+
+    const text=(SQL`
         update Clients
-        set first_name = ${client.first_name}, last_name=${client.last_name},email = ${client.email},phone_number = ${client.phone_number}, city = ${client.city},country=${client.country},profession=${client.profession},website=${client.website},social_media = ${client.other_social_media},notes_on_client =${client.notes_on_client},meet_with = ${client.meet_with},tag = ${client.tag},progress_status=${client.progress_status}
-        where id = ${client.id}`);
+        set first_name = $1, last_name=$2,email = $3,phone_number = $4, city = $5,country=$6,profession=$7,website=$8,social_media = $9,notes_on_client =$10,meet_with = $11,tag = $12,progress_status=$13
+        where id = $14`);
+    const values=[client.first_name,client.last_name,client.email,client.phone_number,client.city,client.country,client.profession,client.website,client.social_media,client.notes_on_client,client.meet_with,client.tag,client.progress_status,client.id];
+
+    return pool.query(text,values);
 }
-/**
- * Gets the tasks with the given id from the database.
- * If there is no such user, undefined will be returned.
- * 
- * @param {number} id the id of the user to get.
- */
- async function retrieveClientTasksByClientID(id) {
-    const db = await dbPromise;
 
-    const tasks = await db.all(SQL`
+async function retrieveClientTasksByClientIDPostgre(id) {
+
+    const text=(SQL`
         select * from TaskForClient
-        where clientID = ${id}`);
-
-    return tasks;
+        where clientID = $1`);
+    const values=[id]
+    return pool.query(text,values);
 } 
 
-async function retrieveTasksByUserID(id) {
-    const db = await dbPromise;
-
-    const tasks = await db.all(SQL`
+async function retrieveTasksByUserIDPostgre(id) {
+    const text =(SQL`
         select * from TaskForClient
-        where userID = ${id}`);
+        where userID = $1`);
+    const values=[id];
 
-    return tasks;
+    return pool.query(text,values);
 }
-/**
- * Deletes the task with the given id from the database.
- * 
- * @param {number} id the user's id
- */
- async function deleteTask(id) {
-    const db = await dbPromise;
+async function deleteTaskPostgre(id) {
 
-    await db.run(SQL`
+    const text=(SQL`
         delete from TaskForClient
-        where id = ${id}`);
+        where id = $1`);
+    const values=[id];
+    return pool.query(text,values);
 
 }
-/**
- * Deletes the task with the given ClientID from the database.
- * 
- * @param {number} id the user's id
- */
- async function deleteAllClientTasks(id) {
-    const db = await dbPromise;
 
-    await db.run(SQL`
+async function deleteAllClientTasksPostgre(id) {
+
+    const text=(SQL`
         delete from TaskForClient
-        where clientID = ${id}`);
+        where clientID = $1`);
+    const values=[id];
+    return pool.query(text,values);
 }
-/**
- * Updates the given clientTask in the database
- * 
- * @param user the user to update
- */
- async function updateClientTask(clientTask) {
-    const db = await dbPromise;
 
-    await db.run(SQL`
+async function updateClientTaskPostgre(clientTask) {
+
+    const text=(SQL`
         update TaskForClient
-        set task_name = ${clientTask.task_name}, task_description=${clientTask.task_description},task_start_date = ${clientTask.task_start_date},task_end_date = ${clientTask.task_end_date},userID=${clientTask.userID},clientID=${clientTask.clientID},isCompleted=${clientTask.isCompleted}
-        where id = ${clientTask.taskID}`);
+        set task_name = $1, task_description=$2,task_start_date = $3,task_end_date = $4,userID=$5,clientID=$6,isCompleted=$7
+        where id = $8`);
+    const values=[clientTask.task_name,clientTask.task_description,clientTask.task_start_date,clientTask.task_end_date,clientTask.userid,clientTask.clientid,clientTask.iscompleted,clientTask.taskid];
+    return pool.query(text,values);
 }
-async function updateIsCompletedTask(taskID, isCompleted) {
-    const db = await dbPromise;
 
-    await db.run(SQL`
+async function updateIsCompletedTaskPostgre(taskID, isCompleted) {
+
+    const text=(SQL`
         update TaskForClient
-        set isCompleted=${isCompleted}
-        where id = ${taskID}`);
+        set isCompleted=$1
+        where id = $2`);
+    const values=[isCompleted,taskID];
+    return pool.query(text,values);
 }
-async function updateDeletedUserID(userID,taskID) {
-    const db = await dbPromise;
 
-    await db.run(SQL`
+async function updateDeletedUserIDPostgre(userID,taskID) {
+
+    const text=(SQL`
         update TaskForClient
-        set userID=${userID}
-        where id = ${taskID}`);
+        set userid=$1
+        where id = $2`);
+    const values=[userID,taskID];
+    return pool.query(text,values);
 }
 
-async function retrieveClientNameByID(clientID) {
-    const db = await dbPromise;
+async function retrieveClientNameByIDPostgre(clientID) {
 
-    const clientName=await db.get(SQL`
+    const text=(SQL`
         select first_name, last_name from Clients
-        where id = ${clientID}`);
+        where id = $1`);
+    const values=[clientID];
     
-        return clientName;
+        return pool.query(text,values);
 
 }
-
+async function addCompanyPostgre(company){
+    const text=(SQL`insert into Company (company_name) values($1) returning id`);
+    const values=[company];
+    return pool.query(text,values);
+}
 module.exports = {
-    createClient,
-    retrieveAllClients,
-    deleteClient,
-    updateClient,
-    createClientTask,
-    retrieveClientTasksByClientID,
-    deleteTask,
-    deleteAllClientTasks,
-    updateClientTask,
-    retrieveTasksByUserID,
-    updateIsCompletedTask,
-    updateDeletedUserID,
-    retrieveAllTasks,
-    retrieveClientNameByID,
-    retrieveAllClientsNumbers,
-    retrieveAllTasksNumberIfCompletedByUserID,
-    retrieveFirstDueTasksByEndDate,
-    retrieveRecentClients
+    retrieveAllClientsNumbersPostgre,
+    retrieveAllTasksNumberIfCompletedByUserIDPostgre,
+    retrieveFirstDueTasksByEndDatePostgre,
+    retrieveClientNameByIDPostgre,
+    retrieveRecentClientsPostgre,
+    retrieveTasksByUserIDPostgre,
+    updateDeletedUserIDPostgre,
+    retrieveAllClientsByCompanyPostgre,
+    createClientPostgre,
+    updateClientPostgre,
+    deleteAllClientTasksPostgre,
+    deleteClientPostgre,
+    createClientTaskPostgre,
+    retrieveClientTasksByClientIDPostgre,
+    updateIsCompletedTaskPostgre,
+    deleteTaskPostgre,
+    updateClientTaskPostgre,
+    retrieveAllTasksPostgre,
+    addCompanyPostgre
 };

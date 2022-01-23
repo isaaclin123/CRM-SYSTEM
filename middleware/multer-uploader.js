@@ -1,7 +1,6 @@
 // Setup multer (files will temporarily be saved in the "temp" folder).
 const multer = require("multer");
-const path=require('path');
-const fs=require('fs');
+
 
 const storage=multer.diskStorage({
     destination: function(req,file,cb){

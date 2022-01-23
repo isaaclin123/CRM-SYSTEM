@@ -9,8 +9,13 @@
 drop table if EXISTS Clients;
 drop table if EXISTS Users;
 
+ CREATE TABLE Company(
+	id bigserial not null PRIMARY key,
+	company_name varchar unique not null
+ );
+
  CREATE TABLE Users(
-	id INTEGER not null primary key,
+	id bigserial not null PRIMARY KEY,
 	first_name varchar not null,
 	last_name varchar not null,
 	username varchar(20) UNIQUE NOT NULL,
@@ -24,12 +29,12 @@ drop table if EXISTS Users;
  );
  
  CREATE TABLE Clients(
-	id INTEGER NOT NULL PRIMARY KEY,
+	id bigserial NOT NULL PRIMARY KEY,
 	first_name varchar not null,
 	last_name varchar not null,
 	email varchar not null,
 	phone_number integer not null,
-	city varvhar(20),
+	city varchar(20),
 	country varchar(20) not null,
 	profession varchar not null,
 	website varchar,
@@ -39,7 +44,7 @@ drop table if EXISTS Users;
 	tag varchar,
 	belong_company varchar NOT null,
 	progress_status varchar,
-	FOREIGN KEY (belong_company) REFERENCES Users (isQualifiedCompany)
+	FOREIGN KEY (belong_company) REFERENCES Company (company_name)
  );
  
  CREATE table ClientBelongTo(
@@ -52,7 +57,7 @@ drop table if EXISTS Users;
  );
 
  CREATE TABLE TaskForClient(
-	id INTEGER NOT NULL PRIMARY KEY,
+	id bigserial NOT NULL PRIMARY KEY,
 	task_name varchar not null,
 	task_description varchar not null,
 	clientID INTEGER not null,

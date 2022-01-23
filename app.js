@@ -72,14 +72,6 @@ process.on('uncaughtException',function(error){
     
 })
 
-// let child =new (forever.Monitor)('app.js');
-
-// child.on('exit',function(){
-//     console.log("......exit by error");
-// })
-
-// child.start(true);
-
 
 
 // Start the server running.

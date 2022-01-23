@@ -7,16 +7,12 @@ window.addEventListener("load",function(){
     const form =document.querySelector("#add-form");
     const table=document.getElementById("inner-table");
 
-    toggleMenu();
-
-
     
 
     /**
      * toggle the button's ui
      */
-    // console.log(this.location.href);
-    // console.log(location.href.includes("Client"));
+     toggleMenu();
     if(location.href.includes("Client")){
         form.classList.toggle("display");
         displayButton.classList.toggle("changeButton");
@@ -25,25 +21,23 @@ window.addEventListener("load",function(){
         form.classList.toggle("display");
         displayButton.classList.toggle("changeButton");
     })
-
+    gettableButton.addEventListener("click",function(){
+        table.classList.toggle("display");
+        table.classList.remove("hide");
+        gettableButton.classList.toggle("changeButton");
+        exportButton.classList.toggle("hide");
+        exportButton.classList.toggle("changeButton");
+        
+    });
+    /**
+     * Sanitize the input
+     */
     sanitizer();
     const textarea=document.querySelector("textarea");
     textarea.addEventListener("keyup",function(){
         HtmlSanitizer.SanitizeHtml(textarea.value);
     })
-    gettableButton.addEventListener("click",function(){
-        table.classList.toggle("display");
-        table.classList.remove("hide");
-        // console.log(tbody.children);
-        // for(let i=0;i<tbody.children.length;i++){
-        //     tbody.children[i].classList.remove("hide");
-        // }
-        gettableButton.classList.toggle("changeButton");
-        // table.firstElementChild.classList.remove("hide");
-        exportButton.classList.toggle("hide");
-        exportButton.classList.toggle("changeButton");
-        
-    });
+
 
     /**
      * 
@@ -62,7 +56,6 @@ window.addEventListener("load",function(){
                         element.classList.add("content-editable");
                     }else{
                         let temp=element.innerText;
-                        // console.log(temp);
                         element.innerHTML=`<div class="selectItem">
                         <select  name="progress_status" class="progress_status">
                                 <option value="None" >None</option>
@@ -80,7 +73,6 @@ window.addEventListener("load",function(){
                         </select>
                                         </div>`;
                         if(document.querySelector(`tr[data-clientID="${clientID}"] .progress_status`)){
-                            // console.log(document.querySelector(`tr[data-clientID="${clientID}"] .progress_status`));
                             document.querySelector(`tr[data-clientID="${clientID}"] .progress_status`).value=temp;
                         }
                     }
@@ -107,147 +99,125 @@ window.addEventListener("load",function(){
                 let request;
                 let client
                 for(let i=0;i<tds.length;i++){
-                    // console.log(HtmlSanitizer.SanitizeHtml(tds[i].textContent));
                     if(i!==9){
                         tds[i].innerText=HtmlSanitizer.SanitizeHtml(tds[i].textContent);
-                    }
-                    client={
-                        id:clientID,
-                        first_name:tds[0].textContent,
-                        last_name:tds[1].textContent,
-                        email:tds[2].textContent,
-                        phone_number:tds[3].textContent,
-                        country:tds[4].textContent,
-                        city:tds[5].textContent,
-                        profession:tds[6].textContent,
-                        website:tds[7].textContent,
-                        social_media:tds[8].textContent,
-                        meet_with:tds[10].textContent,
-                        notes_on_client:tds[11].textContent,
-                        // addedBy:tds[12].innerText
-                    }
-                    if(i!==9){
                         tds[i].setAttribute("contenteditable","false");
                         tds[i].classList.remove("content-editable");
-                    } 
+                    }
+                }
+                client={
+                    id:clientID,
+                    first_name:tds[0].textContent,
+                    last_name:tds[1].textContent,
+                    email:tds[2].textContent,
+                    phone_number:tds[3].textContent,
+                    country:tds[4].textContent,
+                    city:tds[5].textContent,
+                    profession:tds[6].textContent,
+                    website:tds[7].textContent,
+                    social_media:tds[8].textContent,
+                    meet_with:tds[10].textContent,
+                    notes_on_client:tds[11].textContent,
                 }
                 client.progress_status=document.querySelector(`tr[data-clientID="${clientID}"] .progress_status`).value;
-                // console.log(client.progress_status);
                 tds[9].innerText=client.progress_status;
-                // console.log(client.progress_status);
                 client.tag=`${tds[12].innerText}`;
                 request=new XMLHttpRequest();
                 request.open("POST",`/contact/edit`);
                 request.setRequestHeader("Content-Type","application/json");
                 request.send(JSON.stringify(client));
-    
-    
             })
         })
     }
     let doneLinks=document.querySelectorAll("table .bxs-check-circle");
     donLink(doneLinks);
     
-    //Creating the variables and getting elements from DOM
-    const dialogBox = document.getElementById("dialogBox"),
-    deleteButton  = document.getElementById("delete"),
-    cancelButton = document.getElementById("cancel");
-
-    function cancelDelete(){
-        cancelButton.addEventListener("click",function(){
-            dialogBox.classList.remove("display");
-        })
-    }
     
-        
-    //hide dialogBox initially;
-    // dialogBox.classList.add("hide");
     /**
      * 
      * @param {*} deleteLinks send ajax request to delete a client from the database
      */
+     const dialogBox = document.getElementById("dialogBox"),
+     deleteButton  = document.getElementById("delete"),
+     cancelButton = document.getElementById("cancel");
+     const deleteLinks=document.querySelectorAll("table .bxs-user-x");
+     function cancelDelete(){
+         cancelButton.addEventListener("click",function(){
+             dialogBox.classList.remove("display");
+         })
+     }
+    //be mindful of nested add eventListener, need to remove it first
+    deleteLink(deleteLinks);
     function deleteLink(deleteLinks){
         deleteLinks.forEach(element=>{
             element.addEventListener("click",function(event){
-                let request;
-                let clientID=event.target.getAttribute("data-clientID");
-                let tr=document.querySelector(`tr[data-clientID="${clientID}"]`);
+                const clientID=event.target.getAttribute("data-clientID");
                 dialogBox.classList.add("display");
-                // dialogBox.classList.remove("hide");
-                deleteButton.addEventListener("click",function(){
-                    // let tbody=document.querySelector("#inner-table table tbody");
-                    // let tableChildrenCount=tbody.childElementCount;
-                    // tableChildrenCount--;
-                    // console.log(tableChildrenCount);
-                    tr.classList.add("transition-effect");
-                    setTimeout(function(){tr.style.display="none";},1000);
-                    dialogBox.classList.remove("display");
-                    request =new XMLHttpRequest();
-                    // request.open("GET",`/newArticle?html=`+html,true);
-                    request.open("POST",`/contact/delete`);
-                    request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-                    request.send(`clientID=${clientID}`);
-                })
-                cancelDelete();
-
-                // deleteButton.addEventListener("mouseup",function(){
-                //     if(tbody.children.length<1){
-                //        table.firstElementChild.classList.add("hide");
-                //        location.replace("/contact?message=All clients have been deleted");
-                //     }else{
-                //         table.firstElementChild.classList.remove("hide");
-                //     }
-                // })
-                
+                deleteButton.setAttribute("data-clientID",clientID);
+                deleteButton.removeEventListener("click",deleteClient);
+                deleteButton.addEventListener("click",deleteClient);    
             })
         })
+        cancelDelete(); 
     }
-    let deleteLinks=document.querySelectorAll("table .bxs-user-x");
-    deleteLink(deleteLinks);
+    function deleteClient(event){
+        const clientID=event.target.getAttribute("data-clientID");
+        const tr=document.querySelector(`tr[data-clientID="${clientID}"]`);
+        tr.classList.add("transition-effect");
+        setTimeout(function(){
+            tr.style.display="none";   
+        },1000);
+        dialogBox.classList.remove("display");
+        const request =new XMLHttpRequest();
+        request.open("POST",`/contact/delete`);
+        request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        request.send(`clientID=${clientID}`);
+    }
+    
 
     /**
      * delete multiple client
      */
      const managementToolObj=toggleManagementTools();
-    
-    managementToolObj.delete_selected_users.addEventListener("click",function(event){
-        let clientIDs=[];
-        document.querySelectorAll(`input[type="checkbox"]:checked`).forEach(checkedBox=>{
-            clientIDs.push(checkedBox.value);
-        })
-        console.log(clientIDs);
-        if(clientIDs.length>0){
-            dialogBox.classList.add("display");
-            deleteButton.addEventListener("click",function(){
-    
-                let request = new XMLHttpRequest();
-                request.open("POST",`/contact/delete`);
-                request.setRequestHeader("Content-Type","application/json");
-                request.send(JSON.stringify(clientIDs));
-                for(let i=0;i<clientIDs.length;i++){
-                    let tr=document.querySelector(`tr[data-clientID="${clientIDs[i]}"]`);
-                    tr.classList.add("transition-effect");
-                    setTimeout(function(){tr.style.display="none";},1000);
-                }
-                dialogBox.classList.remove("display");
-                managementToolObj.displayManagementTools();
+    if(managementToolObj.delete_selected_users){
+        managementToolObj.delete_selected_users.addEventListener("click",function(event){
+            let clientIDs=[];
+            document.querySelectorAll(`input[type="checkbox"]:checked`).forEach(checkedBox=>{
+                clientIDs.push(checkedBox.value);
             })
-            
-            cancelButton.addEventListener("click",function(){
-                dialogBox.classList.remove("display");
-                managementToolObj.displayManagementTools();
-                clientIDs=[];
-                managementToolObj.checkboxes.forEach(checkBox=>{
-                    checkBox.checked=false;
+            if(clientIDs.length>0){
+                dialogBox.classList.add("display");
+                deleteButton.setAttribute("data-clientID",JSON.stringify(clientIDs))
+                deleteButton.removeEventListener("click",deleteClient);
+                deleteButton.addEventListener("click",deleteClient);
+                cancelButton.addEventListener("click",function(){
+                    dialogBox.classList.remove("display");
+                    managementToolObj.displayManagementTools();
+                    clientIDs=[];
+                    managementToolObj.checkboxes.forEach(checkBox=>{
+                        checkBox.checked=false;
+                    })
                 })
-    
-            })
-        }else{
+            }else{
+                managementToolObj.displayManagementTools();
+            }
+        })
+        function deleteClient(event){
+            const clientIDs=JSON.parse(event.target.getAttribute("data-clientID"));
+            let request = new XMLHttpRequest();
+            request.open("POST",`/contact/delete`);
+            request.setRequestHeader("Content-Type","application/json");
+            request.send(JSON.stringify(clientIDs));
+            for(let i=0;i<clientIDs.length;i++){
+                let tr=document.querySelector(`tr[data-clientID="${clientIDs[i]}"]`);
+                tr.classList.add("transition-effect");
+                setTimeout(function(){tr.style.display="none";},1000);
+            }
+            dialogBox.classList.remove("display");
             managementToolObj.displayManagementTools();
         }
-
-
-    })
+    }
+    
     /**
      * search client base on the input and toggle the table's visibility and the button's ui
      */
@@ -255,7 +225,6 @@ window.addEventListener("load",function(){
      const index=location.href.indexOf("clientID=")
      if(index!==-1){
          clientID=location.href.substring(index+9);
-         console.log(clientID);
      }
     search("data-clientID",3,"",clientID);
 
@@ -310,25 +279,26 @@ window.addEventListener("load",function(){
             submitButton.addEventListener("click",function(event){
                 event.preventDefault();
                 notNullMsg.innerHTML="";
+                let task_start_date=(HtmlSanitizer.SanitizeHtml(document.querySelector("#task_end_date").value));
+                task_start_date=returnNumberFormat(task_start_date);
+                let task_end_date=(HtmlSanitizer.SanitizeHtml(document.querySelector("#task_start_date").value));
+                task_end_date=returnNumberFormat(task_end_date);
                 let clientTask={
-                    clientID:clientID,
+                    clientid:clientID,
                     task_name:HtmlSanitizer.SanitizeHtml(document.querySelector("#task_name").value),
                     task_description:HtmlSanitizer.SanitizeHtml(document.querySelector("#task_description").value),
-                    task_end_date:HtmlSanitizer.SanitizeHtml(document.querySelector("#task_end_date").value),
-                    task_start_date:HtmlSanitizer.SanitizeHtml(document.querySelector("#task_start_date").value),
-                    userID:user.id,
-                    isCompleted:"false"
+                    task_end_date:task_start_date,
+                    task_start_date:task_end_date,
+                    userid:user.id,
+                    iscompleted:"false"
 
                 }
-                console.log(clientTask);
                 if(!clientTask.task_name||!clientTask.task_description||!clientTask.task_start_date||!clientTask.task_end_date){
-                    // console.log("here");
                     submitButton.disabled=true;
                     notNullMsg.innerHTML="Please fill in all the information"
                 }else{
                     submitButton.disabled=false;
                     notNullMsg.innerHTML="Task created successfully";
-                    // console.log(typeof clientTask);
                     let request=new XMLHttpRequest();
                     request.open("POST",`/contact/createTask`);
                     request.setRequestHeader("Content-Type","application/json");
@@ -386,12 +356,15 @@ window.addEventListener("load",function(){
             request.onreadystatechange=async function(){
                 if((request.readyState==4)&&(request.status==200)){
                     let tasks=JSON.parse(request.response);
-                    // console.log(tasks);
                     let currentUser=await getUser();
                     if(tasks.length!==0){
                         for(let i=0;i<tasks.length;i++){
                             let task=tasks[i];
-                            let user=await getUserByID(task.userID);
+                            let task_start_date=task.task_start_date;
+                            let task_end_date=task.task_end_date;
+                            task_start_date=returnDateFormat(task_start_date);
+                            task_end_date=returnDateFormat(task_end_date);
+                            let user=await getUserByID(task.userid);
                             let ResponsiblePerson;
                             if(user){
                                 ResponsiblePerson=`${user.first_name} ${user.last_name}`;
@@ -399,36 +372,31 @@ window.addEventListener("load",function(){
                                 ResponsiblePerson=`No responsible person or previous responsible person is no longer in the system,please choose one or delete the task`;
                             }
                             document.querySelector(".check-task-box").innerHTML+=
-                            `<div class="each-task" data-taskID="${task.id}">
-                                <div class="tasksManagement" data-userID="${task.userID}">
-                                    <i class='bx bx-task-x' data-taskID="${task.id}" data-userID="${task.userID}" title="Delete task"></i>
-                                    <i class='bx bxs-check-circle' data-taskID="${task.id}" data-userID="${task.userID}" title="Done"></i>
-                                    <i class='bx bx-edit-alt' data-taskID="${task.id}" data-userID="${task.userID}" title="Edit task"></i>
+                            `<div class="each-task" data-taskID="${task.id}" >
+                                <div class="tasksManagement" data-userID="${task.userid}" data-taskID="${task.id}">
+                                    <i class='bx bx-task-x' data-taskID="${task.id}" data-userID="${task.userid}" title="Delete task"></i>
+                                    <i class='bx bxs-check-circle' data-taskID="${task.id}" data-userID="${task.userid}" title="Done"></i>
+                                    <i class='bx bx-edit-alt' data-taskID="${task.id}" data-userID="${task.userid}" title="Edit task"></i>
                                 </div>
                                 <div>Task name:<span>${task.task_name}</span></div>
-                                <div >Task start date:<span class="task-date ">${task.task_start_date}</span></div>
-                                <div >Task end date:<span class="task-date ">${task.task_end_date}</span></div>
-                                <div data-userID="${task.userID}">Responsible person:<span data-userID="${user?user.id:"none"}">${ResponsiblePerson}</span></div>
+                                <div >Task start date:<span class="task-date ">${task_start_date}</span></div>
+                                <div >Task end date:<span class="task-date ">${task_end_date}</span></div>
+                                <div data-userID="${task.userid}">Responsible person:<span data-userID="${user?user.id:"none"}">${ResponsiblePerson}</span></div>
                                 <div>Task description:<span>${task.task_description}</span></div>
-                                <div class="isCompleted" data-taskID="${task.id}" data-userID="${task.userID}"><i class='bx bxs-wink-smile' title="task completed,click to change it as uncompleted"></i><i class='bx bxs-meh-blank' title="task not completed,click to change it as completed"></i></div>
+                                <div class="isCompleted" data-taskID="${task.id}" data-userID="${task.userid}"><i class='bx bxs-wink-smile' title="task completed,click to change it as uncompleted"></i><i class='bx bxs-meh-blank' title="task not completed,click to change it as completed"></i></div>
                             </div>`; 
-                            // console.log(task.isCompleted);
                             let incompleteICon=document.querySelector(`.isCompleted[data-taskID="${task.id}"] .bxs-meh-blank`);
                             let completeICon=document.querySelector(`.isCompleted[data-taskID="${task.id}"] .bxs-wink-smile`)
-                            if(task.isCompleted==="true"){
+                            if(task.iscompleted==="true"){
                                 incompleteICon.classList.add("hide");
                             }else{
                                 completeICon.classList.add("hide");
                             }
-                            let tasksManagementTool=document.querySelector(`.tasksManagement[data-userID="${task.userID}"]`);
-                            let progressTool=document.querySelector(`.isCompleted[data-userID="${task.userID}"]`);
-                            console.log(tasksManagementTool);
-                            console.log(progressTool);
-                            if(currentUser.isSuperAdmin!=="1"&&task.userID!==currentUser.id){
-                                console.log("here");
+                            let tasksManagementTool=document.querySelector(`.tasksManagement[data-taskID="${task.id}"]`);
+                            let progressTool=document.querySelector(`.isCompleted[data-taskID="${task.id}"]`);
+                            if(currentUser.issuperadmin!=="1"&&task.userid!==currentUser.id){
                                 tasksManagementTool.classList.add("hide");
                                 progressTool.classList.add("hide");
-                               
                             }
 
                         };
@@ -441,162 +409,156 @@ window.addEventListener("load",function(){
                         let incompleteIcons=document.querySelectorAll(".each-task .bxs-meh-blank");
                         
                         completeIcons.forEach(completeButton =>{
-                            completeButton.addEventListener("click",function(event){
-                                event.target.classList.add("hide");
-                                let taskID=event.target.parentNode.getAttribute("data-taskID");
-                                console.log(taskID);
-                                let request=new XMLHttpRequest();
-                                request.open("GET",`/contact/updateTaskCompleted?taskID=${taskID}&isCompleted=false`,true);
-                                request.send();  
-                                event.target.nextElementSibling.classList.remove("hide");
-                            })
+                            completeButton.removeEventListener("click",setUnComplete);
+                            completeButton.addEventListener("click",setUnComplete);
                         })
                     
                         incompleteIcons.forEach(not_completeButton =>{
-                            not_completeButton.addEventListener("click",function(event){
-                                event.target.classList.add("hide");
-                                let taskID=event.target.parentNode.getAttribute("data-taskID");
-                                console.log(taskID);
-                                let request=new XMLHttpRequest();
-                                request.open("GET",`/contact/updateTaskCompleted?taskID=${taskID}&isCompleted=true`,true);
-                                request.send();
-                                event.target.previousElementSibling.classList.remove("hide");    
-                            })
+                            not_completeButton.removeEventListener("click",setComplete);
+                            not_completeButton.addEventListener("click",setComplete);
                         })
 
                         document.querySelectorAll(".bx-task-x").forEach(deleteTaskButton =>{
-                            deleteTaskButton.addEventListener("click",function(event){
-                                let taskID=event.target.getAttribute("data-taskID");
-                                // console.log(taskID);
-                                let targetTask=document.querySelector(`.each-task[data-taskID="${taskID}"]`);
-                                targetTask.classList.add("transition-effect");
-                                setTimeout(function(){targetTask.style.display="none";},1000)
-                                dialogBox.classList.remove("display");
-                                let deleteRequest= new XMLHttpRequest();
-                                deleteRequest.open("GET",`/contact/deleteTask?taskID=${taskID}`,true);
-                                deleteRequest.send();
-                                    
-                            })   
+                            deleteTaskButton.removeEventListener("click",deleteTask);  
+                            deleteTaskButton.addEventListener("click",deleteTask);  
                         });
+
                         document.querySelectorAll(".bx-edit-alt").forEach(editTaskButton =>{
-                            editTaskButton.addEventListener("click", async function(event){
-                                let allUsers=await getAllUsers();
-                                let currentUser=await getUser();
-                                console.log(allUsers);
-                                event.target.classList.add("hide");
-                                event.target.previousElementSibling.classList.remove("hide");
-                                let taskID=event.target.getAttribute("data-taskID");
-                                document.querySelector(`.each-task[data-taskID="${taskID}"] .isCompleted`).classList.add("hide");
-                                // let targetTask=document.querySelector(`.each-task[data-taskID="${taskID}"]`);
-                                document.querySelectorAll(`.each-task[data-taskID="${taskID}"] span:not(span[data-userID], .task-date)`).forEach(span =>{
-                                    span.setAttribute("contenteditable","true");
-                                    span.classList.add("content-editable-span");
-                                })
-                                document.querySelectorAll(".task-date").forEach(date=>{
-                                    let tempDate=date.innerText;
-                                    date.innerHTML=`<input type="date" value="${tempDate}">`;
-                                })
-                                let tempResponsiblePerson=document.querySelector(`.each-task[data-taskID="${taskID}"] span[data-userID]`).innerText;
-
-                                
-                                if(currentUser.isSuperAdmin==="1"){
-                                    let selectItem;
-                                    document.querySelector(`.each-task[data-taskID="${taskID}"] span[data-userID]`).innerHTML=`<select class="allUsers"></select>`;
-                                
-                                    selectItem=document.querySelector(`.each-task[data-taskID="${taskID}"] span[data-userID] select`);
-                                    allUsers.forEach(user => {
-                                        selectItem.innerHTML+=`<option data-userID="${user.id}">${user.first_name} ${user.last_name}</option>`;
-  
-                                });
-                                    selectItem.value=tempResponsiblePerson;
-                                }
-                                
-                            
-
-                            })
+                            editTaskButton.removeEventListener("click", displayTask);
+                            editTaskButton.addEventListener("click", displayTask);
                         });
                         document.querySelectorAll(".check-task-box .bxs-check-circle").forEach(doneButton =>{
-                            doneButton.addEventListener("click",function(event){
-                                event.target.classList.add("hide");
-                                event.target.nextElementSibling.classList.remove("hide");
-                                let taskID=event.target.getAttribute("data-taskID");
-                                let clientTask;
-                                let spans=document.querySelectorAll(`.each-task[data-taskID="${taskID}"] span`);
-                                let ResponsiblePerson=document.querySelector(`.each-task[data-taskID="${taskID}"] span[data-userID] select`);
-                                console.log(ResponsiblePerson);
-                                document.querySelector(`.each-task[data-taskID="${taskID}"] .isCompleted`).classList.remove("hide");
-                                let userID=event.target.getAttribute("data-userID");
-                                if(ResponsiblePerson){
-                                    if(ResponsiblePerson.options[ResponsiblePerson.selectedIndex]){
-                                        userID=ResponsiblePerson.options[ResponsiblePerson.selectedIndex].getAttribute("data-userID");
-                                    }
-                                    // else{
-                                    //     userID=event.target.getAttribute("data-userID");
-                                    // }
-                                }
-                                // console.log(userID);
-                                // console.log(userID);
-                                console.log(document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date input`)[1].value);
-                                let isCompleted;
-                                let unCompletedIcon=document.querySelector(`.each-task[data-taskID="${taskID}"] .isCompleted .bxs-meh-blank`);
-                                let completedIcon =document.querySelector(`.each-task[data-taskID="${taskID}"] .isCompleted .bxs-wink-smile`);
-                                if(unCompletedIcon.classList.contains("hide")){
-                                    isCompleted="true";
-                                }else if(completedIcon.classList.contains("hide")){
-                                    isCompleted="false";
-                                }
+                            doneButton.setAttribute("data-clientID",clientID);
+                            doneButton.removeEventListener("click",updateTask);
+                            doneButton.addEventListener("click",updateTask);
                                 
-                                clientTask={
-                                    task_name:HtmlSanitizer.SanitizeHtml(spans[0].textContent),
-                                    task_description:HtmlSanitizer.SanitizeHtml(spans[4].textContent),
-                                    clientID:clientID,
-                                    userID:userID,
-                                    taskID:taskID,
-                                    isCompleted:isCompleted
-                                };
-                                spans[0].setAttribute("contenteditable","false");
-                                spans[0].classList.remove("content-editable-span");
-                                spans[4].setAttribute("contenteditable","false");
-                                spans[4].classList.remove("content-editable-span");
-                                if(ResponsiblePerson){
-                                    if(ResponsiblePerson.value){
-                                        spans[3].innerText=`${ResponsiblePerson.value}`;
-                                    }else{
-                                        spans[3].innerText=`Please choose a responsible person or delete the task`;
-                                    } 
-                                }
-                                console.log(document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date input`));
-                                spans[1].innerText=document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date input`)[0].value;
-                                console.log(document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date input`));
-                                spans[2].innerText=document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date input`)[0].value;
-                                
-                                clientTask.task_start_date=spans[1].innerText;
-                                clientTask.task_end_date=spans[2].innerText;
-                                console.log(clientTask);
-                                let updateRequest=new XMLHttpRequest();
-                                updateRequest.open("POST",`/contact/updateTask`);
-                                updateRequest.setRequestHeader("Content-Type","application/json");
-                                updateRequest.send(JSON.stringify(clientTask));
-                                            
-                            })
                         })
-                    }else{
-                        document.querySelector(".check-task-box").innerHTML="No task yet, create some"
-                    }
-                   
-                    
-                }
+                }else{
+                    document.querySelector(".check-task-box").innerHTML="No task yet, create some"
+                }              
             }
+        }
             request.open("POST",`/contact/getTasks`);
             request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
             request.send(`clientID=${clientID}`);
             
-            
-
             close();
              
+    })
+    function setUnComplete(event){
+        event.target.classList.add("hide");
+        let taskID=event.target.parentNode.getAttribute("data-taskID");
+        let request=new XMLHttpRequest();
+        request.open("GET",`/contact/updateTaskCompleted?taskID=${taskID}&isCompleted=false`,true);
+        request.send();  
+        event.target.nextElementSibling.classList.remove("hide");
+    }
+    function setComplete(event){
+        event.target.classList.add("hide");
+        let taskID=event.target.parentNode.getAttribute("data-taskID");
+        let request=new XMLHttpRequest();
+        request.open("GET",`/contact/updateTaskCompleted?taskID=${taskID}&isCompleted=true`,true);
+        request.send();  
+        event.target.previousElementSibling.classList.remove("hide");
+    }
+    function deleteTask(event){
+        let taskID=event.target.getAttribute("data-taskID");
+        let targetTask=document.querySelector(`.each-task[data-taskID="${taskID}"]`);
+        targetTask.classList.add("transition-effect");
+        setTimeout(function(){targetTask.style.display="none";},1000)
+        let deleteRequest= new XMLHttpRequest();
+        deleteRequest.open("GET",`/contact/deleteTask?taskID=${taskID}`,true);
+        deleteRequest.send();
+    }
+    async function displayTask(event){
+        let allUsers=await getAllUsers();
+        let currentUser=await getUser();
+        event.target.classList.add("hide");
+        event.target.previousElementSibling.classList.remove("hide");
+        let taskID=event.target.getAttribute("data-taskID");
+        document.querySelector(`.each-task[data-taskID="${taskID}"] .isCompleted`).classList.add("hide");
+        // let targetTask=document.querySelector(`.each-task[data-taskID="${taskID}"]`);
+        document.querySelectorAll(`.each-task[data-taskID="${taskID}"] span:not(span[data-userID], .task-date)`).forEach(span =>{
+            span.setAttribute("contenteditable","true");
+            span.classList.add("content-editable-span");
         })
+        document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date`).forEach(date=>{
+            let tempDate=date.innerText;
+            date.innerHTML=`<input type="date" value="${tempDate}">`;
+        })
+        let tempResponsiblePerson=document.querySelector(`.each-task[data-taskID="${taskID}"] span[data-userID]`).innerText;
+        if(currentUser.issuperadmin==="1"){
+            let selectItem;
+            document.querySelector(`.each-task[data-taskID="${taskID}"] span[data-userID]`).innerHTML=`<select class="allUsers"></select>`;
+        
+            selectItem=document.querySelector(`.each-task[data-taskID="${taskID}"] span[data-userID] select`);
+            allUsers.forEach(user => {
+                selectItem.innerHTML+=`<option data-userID="${user.id}">${user.first_name} ${user.last_name}</option>`;
+        });
+            selectItem.value=tempResponsiblePerson;
+        }
+    }
+    async function updateTask(event){
+        event.target.classList.add("hide");
+        event.target.nextElementSibling.classList.remove("hide");
+        let taskID=event.target.getAttribute("data-taskID");
+        let clientTask;
+        let spans=document.querySelectorAll(`.each-task[data-taskID="${taskID}"] span`);
+        let ResponsiblePerson=document.querySelector(`.each-task[data-taskID="${taskID}"] span[data-userID] select`);
+        document.querySelector(`.each-task[data-taskID="${taskID}"] .isCompleted`).classList.remove("hide");
+        let userID=event.target.getAttribute("data-userID");
+        let clientID=event.target.getAttribute("data-clientID");
+        if(ResponsiblePerson){
+            if(ResponsiblePerson.options[ResponsiblePerson.selectedIndex]){
+                userID=ResponsiblePerson.options[ResponsiblePerson.selectedIndex].getAttribute("data-userID");
+            }
+        };
+        let isCompleted;
+        let unCompletedIcon=document.querySelector(`.each-task[data-taskID="${taskID}"] .isCompleted .bxs-meh-blank`);
+        let completedIcon =document.querySelector(`.each-task[data-taskID="${taskID}"] .isCompleted .bxs-wink-smile`);
+        if(unCompletedIcon.classList.contains("hide")){
+            isCompleted="true";
+        }else if(completedIcon.classList.contains("hide")){
+            isCompleted="false";
+        }
+        
+        clientTask={
+            task_name:HtmlSanitizer.SanitizeHtml(spans[0].textContent),
+            task_description:HtmlSanitizer.SanitizeHtml(spans[4].textContent),
+            clientid:clientID,
+            userid:userID,
+            taskid:taskID,
+            iscompleted:isCompleted
+        };
+        spans[0].setAttribute("contenteditable","false");
+        spans[0].classList.remove("content-editable-span");
+        spans[4].setAttribute("contenteditable","false");
+        spans[4].classList.remove("content-editable-span");
+        if(ResponsiblePerson){
+            if(ResponsiblePerson.value){
+                spans[3].innerText=`${ResponsiblePerson.value}`;
+            }else{
+                spans[3].innerText=`Please choose a responsible person or delete the task`;
+            } 
+        }
+        spans[1].innerText=document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date input`)[0].value;
+        spans[2].innerText=document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date input`)[0].value;
+        
+        clientTask.task_start_date=spans[1].innerText.replaceAll("-",'');
+        clientTask.task_end_date=spans[2].innerText.replaceAll("-",'');
+        let updateRequest=new XMLHttpRequest();
+        updateRequest.open("POST",`/contact/updateTask`);
+        updateRequest.setRequestHeader("Content-Type","application/json");
+        updateRequest.send(JSON.stringify(clientTask));
+        }
     });
+
+    function returnDateFormat(dateNumberString){
+        return dateNumberString.substring(0,4)+"-"+dateNumberString.substring(4,6)+"-"+dateNumberString.substring(6,8);
+    }
+    function returnNumberFormat(dateString){
+        return dateString.replaceAll("-","").padStart(8,"0");
+    }
 
     /**
      * Export the table as csv file
@@ -617,10 +579,8 @@ window.addEventListener("load",function(){
     }
 
     exportButton.addEventListener("click",function(){
-        // console.log("here");
         CSVData=[];
         convertTableDataToArray("#inner-table table");
-        // console.log(CSVData);
         let row ="",CSV="";
         for(let rows of CSVData){
             row="";
@@ -629,7 +589,6 @@ window.addEventListener("load",function(){
             }
             CSV+=row+"\r\n";
         }
-        // console.log(CSV);
         let aLink =document.createElement("a");
         document.body.appendChild(aLink);
         const CSVDataBlob = new Blob(["\uFEFF" + CSV],{type:"text/csv;"});
@@ -662,7 +621,9 @@ window.addEventListener("load",function(){
 
     direction();
     limitClickTime();
-
+    /**
+     * Limit client's click frequency
+     */
     function limitClickTime(){
         let clientButtons=document.querySelectorAll("section i:not(.add-task,.bxs-spreadsheet,.bx-arrow-to-top,.bx-arrow-from-top,.bx-menu,.bx-x,.bx-list-plus,.bx-search)");
         for(let i=0;i<clientButtons.length;i++){
@@ -674,7 +635,7 @@ window.addEventListener("load",function(){
                     clientButtons.forEach(button => {
                         button.classList.remove("unclickable");
                     });
-                },3000)
+                },1500)
             })
         }
     }
@@ -689,53 +650,4 @@ window.addEventListener("load",function(){
     }
 
     changeLocationHref();
-
-    
-    
-
-    // function dragElement(element) {
-    // var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    // if (element) {
-    //         // if present, the header is where you move the DIV from:
-    //         element.onmousedown = dragMouseDown;
-    //     } else {
-    //         // otherwise, move the DIV from anywhere inside the DIV:
-    //         element.onmousedown = dragMouseDown;
-    //     }
-
-    //     function dragMouseDown(e) {
-    //         e = e || window.event;
-    //         e.preventDefault();
-    //         // get the mouse cursor position at startup:
-    //         pos3 = e.clientX;
-    //         pos4 = e.clientY;
-    //         document.onmouseup = closeDragElement;
-    //         // call a function whenever the cursor moves:
-    //         document.onmousemove = elementDrag;
-    //     }
-
-    //     function elementDrag(e) {
-    //         e = e || window.event;
-    //         e.preventDefault();
-    //         // calculate the new cursor position:
-    //         pos1 = pos3 - e.clientX;
-    //         pos2 = pos4 - e.clientY;
-    //         pos3 = e.clientX;
-    //         pos4 = e.clientY;
-    //         // set the element's new position:
-    //         element.style.top = (element.offsetTop - pos2) + "px";
-    //         element.style.left = (element.offsetLeft - pos1) + "px";
-    //     }
-
-    //     function closeDragElement() {
-    //         // stop moving when mouse button is released:
-    //         document.onmouseup = null;
-    //         document.onmousemove = null;
-    //     }
-    // }
-
-    
-    
-    
-
 })

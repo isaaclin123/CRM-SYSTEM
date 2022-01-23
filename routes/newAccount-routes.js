@@ -5,36 +5,41 @@ const userDao = require("../database/userDao.js");
 const saltRounds =10;
 //Setup sanitizer
 const sanitizeHtml = require('sanitize-html');
-const qualifiedCompany=["superchatpal","universityofauckland"];
+// const qualifiedCompany=["superchatpal","universityofauckland"];
 
 /**
- * Create new account
+ * Create new account when companyname is in the database
  */
 router.post("/app/newAccount", async function(req, res){
     let password=sanitizeHtml(req.body.password2);
     let company =sanitizeHtml(req.body.companyName);
     let isQualifiedCompany="false";
+    let qualifiedCompany=await userDao.retrieveAllCompanyPostgre();
+    const allCompanies=[];
+    for(let i=0;i<qualifiedCompany.rows.length;i++){
+        allCompanies.push(qualifiedCompany.rows[i]["company_name"]);
+    }
     company=company.trim().toLowerCase().replace(/\s/g, "");
-    if(qualifiedCompany.includes(company)){
+    if(allCompanies.includes(company)){
         isQualifiedCompany=company;
         let user={
             username:sanitizeHtml(req.body.username),
             first_name:sanitizeHtml(req.body.first_name),
             last_name:sanitizeHtml(req.body.last_name),
-            isSuperAdmin:"",
-            isQualifiedCompany:sanitizeHtml(isQualifiedCompany),
-            jobTitle:sanitizeHtml(req.body.jobTitle),
+            issuperadmin:"",
+            isqualifiedcompany:sanitizeHtml(isQualifiedCompany),
+            jobtitle:sanitizeHtml(req.body.jobTitle),
             email:sanitizeHtml(req.body.email),
-            saltRounds:saltRounds
+            saltrounds:saltRounds
         }
-        console.log(user.first_name);
         try {
             bcrypt.hash(password, saltRounds, async function(err, hash) {
-                user.hashPassword=hash;
-                console.log(user);
-                await userDao.createUser(user);
-            });
-            res.redirect(`/?message=Welcome ${user.username}! Account created successfully,please log in!`);
+                user.hashpassword=hash;
+                const result=await userDao.createUserPostgre(user);
+                if(result){
+                    res.redirect(`/?message=Welcome ${user.username}! Account created successfully,please log in!`);
+                }
+            });  
         } catch (error) {
             console.log(error.message);
             res.redirect(`/newAccount?errorMessage=Error! Cannot create an account, please try again.`)
@@ -61,20 +66,15 @@ router.get("/newAccount",function(req, res){
     
 });
 
-// router.post("/newAccount", async function(req, res){
-
-//     res.redirect("/login");
-// });
 /**
  * Check username availability
  */
  router.get("/app/newAccount", function(req,res){
     const username = sanitizeHtml(req.query.username);
-    console.log(username);
     getUsernames();
     async function getUsernames(){
-        const usernamesOBJ= await userDao.retrieveAllUsernames();
-        console.log(usernamesOBJ);
+        let usernamesOBJ= await userDao.retrieveAllUsernamesPostgre();
+        usernamesOBJ=usernamesOBJ.rows;
         let flag=false;
         if(usernamesOBJ.length>0){
             for (let i=0;i<usernamesOBJ.length;i++){

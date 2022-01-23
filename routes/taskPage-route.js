@@ -4,11 +4,15 @@ const { verifyAuthenticated, addUserToLocals } = require("../middleware/middlewa
 const clientDao = require("../database/clientDao.js");
 const userDao = require("../database/userDao.js");
 const sanitizeHtml = require('sanitize-html');
-
-// router.get('/iframeUserTask',verifyAuthenticated,function(req, res){
-//     res.render("iframeUserTask");
-// } )
-
+function returnDateFormat(dateNumberString){
+    return dateNumberString.substring(0,4)+"-"+dateNumberString.substring(4,6)+"-"+dateNumberString.substring(6,8);
+}
+function returnNumberFormat(dateString){
+    return dateString.replaceAll("-","").padStart(8,"0");
+}
+/**
+ * Render project timeline csv converter page
+ */
 router.get("/task",verifyAuthenticated,function(req,res){
     res.render("task",{
         title:"Task Page",
@@ -17,11 +21,31 @@ router.get("/task",verifyAuthenticated,function(req,res){
     })
 })
 
+/**
+ * Render task management page
+ */
 router.get("/taskManagement",verifyAuthenticated,async function(req,res){
     res.locals.message=req.query.message;
-    res.locals.tasks=await clientDao.retrieveAllTasks();
-    res.locals.clients=await clientDao.retrieveAllClients(res.locals.user.isQualifiedCompany);
-    res.locals.users=await userDao.retrieveAllUsersByCompany(res.locals.user.isQualifiedCompany);
+    let tasks=(await clientDao.retrieveAllTasksPostgre()).rows;
+    for(let i=0;i<tasks.length;i++){
+        tasks[i].task_start_date=returnDateFormat(tasks[i].task_start_date);
+        tasks[i].task_end_date=returnDateFormat(tasks[i].task_end_date);
+        let userName=(await userDao.retrieveUserNameByIDPostgre(tasks[i].userid)).rows[0];
+        if(userName){
+            tasks[i].responsiblePerson=userName.first_name+" "+userName.last_name;
+        }else{
+            tasks[i].responsiblePerson="none";
+        }
+        let client=(await clientDao.retrieveClientNameByIDPostgre(tasks[i].clientid)).rows[0];
+        if(client){
+            tasks[i].clientName=client.first_name+" "+client.last_name;
+        }else{
+            tasks[i].clientName="none";
+        }
+    }
+    res.locals.tasks=tasks;
+    res.locals.clients=(await clientDao.retrieveAllClientsByCompanyPostgre(res.locals.user.isqualifiedcompany)).rows;
+    res.locals.users=(await userDao.retrieveAllUsersByCompanyPostgre(res.locals.user.isqualifiedcompany)).rows;
     res.render("taskManagement",{
         title:"Task Management",
         jsFile:"taskManagementPage",
@@ -29,25 +53,37 @@ router.get("/taskManagement",verifyAuthenticated,async function(req,res){
     }) 
 })
 
+/**
+ * Render "Your tasks" page
+ */
 router.get("/userTasks",verifyAuthenticated,async function(req,res){
     res.locals.message=req.query.message;
-    res.locals.tasks=await clientDao.retrieveTasksByUserID(res.locals.user.id);
+    res.locals.tasks=(await clientDao.retrieveTasksByUserIDPostgre(res.locals.user.id)).rows;
     let tasks=res.locals.tasks;
     res.locals.taskNumber=tasks.length;
     let completedTaskNumber=0;
     let unCompletedTaskNumber=0;
     for(let i=0;i<tasks.length;i++){
-        if(tasks[i].isCompleted==="true"){
+        if(tasks[i].iscompleted==="true"){
             completedTaskNumber++;
-            tasks[i].isCompleted=1;
+            tasks[i].iscompleted=1;
         }else{
             unCompletedTaskNumber++;
-            tasks[i].isCompleted=0;
+            tasks[i].iscompleted=0;
         }
+        tasks[i].task_start_date=returnDateFormat(tasks[i].task_start_date);
+        tasks[i].task_end_date=returnDateFormat(tasks[i].task_end_date);
+        let client=(await clientDao.retrieveClientNameByIDPostgre(tasks[i].clientid)).rows[0];
+        if(client){
+            tasks[i].clientName=client.first_name+" "+client.last_name;
+        }else{
+            tasks[i].clientName="none";
+        }
+
     }
     res.locals.completedTaskNumber=completedTaskNumber;
     res.locals.unCompletedTaskNumber=unCompletedTaskNumber;
-    res.locals.clients=await clientDao.retrieveAllClients(res.locals.user.isQualifiedCompany);
+    res.locals.clients=(await clientDao.retrieveAllClientsByCompanyPostgre(res.locals.user.isqualifiedcompany)).rows;
     res.render("userTaskManagement",{
         title:"Your tasks",
         jsFile:"userTaskManagementPage",
@@ -61,16 +97,18 @@ router.post("/task/createTask",verifyAuthenticated,async function(req,res){
         task_description:sanitizeHtml (req.body.task_description),
         task_start_date:sanitizeHtml (req.body.task_start_date),
         task_end_date:sanitizeHtml (req.body.task_end_date),
-        userID:sanitizeHtml(req.body.userID)||res.locals.user.id,
-        clientID:sanitizeHtml(req.body.clientID),
-        isCompleted:"false"
+        userid:sanitizeHtml(req.body.userID)||res.locals.user.id,
+        clientid:sanitizeHtml(req.body.clientID),
+        iscompleted:"false"
     };
+    task.task_start_date=returnNumberFormat(task.task_start_date);
+    task.task_end_date=returnNumberFormat(task.task_end_date);
     try {
         if(req.body.userID){
-            await clientDao.createClientTask(task);
+            await clientDao.createClientTaskPostgre(task);
             res.redirect("/taskManagement?message=Task created successfully");
         }else{
-            await clientDao.createClientTask(task);
+            await clientDao.createClientTaskPostgre(task);
             res.redirect("/userTasks?message=Task created successfully");
         }
         
@@ -86,14 +124,15 @@ router.post("/task/updateTask",verifyAuthenticated,async function(req,res){
         task_description:sanitizeHtml(req.body.task_description),
         task_start_date:sanitizeHtml(req.body.task_start_date),
         task_end_date:sanitizeHtml (req.body.task_end_date),
-        userID:sanitizeHtml(req.body.userID)||res.locals.user.id,
-        clientID:sanitizeHtml(req.body.clientID),
-        isCompleted:sanitizeHtml(req.body.isCompleted),
-        taskID:sanitizeHtml(req.query.taskID)
+        userid:sanitizeHtml(req.body.userID)||res.locals.user.id,
+        clientid:sanitizeHtml(req.body.clientID),
+        iscompleted:sanitizeHtml(req.body.isCompleted),
+        taskid:sanitizeHtml(req.query.taskID)
     }
-    console.log(task);
+    task.task_start_date=returnNumberFormat(task.task_start_date);
+    task.task_end_date=returnNumberFormat(task.task_end_date);
     try {
-        await clientDao.updateClientTask(task);
+        await clientDao.updateClientTaskPostgre(task);
         if(req.body.userID){
             res.redirect("/taskManagement?message=Task updated successfully");
         }else{
@@ -111,22 +150,9 @@ router.post("/task/updateTask",verifyAuthenticated,async function(req,res){
 })
 
 router.get("/task/clientName",verifyAuthenticated,async function(req,res){
-    const clientName=await clientDao.retrieveClientNameByID(req.query.clientID);
-    res.json(clientName);
+    const clientName=await clientDao.retrieveClientNameByIDPostgre(req.query.clientID);
+    res.json(clientName.rows[0]);
 })
 
-router.post("/contact/deleteTask",verifyAuthenticated,async function(req,res){
-    const taskIDs=req.body;
-    console.log(taskIDs);
-    try {
-        for(let i=0;i<taskIDs.length;i++){
-            await clientDao.deleteTask(taskIDs[i]);
-        }
-        console.log("delete");
-    } catch (error) {
-        console.log(error.message);
-        res.redirect("/taskManagement?message=Error! Can not delete task")
-    }
-    
-});
+
 module.exports=router;

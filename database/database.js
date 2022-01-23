@@ -1,7 +1,18 @@
-const sqlite = require("sqlite");
-const sqlite3 = require("sqlite3");
-const dbPromise = sqlite.open({
-    filename: "./project-database.db",
-    driver: sqlite3.Database
-});
-module.exports = dbPromise;
+
+const Pool = require("pg").Pool;
+
+const credentials = {
+  user: "postgres",
+  host: "localhost",
+  database: "crmSystem",
+  password: "lbs1991930",
+  port: 5432,
+};
+
+const pool=new Pool(credentials);
+
+pool.on("end",()=>{
+    console.log("Database connection end");
+})
+
+module.exports = pool;

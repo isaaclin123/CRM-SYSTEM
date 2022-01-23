@@ -6,13 +6,16 @@ const sanitizeHtml = require('sanitize-html');
 const upload=require('../middleware/multer-uploader');
 const csvConverter=require('convert-csv-to-json');
 
+/**
+ * Render contact page
+ */
 router.get("/contact",verifyAuthenticated,async function(req, res){
-    let Clients=await clientDao.retrieveAllClients(res.locals.user.isQualifiedCompany);
+    let Clients=await clientDao.retrieveAllClientsByCompanyPostgre(res.locals.user.isqualifiedcompany);
     let user=res.locals.user;
+    Clients=Clients.rows;
     Clients=Clients.filter(function(client){
-        return client.belong_company===user.isQualifiedCompany;
+        return client.belong_company===user.isqualifiedcompany;
     })
-    // console.log(Clients);
     res.locals.realClients=Clients;
     res.locals.message=req.query.message;
     res.render("contact",{
@@ -23,6 +26,9 @@ router.get("/contact",verifyAuthenticated,async function(req, res){
     });
 });
 
+/**
+ * create client
+ */
 router.post("/contact/save",verifyAuthenticated,async function(req,res){
     let user=res.locals.user;
     let client={
@@ -38,12 +44,11 @@ router.post("/contact/save",verifyAuthenticated,async function(req,res){
         meet_with:sanitizeHtml(req.body.meet_with),
         notes_on_client:sanitizeHtml(req.body.notes_on_client),
         tag:sanitizeHtml(req.body.tag),
-        belong_company:user.isQualifiedCompany,
+        belong_company:user.isqualifiedcompany,
         progress_status:"Establish contact"
     }
-
     try {
-        await clientDao.createClient(client);
+        await clientDao.createClientPostgre(client);
         res.redirect("/contact?message=Client added!")
     } catch (error) {
         console.log(error.message);
@@ -51,75 +56,76 @@ router.post("/contact/save",verifyAuthenticated,async function(req,res){
     }
     
 })
-
+/**
+ * Delete client
+ */
 router.post("/contact/delete",verifyAuthenticated,async function(req,res){
     if(req.body.clientID){
-        let clientID=req.body.clientID;
+        const clientID=req.body.clientID;
             try {
-                await clientDao.deleteAllClientTasks(clientID);
-                await clientDao.deleteClient(clientID);
-                // console.log("delete");
+                await clientDao.deleteAllClientTasksPostgre(clientID);
+                await clientDao.deleteClientPostgre(clientID);
             } catch (error) {
                 console.log(error.message);
                 res.redirect("/contact?message=Error,can not delete a client!")
             }
-    }else if(req.body){
+    }else if(req.body.length>0){
         let clientIDs=req.body;
-        console.log(clientIDs);
         try {
             for(let i=0;i<clientIDs.length;i++){
-                await clientDao.deleteAllClientTasks(clientIDs[i]);
-                await clientDao.deleteClient(clientIDs[i]);
+                await clientDao.deleteAllClientTasksPostgre(clientIDs[i]);
+                await clientDao.deleteClientPostgre(clientIDs[i]);
             }
-            console.log("delete");
         } catch (error) {
             console.log(error.message);
             res.redirect("/contact?message=Error,can not delete clients!")
         }
-        
     }
-    
-
 })
+/**
+ * Update client details
+ */
 router.post("/contact/edit",verifyAuthenticated,async function(req,res){
     let client=JSON.parse(sanitizeHtml(JSON.stringify(req.body)));
-    console.log(client);
     try {
-        await clientDao.updateClient(client);
+        await clientDao.updateClientPostgre(client);
     } catch (error) {
         console.log(error.message);
         res.redirect("/contact?message=Error,can not edit client information!")
     }
 })
 
+/**Create client task */
 router.post("/contact/createTask",verifyAuthenticated,async function(req,res){
     let clientTask=JSON.parse(sanitizeHtml(JSON.stringify(req.body)));
-    console.log(clientTask, "here");
     try {
-        await clientDao.createClientTask(clientTask);
+        await clientDao.createClientTaskPostgre(clientTask);
     } catch (error) {
         console.log(error.message);
         res.redirect("/contact?message=Error,can not add task!")
     }  
 })
 
+/**
+ * Send client tasks to front end
+ */
 router.post("/contact/getTasks",verifyAuthenticated,async function(req,res){
     let clientID=req.body.clientID;
     try {
-        let tasks=await clientDao.retrieveClientTasksByClientID(clientID);
-        // console.log(tasks);        
-        res.send(tasks);
+        let tasks=await clientDao.retrieveClientTasksByClientIDPostgre(clientID);       
+        res.send(tasks.rows);
     } catch (error) {
         console.log(error.message);
         res.redirect("/contact?message=Error,can not retrieve tasks!")
     }
 })
-
+/**
+ * Delete task
+ */
 router.get("/contact/deleteTask",verifyAuthenticated,async function(req,res){
     let taskID=req.query.taskID;
     try {
-        await clientDao.deleteTask(taskID);
-        // console.log("delete task");
+        await clientDao.deleteTaskPostgre(taskID);
     } catch (error) {
         if(req.query.page){
             console.log(error.message);
@@ -128,28 +134,38 @@ router.get("/contact/deleteTask",verifyAuthenticated,async function(req,res){
             console.log(error.message);
             res.redirect("/contact?message=Error,can not delete task!")
         }
-        
     }
 })
+router.post("/contact/deleteTask",verifyAuthenticated,async function(req,res){
+    const taskIDs=req.body;
+    try {
+        for(let i=0;i<taskIDs.length;i++){
+            await clientDao.deleteTaskPostgre(taskIDs[i]);
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.redirect("/taskManagement?message=Error! Can not delete task")
+    }  
+});
 
-
+/**
+ * Update task's details
+ */
 router.post("/contact/updateTask",verifyAuthenticated,async function(req,res){
     let clientTask=JSON.parse(sanitizeHtml(JSON.stringify(req.body)));
     try {
-        await clientDao.updateClientTask(clientTask);
-        console.log(clientTask,"update");
+        await clientDao.updateClientTaskPostgre(clientTask);
     } catch (error) {
         console.log(error.message);
         res.redirect("/contact?message=Error,can not update task!")
     }
 })
+/**update task completion status */
 router.get("/contact/updateTaskCompleted",verifyAuthenticated,async function(req,res){
-    let taskID=req.query.taskID;
-    let isCompleted=req.query.isCompleted;
-    console.log(isCompleted);
+    const taskID=req.query.taskID;
+    const isCompleted=req.query.isCompleted;
     try {
-        await clientDao.updateIsCompletedTask(taskID,isCompleted);
-        console.log("here");
+        await clientDao.updateIsCompletedTaskPostgre(taskID,isCompleted);
     } catch (error) {
         if(req.query.page){
             console.log(error.message);
@@ -157,8 +173,7 @@ router.get("/contact/updateTaskCompleted",verifyAuthenticated,async function(req
         }else{
             console.log(error.message);
             res.redirect("/contact?message=Error,can not update task!");
-        }
-       
+        } 
     }
 
 })
@@ -170,10 +185,7 @@ router.post("/uploadCSV",verifyAuthenticated,upload.single("CSVFile"),async func
             res.redirect("/contact?message=Error,Please only upload CSV file!")
         }else{
             try {
-        
-                // console.log(CSVFile);
                 let CSVData=csvConverter.fieldDelimiter(',').getJsonFromCsv(`${req.file.path}`);
-        
                 for(let i=0;i<CSVData.length;i++){
                     let tableData=Object.values(CSVData[i]);
                     let client={
@@ -189,12 +201,10 @@ router.post("/uploadCSV",verifyAuthenticated,upload.single("CSVFile"),async func
                         progress_status:tableData[9].replace(/^"(.*)"$/, '$1')||"Establish contact",
                         notes_on_client:tableData[10].replace(/^"(.*)"$/, '$1'),
                         meet_with:tableData[11].replace(/^"(.*)"$/, '$1'),
-                        tag:tableData[12].replace(/^"(.*)"$/, '$1')||user.first_name+" "+user.last_name,
-                        belong_company:user.isQualifiedCompany
-                        
+                        tag:tableData[12].replace(/^"(.*)"$/, '$1'),
+                        belong_company:user.isqualifiedcompany
                     };
-                    console.log(client);
-                    await clientDao.createClient(client);
+                    await clientDao.createClientPostgre(client);
                 };
                 res.redirect("/contact?message=file upload and client added successfully!")
             } catch (error) {
@@ -205,10 +215,5 @@ router.post("/uploadCSV",verifyAuthenticated,upload.single("CSVFile"),async func
         }
  
 });
-
-
-
-
-
 
 module.exports = router;

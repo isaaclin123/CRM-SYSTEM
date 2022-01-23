@@ -8,8 +8,7 @@ window.addEventListener("load",function(){
     deleteCookie("authToken");
     sanitizer();
     var stateObj = { foo: 'bar' };
-    history.pushState(stateObj, 'page 2', '/'); 
-    // history.replaceState(stateObj,null,"/")  ; 
+    history.pushState(stateObj, 'page 2', '/');  
     
 })
 

@@ -30,21 +30,24 @@ const sanitizeHtml = require('sanitize-html');
  router.post("/app/login",async function(req,res){
     const username=sanitizeHtml(req.body.username);
     const password=sanitizeHtml(req.body.password);
-    let hash =await userDao.retrieveHashByUsername(username);
-    if(hash==undefined){
-        hash={hashPassword:0};
+    let hash =await userDao.retrieveHashByUsernamePostgre(username);
+    if(hash.rows.length===0){
+        hash=0;
+    }else{
+        hash=hash.rows[0]["hashpassword"];
     }
-    bcrypt.compare(password, hash.hashPassword, async function(err, result) {
+    bcrypt.compare(password, hash, async function(err, result) {
         haveAccess(result);
       });
       async function haveAccess(result){
         if (result) {
             // Auth success - give that user an authToken, save the token in a cookie, and redirect to the homepage.
-            const user = await userDao.retrieveUserWithHashPassword(hash.hashPassword);
+            let user = await userDao.retrieveUserWithHashPasswordPostgre(hash);
+            user=user.rows[0];
             const authToken = uuid();
-            user.authToken = authToken;
-            await userDao.updateUser(user);
-            res.cookie("authToken", authToken);
+            user.authtoken = authToken;
+            await userDao.updateUserPostgre(user);
+            res.cookie("authToken", authToken,{maxAge:3600000});
             res.locals.user = user;
             res.redirect("/home");
         }else {

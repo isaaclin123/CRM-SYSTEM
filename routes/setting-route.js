@@ -17,32 +17,37 @@ router.get("/setting",verifyAuthenticated,function(req, res){
     })
 })
 
+/**
+ * Send user details to the front end
+ */
 router.get("/user",verifyAuthenticated,async function(req,res){
     if(req.query.id){
-
-        let user =await userDao.retrieveUserById(req.query.id);
-        res.json(user)
-   
+        let user =await userDao.retrieveUserByIdPostgre(req.query.id);
+        res.json(user.rows[0])
     }else{
-
         res.json(res.locals.user);
     }
   
 })
 
+/**
+ * Send all users to front end
+ */
 router.get("/users",verifyAuthenticated,async function(req,res){
-    let allUsers= await userDao.retrieveAllUsersByCompany(res.locals.user.isQualifiedCompany);
-    res.json(allUsers);
+    let allUsers= await userDao.retrieveAllUsersByCompanyPostgre(res.locals.user.isqualifiedcompany);
+    res.json(allUsers.rows);
 })
 
+/**
+ * Check username availability excluding current user's username
+ */
 router.get("/checkUser",verifyAuthenticated,function(req,res){
     const username = sanitizeHtml(req.query.username);
     const currentUserName=res.locals.user.username;
-    console.log(username);
     getUsernames();
     async function getUsernames(){
-        const usernamesOBJ= await userDao.retrieveAllUsernames();
-        console.log(usernamesOBJ);
+        let usernamesOBJ= await userDao.retrieveAllUsernamesPostgre();
+        usernamesOBJ=usernamesOBJ.rows;
         let flag=false;
         if(usernamesOBJ.length>0){
             for (let i=0;i<usernamesOBJ.length;i++){
@@ -61,14 +66,20 @@ router.get("/checkUser",verifyAuthenticated,function(req,res){
         }
     }
 })
+
+/**
+ * Check user's current password
+ */
 router.post("/checkOldPassword",verifyAuthenticated,async function(req,res){
     const oldPassword=sanitizeHtml(req.body.oldPassword);
     const username=res.locals.user.username;
-    let hash =await userDao.retrieveHashByUsername(username);
-    if(hash==undefined){
-        hash={hashPassword:0};
+    let hash =await userDao.retrieveHashByUsernamePostgre(username);
+    if(hash.rows.length===0){
+        hash=0;
+    }else{
+        hash=hash.rows[0]["hashpassword"];
     }
-    bcrypt.compare(oldPassword, hash.hashPassword, async function(err, result) {
+    bcrypt.compare(oldPassword, hash, async function(err, result) {
         if(result){
             res.send("true");
         }else{
@@ -77,16 +88,18 @@ router.post("/checkOldPassword",verifyAuthenticated,async function(req,res){
       });
 })
 
+/**
+ * Update user's profile
+ */
 router.post("/updateUser",verifyAuthenticated,async function(req,res){
     const user =res.locals.user;
-    console.log(req.body);
     user.username=sanitizeHtml(req.body.username);
     user.first_name=sanitizeHtml(req.body.first_name);
     user.last_name=sanitizeHtml(req.body.last_name);
-    user.jobTitle=sanitizeHtml(req.body.jobTitle);
+    user.jobtitle=sanitizeHtml(req.body.jobTitle);
     user.email=sanitizeHtml(req.body.email);
     try {
-        await userDao.updateUser(user);
+        await userDao.updateUserPostgre(user);
         res.redirect("/setting?message=Update successfully");
     } catch (error) {
         console.log(error.message)
@@ -94,32 +107,38 @@ router.post("/updateUser",verifyAuthenticated,async function(req,res){
     }
 })
 
-
+/**
+ * Update user's passowrd
+ */
 router.post("/updateUserPassword",verifyAuthenticated,function(req,res){
     const password =sanitizeHtml(req.body.password2);
     let user=res.locals.user;
     try {
         bcrypt.hash(password, saltRounds, async function(err, hash) {
-            user.hashPassword=hash;
-            await userDao.updateUser(user);
+            user.hashpassword=hash;
+            await userDao.updateUserPostgre(user);
         });
-        res.redirect("/setting?message=Update successfully");
+        res.redirect("/setting?message=Update password successfully");
     } catch (error) {
         console.log(error.message);
-        res.redirect("/setting?message=Error! can not update");
+        res.redirect("/setting?message=Error! can not update password");
     }
 })
 
+/**
+ * Delete user
+ */
 router.get("/deleteUser",verifyAuthenticated,async function(req,res){
     let userID;
     if(req.query.userID){
         userID=req.query.userID;
         try {
-            await userDao.deleteUser(userID);
-            let userTasks=await clientDao.retrieveTasksByUserID(userID);
+            let userTasks=await clientDao.retrieveTasksByUserIDPostgre(userID);
+            userTasks=userTasks.rows;
             for(let i=0;i<userTasks.length;i++){
-                await clientDao.updateDeletedUserID(-1,userTasks[i].id);
+                await clientDao.updateDeletedUserIDPostgre(-1,userTasks[i].id);
             }
+            await userDao.deleteUserPostgre(userID);
             res.redirect("/manageUsers?message=User deleted!");
         } catch (error) {
             console.log(error.message);
@@ -128,11 +147,12 @@ router.get("/deleteUser",verifyAuthenticated,async function(req,res){
     }else{
         userID=res.locals.user.id;
         try {
-            await userDao.deleteUser(userID);
-            let userTasks=await clientDao.retrieveTasksByUserID(userID);
+            let userTasks=await clientDao.retrieveTasksByUserIDPostgre(userID);
+            userTasks=userTasks.rows;
             for(let i=0;i<userTasks.length;i++){
-                await clientDao.updateDeletedUserID(-1,userTasks[i].id);
+                await clientDao.updateDeletedUserIDPostgre(-1,userTasks[i].id);
             }
+            await userDao.deleteUserPostgre(userID);
             res.redirect("/");
         } catch (error) {
             console.log(error.message);
@@ -140,6 +160,17 @@ router.get("/deleteUser",verifyAuthenticated,async function(req,res){
         }
     }
     
+})
+router.post("/AddQualifiedCompany",verifyAuthenticated,async function(req,res){
+    let company=req.body.newCompany;
+    company=company.trim().toLowerCase().replace(/\s/g, "");
+    try {
+        await clientDao.addCompanyPostgre(company);
+        res.redirect(`/setting?message=Company ${req.body.newCompany} created successfully`);
+    } catch (error) {
+        console.log(error.message);
+        res.redirect("/setting?message=Error! Company already exist!")
+    }
 })
 
 module.exports = router;

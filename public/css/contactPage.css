@@ -38,6 +38,7 @@
     float: right;
     margin-right: 0px;
     background-color: none;
+
  }
 
 
@@ -72,32 +73,33 @@
 
 @media screen and (max-width: 600px) {
   #content-container {
-    display: grid;
-    grid-template-columns:1fr !important;
-    grid-template-rows: auto;
-    grid-template-areas:
-      "msg"
-      "co"
-      "se"
-      "st"
-      "form"
-      "table" !important;
-  }
-    #add-form, .direction {
+      display: grid;
+      grid-template-columns:1fr !important;
+      grid-template-rows: auto;
+      grid-template-areas:      "msg"      "co"      "se"      "st"      "form"      "table" !important;
+}
+    .direction {
       transform: scale(0.8);
       -webkit-transform: scale(0.8);
       -moz-transform: scale(0.8);
       -ms-transform: scale(0.8);
       -o-transform: scale(0.8);
     }
+    #add-form {
+      transform: scale(0.7) translateX(-10%) translateY(-20%);
+      -webkit-transform: scale(0.7) translateX(-10%) translateY(-20%);
+      -moz-transform: scale(0.7) translateX(-10%) translateY(-20%);
+      -ms-transform: scale(0.7) translateX(-10%) translateY(-20%);
+      -o-transform: scale(0.7) translateX(-10%) translateY(-20%);
+}
     #client-table{
-      transform: scale(0.9);
-      -webkit-transform: scale(0.9);
-      -moz-transform: scale(0.9);
-      -ms-transform: scale(0.9);
-      -o-transform: scale(0.9);
+      transform: scale(0.9) translateX(-10%);
+      -webkit-transform: scale(0.9) translateX(-10%);
+      -moz-transform: scale(0.9) translateX(-10%);
+      -ms-transform: scale(0.9) translateX(-10%);
+      -o-transform: scale(0.9) translateX(-10%);
       margin: 0 !important;
-    }
+}
     .dialogBox, .taskDiv, .taskBox, .uploadDiv {
       transform: scale(0.5);
       -webkit-transform: scale(0.5);
@@ -107,7 +109,14 @@
       position: fixed;
       top: 3% !important;
       left: -13% !important;
-}
+      z-index:9999;
+  }
+    .dialogBox::before,.taskDiv::before,.taskBox::before, .uploadDiv::before{
+      top: -500% !important;
+      left:-500% !important;
+      height: 1000% !important;
+      width: 1000% !important;
+    }
 
     .none-when-extra-small-screen {
       /* width: 0;
@@ -355,6 +364,7 @@ button[type="reset"]:hover,
   overflow-y: hidden;
   /* min-width: 220px; */
   transition: all ease .4s;
+  z-index: 999;
   
 }
 

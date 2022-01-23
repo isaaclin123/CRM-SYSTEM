@@ -10,11 +10,12 @@
                 <li >Edit profile<i class='bx bx-right-arrow-circle'></i></li>
                 <li >Edit password<i class='bx bx-right-arrow-circle'></i></li>
                 <li>Delete Account<i class='bx bx-right-arrow-circle'></i></li>
+                {{#if user.issuperadmin}}
+                <li>Add Company<i class='bx bx-right-arrow-circle'></i></li>
+                {{/if}}
             </ul>
         </div>
-        <div class="setting-content">
-           
-        </div>
+        <div class="setting-content"></div>
     </div>
 </div>
 <div class="dialogBox" id="dialogBox">

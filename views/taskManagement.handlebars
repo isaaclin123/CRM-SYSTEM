@@ -94,20 +94,19 @@
                                     <th class="none-when-extra-small-screen">End date</th>
                                      <th class="none-when-extra-small-screen">Is completed</th>
                                     <th class="none-when-extra-small-screen">Task description</th>
-                                    <th><i class='bx bx-grid-small'title="Select clients"></i><i class='bx bx-x-circle delete-selected-users' title="Delete selected clients"></i></th>
+                                    <th><i class='bx bx-grid-small'title="Select tasks"></i><i class='bx bx-x-circle delete-selected-users' title="Delete selected tasks"></i></th>
                                 </tr>
                         </thead>
                         <tbody>
                                {{#each tasks}}
-                            <tr data-taskID="{{this.id}}" data-userID="{{this.userID}}">
+                            <tr data-taskID="{{this.id}}" data-userID="{{this.userid}}">
                                <td >{{this.task_name}}</td>
-                               <td data-clientID="{{this.clientID}}"></td>
-                               <td data-userID="{{this.userID}}"></td>
+                               <td data-clientID="{{this.clientid}}">{{this.clientName}}</td>
+                               <td data-userID="{{this.userid}}">{{this.responsiblePerson}}</td>
                                <td class="none-when-extra-small-screen">{{this.task_start_date}}</td>
                                <td class="none-when-extra-small-screen">{{this.task_end_date}}</td>
-                               <td class="none-when-extra-small-screen">{{this.isCompleted}}</td>
+                               <td class="none-when-extra-small-screen">{{this.iscompleted}}</td>
                                <td class="none-when-extra-small-screen">{{this.task_description}}</td>
-                               {{!-- <td class="uneditable tag" >{{this.tag}}</td> --}}
                                <td class="managementTools" data-taskID="{{this.id}}">
                                     <i class='bx bx-task-x' title="Delete Task"></i>
                                     <i class='bx bxs-edit'  title="Edit client information"></i>

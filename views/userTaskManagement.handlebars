@@ -71,11 +71,11 @@
     </div>
     <div class="allTasks-container">
         {{#each tasks}}
-        <div class="eachTask" data-taskID="{{this.id}}" data-complete="{{this.isCompleted}}">
+        <div class="eachTask" data-taskID="{{this.id}}" data-complete="{{this.iscompleted}}">
             <div class="card">
                 <div class="card__side card__side--front" data-taskID="{{this.id}}">
                     <i class='bx bx-directions' data-taskID="{{this.id}}" title="flip card"></i>
-                    {{#if this.isCompleted}}
+                    {{#if this.iscompleted}}
                     <i class='bx bxs-star'></i>
                     {{/if}}
                     <div class="card__title">
@@ -84,7 +84,7 @@
 
                     <div class="card__details" data-taskID="{{this.id}}" >
                         <ul>
-                                <li data-clientID="{{this.clientID}}">{{this.clientID}}</li>
+                                <li data-clientID="{{this.clientid}}">{{this.clientName}}</li>
                                 <li>Start date: {{this.task_start_date}}</li>
                                 <li>End date: {{this.task_end_date}}</li>
                                 <li>{{this.task_description}}</li>
@@ -94,10 +94,10 @@
                 <div class="card__side card__side--back " data-taskID="{{this.id}}">
                     <i class='bx bx-directions' data-taskID="{{this.id}}"></i>
                     <i class='bx bx-x'></i>
-                    <div class="card__cta" data-taskID="{{this.id}}" data-complete="{{this.isCompleted}}">
+                    <div class="card__cta" data-taskID="{{this.id}}" data-complete="{{this.iscompleted}}">
                         <a  class="btn btn--white delete-task">Delete task</a>
                         <a  class="btn btn--white update-complete">
-                            {{#if this.isCompleted}}
+                            {{#if this.iscompleted}}
                             Set Uncompleted
                             {{else}}
                             Set Completed

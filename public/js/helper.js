@@ -1,3 +1,6 @@
+/**
+ * Check username's availability from database
+ */
 function checkUsernameAvailability(){
     let submitButton =document.querySelector("#submitButton");
     let url;
@@ -15,7 +18,6 @@ function checkUsernameAvailability(){
      request.onreadystatechange=function(){ 
          if((request.readyState==4)&&(request.status==200)){
              let str =request.responseText;
-            //  console.log(str);
              if(str=="true"){
                 usernameHintSpan.style.left=0;
                 usernameHintSpan.style.top="25px";
@@ -41,7 +43,9 @@ function checkUsernameAvailability(){
      // request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
      request.send();
  };
-
+/**
+ * Test if two passwords match the requirement and are the same
+ */
  function test(){
     let submitButton =document.querySelector("#submitButton");
     let password2Element = document.querySelector("#password2");
@@ -52,7 +56,6 @@ function checkUsernameAvailability(){
     const passwordPattern =/^(?=.{8,})(?![^a-zA-Z]+$)(?!\D+$)/;
     let usernameHintSpan =document.querySelector("#usernameAvailability");
     let checkOldPassword=document.querySelector("#checkOldPassword");
-    // console.log(usernameHintSpan.innerHTML);
     passwordCheck.style.display="inline";
     if((password1===password2)&&(passwordPattern.test(password1)==true)&&(passwordPattern.test(password2)==true)){
         passwordCheck.innerHTML= "&#10003;";
@@ -82,7 +85,9 @@ function checkUsernameAvailability(){
         } 
     }   
 };
-
+/**
+ * Sanitize the input
+ */
 function sanitizer(){
     let inputs =document.getElementsByTagName("input");
     for(let i=0;i<inputs.length;i++){
@@ -91,7 +96,9 @@ function sanitizer(){
         })  
     }
 }
-
+/**
+ * change the location href base on different url
+ */
 function changeLocationHref(){
     let msg =document.querySelector("#msg h3");
     if(msg||location.href.indexOf("userID=")!==-1||location.href.indexOf("login")===-1){
@@ -121,7 +128,9 @@ function changeLocationHref(){
         // This will replace the current entry in the browser's history, without reloading
     }
 }
-
+/**
+ * go to the top or the bottom of the page
+ */
 function direction(){
     document.querySelector(".direction i:nth-child(1)").addEventListener("click",function(){
         window.scrollTo(0,0);
@@ -130,13 +139,17 @@ function direction(){
         window.scrollTo(0,document.body.scrollHeight);
     })
 }
-
+/**
+ * Get user from backend
+ */
 async function getUser(){
     const userObj =await fetch(`/user`);
     const user= await userObj.json();
     return user;
 }
-
+/**
+ * Get user from backend
+ */
 async function getUserByID(id){
     let user;
     try {
@@ -148,14 +161,20 @@ async function getUserByID(id){
     
     return user;
 }
+/**
+ * 
+ * @returns all the users
+ */
 async function getAllUsers(){
     const userObj =await fetch(`/users`);
-    console.log(userObj);
     const users= await userObj.json();
-    console.log(users);
     return users;
 }
-
+/**
+ * 
+ * @param {*} clientID 
+ * @returns client
+ */
 async function getClientNameByID(clientID){
     let clientName;
     try {
@@ -166,10 +185,15 @@ async function getClientNameByID(clientID){
     }
     return clientName;
 }
-
+/**
+ * 
+ * @returns toggle menu
+ */
 function toggleManagementTools(){
     const managementTools=document.querySelectorAll(`.managementTools i`), checkboxes=document.querySelectorAll(`input[type="checkbox"]`),delete_selected_users=document.querySelector(".delete-selected-users"),grid=document.querySelector(".bx-grid-small");
-    delete_selected_users.classList.add("hide");
+    if(delete_selected_users){
+        delete_selected_users.classList.add("hide");
+    }
     checkboxes.forEach(checkbox=>{checkbox.classList.add("hide")});
     function displayManagementTools(){
         grid.classList.remove("hide");
@@ -181,18 +205,28 @@ function toggleManagementTools(){
             checkbox.classList.add("hide");
         });
     }
-    grid.addEventListener("click",function(event){
-        managementTools.forEach(element=>{
-            element.classList.add("hide");
+    if(grid){
+        grid.addEventListener("click",function(event){
+            managementTools.forEach(element=>{
+                element.classList.add("hide");
+            })
+            checkboxes.forEach(checkbox=>{checkbox.classList.remove("hide")});
+            delete_selected_users.classList.remove("hide"); 
+            grid.classList.add("hide") 
         })
-        checkboxes.forEach(checkbox=>{checkbox.classList.remove("hide")});
-        delete_selected_users.classList.remove("hide"); 
-        grid.classList.add("hide") 
-    })
+    }
+   
 
     return {displayManagementTools:displayManagementTools,delete_selected_users:delete_selected_users,checkboxes:checkboxes};
 }
-
+/**
+ * 
+ * @param {*} rowAttribute 
+ * @param {*} buttonOrder 
+ * @param {*} userID 
+ * @param {*} clientID 
+ * search the client of task
+ */
 async function search(rowAttribute,buttonOrder,userID,clientID){
     const searchInput=document.querySelector("#search-box input");
     const searchIcon=document.querySelector("#search-box i");
@@ -287,8 +321,20 @@ async function search(rowAttribute,buttonOrder,userID,clientID){
         
         return user;
     }
+    async function getClientNameByID(clientID){
+        let clientName;
+        try {
+            const clientObj =await fetch(`/task/clientName?clientID=${clientID}`);
+            clientName= await clientObj.json();
+        } catch (error) {
+            console.log(error.message);
+        }
+        return clientName;
+    }
 }
-
+/**
+ * Toggle menu
+ */
 function toggleMenu(){
     const menuButton=document.querySelector("#buttons .bx-menu");
     const navList=document.querySelector("#buttons");

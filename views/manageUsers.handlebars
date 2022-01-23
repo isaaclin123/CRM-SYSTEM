@@ -15,7 +15,7 @@
             {{#each users}}
             <li data-userID="{{this.id}}">
                 {{this.first_name}}
-                {{#if this.isSuperAdmin}}
+                {{#if this.issuperadmin}}
                 <i class='bx bxs-certification'></i>
                 {{/if}}
             </li>
@@ -30,7 +30,7 @@
                 <div class="card__side card__side--front">
                     <div class="card__title">
                     <h4 class="card__heading">{{this.first_name}}</h4>
-                    {{#if this.isSuperAdmin}}
+                    {{#if this.issuperadmin}}
                     <i class='bx bxs-certification'></i>
                     {{/if}}
                     </div>
@@ -40,7 +40,7 @@
                             <li>{{this.username}}</li>
                             <li>{{this.first_name}}</li>
                             <li>{{this.last_name}}</li>
-                            <li>{{this.jobTitle}}</li>
+                            <li>{{this.jobtitle}}</li>
                             <li>{{this.email}}</li>
                         </ul>
                     </div>
@@ -50,7 +50,7 @@
                     <div class="card__cta" data-userID="{{this.id}}">
                         <a  class="btn btn--white delete-user">Delete user</a>
                         <a  class="btn btn--white update-admin">
-                            {{#if this.isSuperAdmin}}
+                            {{#if this.issuperadmin}}
                             Unset admin
                             {{else}}
                             Set as admin

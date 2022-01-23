@@ -94,14 +94,21 @@
         -ms-transform: scale(0.8);
         -o-transform: scale(0.8);
       }
+      #add-form{
+        transform: scale(0.7) translateX(-10% ) translateY(-10%);
+        -webkit-transform: scale(0.7) translateX(-10% ) translateY(-10%);
+        -moz-transform: scale(0.7) translateX(-10% ) translateY(-10%);
+        -ms-transform: scale(0.7) translateX(-10% ) translateY(-10%);
+        -o-transform: scale(0.7) translateX(-10% ) translateY(-10%);
+}
       #task-table {
-        transform: scale(0.9);
-        -webkit-transform: scale(0.9);
-        -moz-transform: scale(0.9);
-        -ms-transform: scale(0.9);
-        -o-transform: scale(0.9);
+        transform: scale(0.9) translateX(-10%);
+        -webkit-transform: scale(0.9) translateX(-10%);
+        -moz-transform: scale(0.9) translateX(-10%);
+        -ms-transform: scale(0.9) translateX(-10%);
+        -o-transform: scale(0.9) translateX(-10%);
         margin: 0 !important;
-      }
+}
       .edit_task {
         transform: scale(0.5);
         -webkit-transform: scale(0.5);
@@ -111,6 +118,12 @@
         position: fixed;
         top: 3% !important;
         left: -13% !important;
+      }
+      .dialogBox::before,.edit_task::before {
+        top: -500% !important;
+        left:-500% !important;
+        height: 1000% !important;
+        width: 1000% !important;
       }
 
       .none-when-extra-small-screen {
@@ -122,6 +135,9 @@
       }
       #contact-bkg h1 {
         font-size: 30px !important;
+      }
+      input {
+        max-width: 150px !important;
       }
   }
 
@@ -242,6 +258,9 @@
     border-bottom: none;
     margin:0 auto;
     margin-bottom: 20px;
+  }
+  form .txtfield:nth-child(3),form .txtfield:nth-child(4){
+    min-width: 120px !important;
   }
   
   .txtfield input {

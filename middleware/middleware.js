@@ -5,14 +5,14 @@ const userDao = require("../database/userDao.js");
  * A global middleware to add user to locals after logging in 
  */
 async function addUserToLocals(req, res, next) {
-    const user = await userDao.retrieveUserWithAuthToken(req.cookies.authToken);
-    // console.log("1 middleware---user is "+user);
+    let user = await userDao.retrieveUserWithAuthTokenPostgre(req.cookies.authToken);
+        user=user.rows[0];
         res.locals.user = user;
         if(user){
-            if(user.isSuperAdmin!=='1'){
+            if(user.issuperadmin!=='1'){
                 res.locals.admin=0;
                 // console.log(res.locals.admin);
-            }else if(user.isSuperAdmin==='1'){
+            }else if(user.issuperadmin==='1'){
                res.locals.admin=1; 
             }
         }

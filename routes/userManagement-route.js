@@ -3,10 +3,13 @@ const router = express.Router();
 const { verifyAuthenticated } = require("../middleware/middleware.js");
 const userDao = require("../database/userDao.js");
 
+/**
+ * Render user management page with the users in the current company
+ */
 router.get("/manageUsers",verifyAuthenticated,async function(req, res){
-    let users =await userDao.retrieveAllUsersByCompany(res.locals.user.isQualifiedCompany);
+    let users =await userDao.retrieveAllUsersByCompanyPostgre(res.locals.user.isqualifiedcompany);
     res.locals.message=req.query.message;
-    res.locals.users=users;
+    res.locals.users=users.rows;
     res.render("manageUsers",{
         title:"Manage users",
         jsFile:"MangeUsersPage",
@@ -15,10 +18,13 @@ router.get("/manageUsers",verifyAuthenticated,async function(req, res){
     })
 })
 
+/**
+ * Update the user's admin status
+ */
 router.post("/updateAdmin",verifyAuthenticated,async function(req,res){
     const user=req.body;
     try {
-        await userDao.updateUser(user);
+        await userDao.updateUserPostgre(user);
         /**
          * The problem might not lie with the backend, but with the frontend. If you are using AJAX to send the POST request, it is specifically designed to not change your url.
          */

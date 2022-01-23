@@ -1,5 +1,8 @@
-import {changeLocationHref,getClientNameByID} from "./helper.js";
+import {changeLocationHref} from "./helper.js";
 window.addEventListener("load",function(){
+    /**
+     * redirect user to the different page when clicking different item
+     */
     document.querySelector(".uncompleted-task span").addEventListener("click",()=>{
         setBackwardPage();
         location.replace("/userTasks");
@@ -18,9 +21,10 @@ window.addEventListener("load",function(){
             dialogBox.classList.remove("display");
         })
     }
-    
+    /**
+     * Hide the due tasks dialogbox after login
+     */
     if(location.href.indexOf("login")===-1){
-        console.log("here");
         setTimeout(()=>{
             dialogBox.classList.add("display");},1000);
             redirectButton.addEventListener("click",()=>{
@@ -30,6 +34,9 @@ window.addEventListener("load",function(){
             })
         cancel();  
     }
+    /**
+     * Display the due tasks dialogbox when clicking the bell
+     */
     const bell=document.querySelector(".notification");
     bell.addEventListener("click",()=>{
         dialogBox.classList.add("display");
@@ -40,18 +47,21 @@ window.addEventListener("load",function(){
         })
         cancel(); 
     })
-
+    /**
+     * Redirect to the contact list page when click on the client's name
+     */
     const sliderClients=document.querySelectorAll(".slider-container h3");
     sliderClients.forEach(client=>{
         client.addEventListener("click",(event)=>{
             let clientID=event.target.getAttribute("data-clientID");
-            console.log(event.target);
             setBackwardPage();
             location.replace(`/contact?clientID=${clientID}`);
 
         })
     })
-    
+    /**
+     * Push the current page to the browser history
+     */
     function setBackwardPage(){
         history.pushState(null, 'home page', '/home?login=1'); 
     }

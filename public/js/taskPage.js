@@ -10,7 +10,6 @@ window.addEventListener('load', function(){
     let startDate;
     startDateDiv.addEventListener("input",function(){
         startDate=new Date(startDateDiv.value);
-        // console.log(startDate)
 
     })
     let taskDiv =document.getElementById("project-task");
@@ -43,7 +42,6 @@ window.addEventListener('load', function(){
         let duration=0;
         let temp;
         let tempSet=new Set();
-        // console.log(tempSet);
         let startTime=document.getElementById("start-time").value;
         let endTime=document.getElementById("end-time").value;
         for(let i=0;i<taskArray.length;i++){
@@ -56,7 +54,6 @@ window.addEventListener('load', function(){
                 }
                 tempSet.add(task);
                 duration=parseInt(taskAndDuration[1]);
-                // console.log(task,duration,startDate);
                 temp=startDate;
                 if(temp=="Invalid Date"){
                     tBody.innerHTML="<b >Invalid date!!! Choose a start date or enter the durations of your task</b>"
@@ -81,8 +78,6 @@ window.addEventListener('load', function(){
         endTimeCell=document.querySelectorAll(".end-time");
         for(let i=0;i<startTimeCell.length;i++){
             startTimeCell[i].addEventListener("input",function(event){
-                // console.log(event.target.textContent);
-                // console.log(checkTime.test(event.target.textContent));
                 if(checkTime.test(event.target.textContent)){
                     modifiedStartTime=HtmlSanitizer.SanitizeHtml(event.target.textContent);
                 }else{
@@ -90,14 +85,10 @@ window.addEventListener('load', function(){
                 }
                 startTimeRow=event.target.getAttribute("data-startTime-row");
                 localStorage.setItem("startTimeTD"+startTimeRow,modifiedStartTime);
-                // console.log(modifiedStartTime);
-                // console.log(startTimeRow);
             })
         }
         for(let i=0;i<endTimeCell.length;i++){
             endTimeCell[i].addEventListener("input",function(event){
-                // console.log(event.target.textContent);
-                // console.log(checkTime.test(event.target.textContent));
                 if(checkTime.test(event.target.textContent)){
                     modifiedEndTime=HtmlSanitizer.SanitizeHtml(event.target.textContent);
                 }else{
@@ -105,23 +96,9 @@ window.addEventListener('load', function(){
                 }
                 endTimeRow=event.target.getAttribute("data-endTime-row");
                 localStorage.setItem("endTimeTD"+endTimeRow,modifiedEndTime);
-                // console.log(modifiedEndTime);
-                // console.log(endTimeRow);
                 
             })
         }
-        
-        // startTimeCell.forEach(td => {
-        //     if(startTime){
-        //         td.innerHTML=localStorage.getItem("startTimeTD"+i)==undefined?startTime:localStorage.getItem("startTimeTD"+i);
-        //     }
-        // });
-        // endTimeCell.forEach(td => {
-        //     if(endTime){
-        //         td.innerHTML=endTime;
-        //     }
-        // });
-
     })
 
 
@@ -142,7 +119,6 @@ window.addEventListener('load', function(){
     exportButton.addEventListener("click",function(){
         CSVData=[];
         convertTableDataToArray("data");
-        console.log(CSVData);
         let row ="",CSV="";
         for(let rows of CSVData){
             row="";
@@ -151,7 +127,6 @@ window.addEventListener('load', function(){
             }
             CSV+=row+"\r\n";
         }
-        console.log(CSV);
         let aLink =document.createElement("a");
         document.body.appendChild(aLink);
         const CSVDataBlob = new Blob(["\uFEFF" + CSV],{type:"text/csv;"});

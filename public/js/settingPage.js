@@ -1,9 +1,14 @@
 
-import {checkUsernameAvailability,test,sanitizer,changeLocationHref} from "./helper.js";
+import {checkUsernameAvailability,test,sanitizer,changeLocationHref,getUser} from "./helper.js";
 window.addEventListener("load",function(){
+    
     sanitizer();
     let navLists =document.querySelectorAll(".nav ul li");
     let setting_content=document.querySelector(".setting-content");
+    
+    /**
+     * Change the nav list's background when clicking
+     */
     navLists[0].classList.add("click-background");
     navLists.forEach(element => {
         element.addEventListener("click",function(event){
@@ -19,7 +24,13 @@ window.addEventListener("load",function(){
             },300)
         })
     })
-    editProfile();
+    /**
+     * Edit user's profile
+     */
+    if(!this.location.href.includes("Company")&&!this.location.href.includes("password")){
+        editProfile();
+    }
+    
     async function editProfile(){
         const user=await getUser();
         setting_content.innerHTML=`
@@ -45,14 +56,14 @@ window.addEventListener("load",function(){
             </div>
 
             <div class = "txtfield">
-                <input type="text" name="companyName" id="companyName" required value="${user.isQualifiedCompany}" disabled>
+                <input type="text" name="companyName" id="companyName" required value="${user.isqualifiedcompany}" disabled>
                 <span></span>
                 <label for="companyName">Company Name:</label>
                 <alert class = "sys-message" id="qualifiedCompany"></alert>
             </div>
 
             <div class = "txtfield">
-                <input type="text" name="jobTitle" id="jobTitle" required value="${user.jobTitle}">
+                <input type="text" name="jobTitle" id="jobTitle" required value="${user.jobtitle}">
                 <label for="jobTitle">Job Title:</label>
             </div>
             <div class = "txtfield">
@@ -70,7 +81,13 @@ window.addEventListener("load",function(){
     navLists[0].addEventListener("click",function(){
         editProfile();
     })
+    /**
+     * Check and update user's password
+     */
     navLists[1].addEventListener("click",function(){
+        updatePassword();
+    })
+    function updatePassword(){
         setting_content.innerHTML=`
         <form action="/updateUserPassword" method="POST" id="my_form">
             <div class = "txtfield">
@@ -87,7 +104,7 @@ window.addEventListener("load",function(){
             <div class = "txtfield">
                 <input type="password" name="password2" id="password2" required>
                 <span></span>
-                <label for="password2">Re-enter new password:</label>
+                <label for="password2">Re-enter password:</label>
                 <alert class = "sys-message" id="passwordConfirmation"></alert>
             </div>
             <div id = "sub-res">
@@ -131,8 +148,10 @@ window.addEventListener("load",function(){
             },500);
             
         });
-
-    })
+    }
+    /**
+     * Delete user
+     */
     navLists[2].addEventListener("click",function(){
         setting_content.innerHTML=`<form action="/deleteUser" method="GET" id="my_form">
                                         <div id="warning">
@@ -142,7 +161,6 @@ window.addEventListener("load",function(){
                                             <button type="submit" value = "submit" id="submitButton">Delete</button>
                                         </div>
                                     </form>`;
-            //Creating the variables and getting elements from DOM
         let dialogBox = document.getElementById("dialogBox"),
         deleteButton  = document.getElementById("delete"),
         cancelButton = document.getElementById("cancel");
@@ -150,9 +168,6 @@ window.addEventListener("load",function(){
             event.preventDefault();
             dialogBox.classList.add("display");
             deleteButton.addEventListener("click",function(){
-                // let request =new XMLHttpRequest();
-                // request.open("GET",`/deleteUser`,true);
-                // request.send();
                 location.replace("/deleteUser");
             })
 
@@ -160,13 +175,40 @@ window.addEventListener("load",function(){
                 dialogBox.classList.remove("display");
             })
         })
-    })
+    });
 
-    async function getUser(){
-        const userObj =await fetch(`/user`);
-        const user= await userObj.json();
-        return user;
+    /**
+     * Add company 
+     */
+    navLists[3].addEventListener("click",function(){
+        addCompanyForm();
+
+    })
+    function addCompanyForm(){
+        setting_content.innerHTML=`
+        <form action="/AddQualifiedCompany" method="POST" id="my_form">
+            <h3>Add a new company and enable user to create account with this company</h3>
+            <div class = "txtfield">
+                <input type="text" name="newCompany" id="newCompany" required>
+                <span></span>
+                <label for="newCompany">New company:</label>
+                <alert class = "sys-message" id="newCompany"></alert>
+            </div>
+            <div id = "sub-res">
+                <button type="submit" value = "submit" id="submitButton">Add</button>
+            </div>
+        </form>`;
     }
+
+    if(location.href.includes("Company")){
+        navLists[3].click();
+        addCompanyForm();
+    }else if(location.href.includes("password")){
+        navLists[1].click();
+        updatePassword();
+    }
+
+    
 
     changeLocationHref();
 

@@ -100,6 +100,7 @@ h1 span {
     
     
     
+    
 }
 .uncompleted-task-clients,.uncompleted-task, .client{
     border-radius: 10px;
@@ -113,6 +114,7 @@ h1 span {
 .uncompleted-task,.client {
     height:145px;
     box-shadow: 0 4px 8px 0 rgba(241, 233, 233, 0.2), 0 6px 20px 0 rgba(238, 232, 232, 0.19), 0 0 10px 100px rgba(250, 242, 242, 0.7) inset;
+    backdrop-filter: blur(5px);
     width: 100%;
     transition: all ease 0.5s;
     min-width: 168px;
@@ -121,9 +123,21 @@ h1 span {
   /* border-bottom: 1px dotted rgba(240, 247, 147, 0.8); */
 }
 
-.uncompleted-task:hover,.client:hover {
+.uncompleted-task:hover {
     transform: translateY(-5px);
     box-shadow:  0 4px 8px 0 rgba(241, 233, 233, 0.2), 0 6px 20px 0 rgba(238, 232, 232, 0.5);
+    -webkit-transform: translateY(-5px);
+    -moz-transform: translateY(-5px);
+    -ms-transform: translateY(-5px);
+    -o-transform: translateY(-5px);
+}
+.client:hover {
+  transform: translateY(5px);
+  box-shadow:  0 4px 8px 0 rgba(241, 233, 233, 0.2), 0 6px 20px 0 rgba(238, 232, 232, 0.5);
+  -webkit-transform: translateY(5px);
+  -moz-transform: translateY(5px);
+  -ms-transform: translateY(5px);
+  -o-transform: translateY(5px);
 }
 .uncompleted-task {
     margin-bottom: 10px;
@@ -430,7 +444,7 @@ h1 span {
 .slider-container h3 {
   font-size: 2em;
   text-align: center;
-  color:rgba(17, 17, 16, 0.9);
+  color:rgba(236, 236, 11, 0.9);
 }
 
 
@@ -569,6 +583,15 @@ h1 span {
       right: 12PX;
       top: 8PX;
     }
+    .dispaly-when-no-client {
+       transform: translateX(80%);
+       -webkit-transform: translateX(80%);
+       -moz-transform: translateX(80%);
+       -ms-transform: translateX(80%);
+       -o-transform: translateX(80%);
+       word-break: keep-all !important;
+       color: rgba(194, 235, 48, 0.9) !important;
+}
 }
 @media (max-width: 600px){
   .content-container {
@@ -603,6 +626,12 @@ h1 span {
     -moz-transform: scale(0.6);
     -ms-transform: scale(0.6);
     -o-transform: scale(0.6);
+}
+.dialogBox::before {
+  top: -500% !important;
+  left:-500% !important;
+  height: 1000% !important;
+  width: 1000% !important;
 }
   .heading {
     font-size:15px;
