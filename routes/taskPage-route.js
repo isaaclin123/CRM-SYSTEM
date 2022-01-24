@@ -91,8 +91,8 @@ router.get("/userTasks",verifyAuthenticated,async function(req,res){
     })
 })
 
-router.post("/task/createTask",verifyAuthenticated,async function(req,res){
-    let task={
+router.post("/newtask/createTask",verifyAuthenticated,async function(req,res){
+    const task={
         task_name:sanitizeHtml(req.body.task_name),
         task_description:sanitizeHtml (req.body.task_description),
         task_start_date:sanitizeHtml (req.body.task_start_date),
@@ -103,17 +103,25 @@ router.post("/task/createTask",verifyAuthenticated,async function(req,res){
     };
     task.task_start_date=returnNumberFormat(task.task_start_date);
     task.task_end_date=returnNumberFormat(task.task_end_date);
-    try {
-        console.log(task);
-        await clientDao.createClientTaskPostgre(task);
-        res.redirect("/taskManagement?message=Task created successfully");
-    } catch (error) {
-        console.log(error.message);
-        res.redirect("/taskManagement?message=Error! Can not create task");
-    } 
-        
-        
     
+    if(req.body.userID){
+        try {
+            await clientDao.createClientTaskPostgre(task);
+            res.redirect("/taskManagement?message=Task created successfully");
+        } catch (error) {
+            console.log(error.message);
+            res.redirect("/taskManagement?message=Error! Can not create task");
+        } 
+    }else{
+        try {
+            await clientDao.createClientTaskPostgre(task);
+            res.redirect("/userTasks?message=Task created successfully");
+        } catch (error) {
+            console.log(error.message);
+            res.redirect("/userTasks?message=Error! Can not create task");
+        }
+        
+    }
 })
 
 router.post("/task/updateTask",verifyAuthenticated,async function(req,res){

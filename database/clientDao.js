@@ -34,7 +34,6 @@ async function createClientTaskPostgre(clientTask) {
     const text=(SQL`
         insert into TaskForClient (task_name, task_description,clientID, task_start_date,task_end_date,userID,isCompleted) values($1,$2,$3,$4,$5,$6,$7) returning id`);
     const values=[clientTask.task_name,clientTask.task_description,clientTask.clientid,clientTask.task_start_date,clientTask.task_end_date,clientTask.userid,clientTask.iscompleted]
-    console.log(pool.query(text,values));
     return pool.query(text,values);
 }
 
