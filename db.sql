@@ -3,6 +3,7 @@
  * It should contain all DROP TABLE and CREATE TABLE statments, and any INSERT statements
  * required.
  */
+ drop TABLE if EXISTS Company;
  drop TABLE if EXISTS TaskForUser;
  drop TABLE if EXISTS ClientBelongTo;
  drop TABLE if EXISTS TaskForClient;
@@ -33,7 +34,7 @@ drop table if EXISTS Users;
 	first_name varchar not null,
 	last_name varchar not null,
 	email varchar not null,
-	phone_number integer not null,
+	phone_number varchar not null,
 	city varchar(20),
 	country varchar(20) not null,
 	profession varchar not null,
@@ -48,7 +49,7 @@ drop table if EXISTS Users;
  );
  
  CREATE table ClientBelongTo(
-	id INTEGER NOT NULL PRIMARY KEY,
+	id bigserial NOT NULL PRIMARY KEY,
 	clientID INTEGER NOT NULL,
 	company_name varchar NOT null,
 	FOREIGN key (clientID) REFERENCES Clients(id),
@@ -62,11 +63,9 @@ drop table if EXISTS Users;
 	task_description varchar not null,
 	clientID INTEGER not null,
 	userID INTEGER not null,
-	task_start_date date not null,
-	task_end_date date not null,
+	task_start_date varchar not null,
+	task_end_date varchar not null,
 	isCompleted varchar,
-	FOREIGN KEY (clientID) REFERENCES Clients (id),
-	FOREIGN KEY (userID) REFERENCES Users(id)
  );
  
 

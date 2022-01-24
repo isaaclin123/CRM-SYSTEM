@@ -8,8 +8,8 @@
 *.iml
 *.iws
 
-# Database files
-# *.db
+Database files
+*.db
 
 ## Plugin-specific files:
 
