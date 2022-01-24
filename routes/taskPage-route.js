@@ -8,7 +8,7 @@ function returnDateFormat(dateNumberString){
     return dateNumberString.substring(0,4)+"-"+dateNumberString.substring(4,6)+"-"+dateNumberString.substring(6,8);
 }
 function returnNumberFormat(dateString){
-    return dateString.replaceAll("-","").padStart(8,"0");
+    return dateString.replace(/-/g,"").padStart(8,"0");
 }
 /**
  * Render project timeline csv converter page
@@ -101,8 +101,8 @@ router.post("/task/createTask",verifyAuthenticated,async function(req,res){
         clientid:sanitizeHtml(req.body.clientID),
         iscompleted:"false"
     };
-    task.task_start_date=task.task_start_date.replaceAll("-","").padStart(8,"0");
-    task.task_end_date=task.task_end_date.replaceAll("-","").padStart(8,"0");
+    task.task_start_date=returnNumberFormat(task.task_start_date);
+    task.task_end_date=returnNumberFormat(task.task_end_date);
     if(req.body.userID){
         try {
             await clientDao.createClientTaskPostgre(task);

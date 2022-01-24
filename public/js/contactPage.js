@@ -544,8 +544,8 @@ window.addEventListener("load",function(){
         spans[1].innerText=document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date input`)[0].value;
         spans[2].innerText=document.querySelectorAll(`.each-task[data-taskID="${taskID}"] .task-date input`)[0].value;
         
-        clientTask.task_start_date=spans[1].innerText.replaceAll("-",'');
-        clientTask.task_end_date=spans[2].innerText.replaceAll("-",'');
+        clientTask.task_start_date=returnNumberFormat(spans[1].innerText);
+        clientTask.task_end_date=returnNumberFormat(spans[2].innerText);
         let updateRequest=new XMLHttpRequest();
         updateRequest.open("POST",`/contact/updateTask`);
         updateRequest.setRequestHeader("Content-Type","application/json");
@@ -557,7 +557,7 @@ window.addEventListener("load",function(){
         return dateNumberString.substring(0,4)+"-"+dateNumberString.substring(4,6)+"-"+dateNumberString.substring(6,8);
     }
     function returnNumberFormat(dateString){
-        return dateString.replaceAll("-","").padStart(8,"0");
+        return dateString.replace(/-/g,"").padStart(8,"0");
     }
 
     /**
