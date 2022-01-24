@@ -103,19 +103,27 @@ router.post("/task/createTask",verifyAuthenticated,async function(req,res){
     };
     task.task_start_date=returnNumberFormat(task.task_start_date);
     task.task_end_date=returnNumberFormat(task.task_end_date);
-    try {
-        if(req.body.userID){
+    
+    if(req.body.userID){
+        try {
             await clientDao.createClientTaskPostgre(task);
             res.redirect("/taskManagement?message=Task created successfully");
-        }else{
+        } catch (error) {
+            console.log(error.message);
+            res.redirect("/taskManagement?message=Error! Can not create task")
+        } 
+    }else{
+        try {
             await clientDao.createClientTaskPostgre(task);
             res.redirect("/userTasks?message=Task created successfully");
+        } catch (error) {
+            console.log(error.message);
+            res.redirect("/userTasks?message=Error! Can not create task")
         }
         
-    } catch (error) {
-        console.log(error.message);
-        res.redirect("/taskManagement?message=Error! Can not create task")
     }
+        
+    
 })
 
 router.post("/task/updateTask",verifyAuthenticated,async function(req,res){
@@ -137,8 +145,7 @@ router.post("/task/updateTask",verifyAuthenticated,async function(req,res){
             res.redirect("/taskManagement?message=Task updated successfully");
         }else{
             res.redirect("/userTasks?message=Task updated successfully");
-        }
-        
+        }  
     } catch (error) {
         console.log(error.message);
         if(req.body.userID){

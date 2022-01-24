@@ -65,7 +65,7 @@ drop table if EXISTS Users;
 	userID INTEGER not null,
 	task_start_date varchar not null,
 	task_end_date varchar not null,
-	isCompleted varchar,
+	isCompleted varchar
  );
  
 
