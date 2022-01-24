@@ -5,7 +5,12 @@ const clientDao = require("../database/clientDao.js");
 const sanitizeHtml = require('sanitize-html');
 const upload=require('../middleware/multer-uploader');
 const csvConverter=require('convert-csv-to-json');
-
+function returnDateFormat(dateNumberString){
+    return dateNumberString.substring(0,4)+"-"+dateNumberString.substring(4,6)+"-"+dateNumberString.substring(6,8);
+}
+function returnNumberFormat(dateString){
+    return dateString.replaceAll("-","").padStart(8,"0");
+}
 /**
  * Render contact page
  */
@@ -97,7 +102,22 @@ router.post("/contact/edit",verifyAuthenticated,async function(req,res){
 
 /**Create client task */
 router.post("/contact/createTask",verifyAuthenticated,async function(req,res){
-    let clientTask=JSON.parse(sanitizeHtml(JSON.stringify(req.body)));
+    let clientTask;
+    if(req.query.page){
+        clientTask={
+            task_name:sanitizeHtml(req.body.task_name),
+            task_description:sanitizeHtml (req.body.task_description),
+            task_start_date:sanitizeHtml (req.body.task_start_date),
+            task_end_date:sanitizeHtml (req.body.task_end_date),
+            userid:sanitizeHtml(req.body.userID)||res.locals.user.id,
+            clientid:sanitizeHtml(req.body.clientID),
+            iscompleted:"false"
+        };
+        task.task_start_date=returnNumberFormat(task.task_start_date);
+        task.task_end_date=returnNumberFormat(task.task_end_date);
+    }else{
+        clientTask=JSON.parse(sanitizeHtml(JSON.stringify(req.body)));
+    }
     try {
         await clientDao.createClientTaskPostgre(clientTask);
     } catch (error) {
