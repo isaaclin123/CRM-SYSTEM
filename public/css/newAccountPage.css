@@ -237,7 +237,7 @@ button[type="submit"]:hover, button[type="reset"]:hover {
   left: 0px;
   right: 0px;
   bottom: 0px;
-  background: -webkit-radial-gradient(rgba(0,0,0,0) 50%,rgba(0,0,0,0.8));
+  background: rgba(239, 241, 243, 0.95);
   z-index: 1000;
 }
 
