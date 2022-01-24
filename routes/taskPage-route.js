@@ -91,7 +91,7 @@ router.get("/userTasks",verifyAuthenticated,async function(req,res){
     })
 })
 
-router.post("/newtask/createTask",verifyAuthenticated,async function(req,res){
+router.post("/task/createTask",verifyAuthenticated,async function(req,res){
     const task={
         task_name:sanitizeHtml(req.body.task_name),
         task_description:sanitizeHtml (req.body.task_description),
@@ -103,7 +103,6 @@ router.post("/newtask/createTask",verifyAuthenticated,async function(req,res){
     };
     task.task_start_date=returnNumberFormat(task.task_start_date);
     task.task_end_date=returnNumberFormat(task.task_end_date);
-    
     if(req.body.userID){
         try {
             await clientDao.createClientTaskPostgre(task);
