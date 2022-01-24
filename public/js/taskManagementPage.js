@@ -74,13 +74,13 @@ window.addEventListener("load",function(){
             const taskID=event.target.parentNode.getAttribute("data-taskID");
             dialogBox.classList.add("display");
             deleteButton.setAttribute("data-taskID",taskID);
-            deleteButton.removeEventListener("click",deleteTask);
-            deleteButton.addEventListener("click",deleteTask);
+            deleteButton.removeEventListener("click",deleteSingleTask);
+            deleteButton.addEventListener("click",deleteSingleTask);
             
         })
         cancelDelete();
     })
-    function deleteTask(event){
+    function deleteSingleTask(event){
         const taskID=event.target.getAttribute("data-taskID");
         const tr=document.querySelector(`tr[data-taskID="${taskID}"]`);
         tr.classList.add("transition-effect");
@@ -94,42 +94,46 @@ window.addEventListener("load",function(){
      * Delete multiple tasks
      */
     const managementToolObj=toggleManagementTools();
-    managementToolObj.delete_selected_users.addEventListener("click",function(event){
-        let taskIDs=[];
-        document.querySelectorAll(`input[type="checkbox"]:checked`).forEach(checkedBox=>{
-            taskIDs.push(checkedBox.value);
-        })
-        if(taskIDs.length>0){
-            dialogBox.classList.add("display");
-            deleteButton.setAttribute("data-taskID",JSON.stringify(taskIDs))
-            deleteButton.removeEventListener("click",deleteTask);
-            deleteButton.addEventListener("click",deleteTask);
-            cancelButton.addEventListener("click",function(){
-                dialogBox.classList.remove("display");
-                managementToolObj.displayManagementTools();
-                taskIDs=[];
-                managementToolObj.checkboxes.forEach(checkBox=>{
-                    checkBox.checked=false;
-                })
+    if(managementToolObj.delete_selected_users){
+        managementToolObj.delete_selected_users.addEventListener("click",function(event){
+            let taskIDs=[];
+            document.querySelectorAll(`input[type="checkbox"]:checked`).forEach(checkedBox=>{
+                taskIDs.push(checkedBox.value);
             })
-        }else{
+            if(taskIDs.length>0){
+                dialogBox.classList.add("display");
+                deleteButton.setAttribute("data-taskID",JSON.stringify(taskIDs))
+                deleteButton.removeEventListener("click",deleteTask);
+                deleteButton.addEventListener("click",deleteTask);
+                cancelButton.addEventListener("click",function(){
+                    dialogBox.classList.remove("display");
+                    managementToolObj.displayManagementTools();
+                    taskIDs=[];
+                    managementToolObj.checkboxes.forEach(checkBox=>{
+                        checkBox.checked=false;
+                    })
+                })
+            }else{
+                managementToolObj.displayManagementTools();
+            }
+        })
+        function deleteTask(event){
+            const taskIDs=JSON.parse(event.target.getAttribute("data-taskID"));
+            let request = new XMLHttpRequest();
+            request.open("POST",`/contact/deleteTask`);
+            request.setRequestHeader("Content-Type","application/json");
+            request.send(JSON.stringify(taskIDs));
+            for(let i=0;i<taskIDs.length;i++){
+                let tr=document.querySelector(`tr[data-taskID="${taskIDs[i]}"]`);
+                tr.classList.add("transition-effect");
+                setTimeout(function(){tr.style.display="none";},1000);
+            }
+            dialogBox.classList.remove("display");
             managementToolObj.displayManagementTools();
         }
-    })
-    function deleteTask(event){
-        const taskIDs=JSON.parse(event.target.getAttribute("data-taskID"));
-        let request = new XMLHttpRequest();
-        request.open("POST",`/contact/deleteTask`);
-        request.setRequestHeader("Content-Type","application/json");
-        request.send(JSON.stringify(taskIDs));
-        for(let i=0;i<taskIDs.length;i++){
-            let tr=document.querySelector(`tr[data-taskID="${taskIDs[i]}"]`);
-            tr.classList.add("transition-effect");
-            setTimeout(function(){tr.style.display="none";},1000);
-        }
-        dialogBox.classList.remove("display");
-        managementToolObj.displayManagementTools();
     }
+    
+    
     /**
      * Search tasks
      */

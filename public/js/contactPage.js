@@ -154,13 +154,13 @@ window.addEventListener("load",function(){
                 const clientID=event.target.getAttribute("data-clientID");
                 dialogBox.classList.add("display");
                 deleteButton.setAttribute("data-clientID",clientID);
-                deleteButton.removeEventListener("click",deleteClient);
-                deleteButton.addEventListener("click",deleteClient);    
+                deleteButton.removeEventListener("click",deleteSingleClient);
+                deleteButton.addEventListener("click",deleteSingleClient);    
             })
         })
         cancelDelete(); 
     }
-    function deleteClient(event){
+    function deleteSingleClient(event){
         const clientID=event.target.getAttribute("data-clientID");
         const tr=document.querySelector(`tr[data-clientID="${clientID}"]`);
         tr.classList.add("transition-effect");
