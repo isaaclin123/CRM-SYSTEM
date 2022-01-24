@@ -92,7 +92,7 @@ router.get("/userTasks",verifyAuthenticated,async function(req,res){
 })
 
 router.post("/task/createTask",verifyAuthenticated,async function(req,res){
-    const task={
+    let task={
         task_name:sanitizeHtml(req.body.task_name),
         task_description:sanitizeHtml (req.body.task_description),
         task_start_date:sanitizeHtml (req.body.task_start_date),
@@ -104,6 +104,7 @@ router.post("/task/createTask",verifyAuthenticated,async function(req,res){
     task.task_start_date=returnNumberFormat(task.task_start_date);
     task.task_end_date=returnNumberFormat(task.task_end_date);
     try {
+        console.log(task);
         await clientDao.createClientTaskPostgre(task);
         res.redirect("/taskManagement?message=Task created successfully");
     } catch (error) {
