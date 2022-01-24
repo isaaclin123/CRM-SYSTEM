@@ -4,6 +4,7 @@
 //  import * as sanitizeHtml from 'sanitize-html'
 import {checkUsernameAvailability,test,sanitizer}from "./helper.js";
 window.addEventListener("load",function(){
+    document.querySelector(".preloader").style.display="none";
     function deleteCookie(cname) {
         const d = new Date();
         d.setDate(0);
