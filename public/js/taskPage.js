@@ -73,33 +73,37 @@ window.addEventListener('load', function(){
             
         }
         
-        let checkTime=new RegExp(`^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$`);
         startTimeCell=document.querySelectorAll(".start-time");
         endTimeCell=document.querySelectorAll(".end-time");
         for(let i=0;i<startTimeCell.length;i++){
-            startTimeCell[i].addEventListener("input",function(event){
-                if(checkTime.test(event.target.textContent)){
-                    modifiedStartTime=HtmlSanitizer.SanitizeHtml(event.target.textContent);
-                }else{
-                    modifiedStartTime="Time format HH:MM";
-                }
-                startTimeRow=event.target.getAttribute("data-startTime-row");
-                localStorage.setItem("startTimeTD"+startTimeRow,modifiedStartTime);
-            })
+            startTimeCell[i].removeEventListener("input",modifyStartTimeFunc);
+            startTimeCell[i].addEventListener("input",modifyStartTimeFunc);
         }
         for(let i=0;i<endTimeCell.length;i++){
-            endTimeCell[i].addEventListener("input",function(event){
-                if(checkTime.test(event.target.textContent)){
-                    modifiedEndTime=HtmlSanitizer.SanitizeHtml(event.target.textContent);
-                }else{
-                    modifiedEndTime="Time format HH:MM";
-                }
-                endTimeRow=event.target.getAttribute("data-endTime-row");
-                localStorage.setItem("endTimeTD"+endTimeRow,modifiedEndTime);
-                
-            })
+            endTimeCell[i].removeEventListener("input",modifyEndTimeFunc);
+            endTimeCell[i].addEventListener("input",modifyEndTimeFunc);
         }
     })
+    function modifyStartTimeFunc(event){
+        let checkTime=new RegExp(`^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$`);
+        if(checkTime.test(event.target.textContent)){
+            modifiedStartTime=HtmlSanitizer.SanitizeHtml(event.target.textContent);
+        }else{
+            modifiedStartTime="Time format HH:MM";
+        }
+        startTimeRow=event.target.getAttribute("data-startTime-row");
+        localStorage.setItem("startTimeTD"+startTimeRow,modifiedStartTime);
+    }
+    function modifyEndTimeFunc(event){
+        let checkTime=new RegExp(`^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$`);
+        if(checkTime.test(event.target.textContent)){
+            modifiedEndTime=HtmlSanitizer.SanitizeHtml(event.target.textContent);
+        }else{
+            modifiedEndTime="Time format HH:MM";
+        }
+        endTimeRow=event.target.getAttribute("data-endTime-row");
+        localStorage.setItem("endTimeTD"+endTimeRow,modifiedEndTime);
+    }
 
 
     let exportButton=document.getElementById("CSV");
