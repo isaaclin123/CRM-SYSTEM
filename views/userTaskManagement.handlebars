@@ -18,7 +18,7 @@
     <div class="nav">
         <ul>
             <li>Completed tasks&starf;{{#if completedTaskNumber}}({{completedTaskNumber}}){{else}}(0){{/if}}</li>
-            <li>Uncompleted tasks{{#if unCompletedTaskNumber}}({{unCompletedTaskNumber}}){{else}}(0){{/if}}</li>
+            <li>To-do tasks{{#if unCompletedTaskNumber}}({{unCompletedTaskNumber}}){{else}}(0){{/if}}</li>
             <li>All tasks{{#if taskNumber}}({{taskNumber}}){{else}}(0){{/if}}</li>
         </ul>
     </div>
@@ -77,7 +77,10 @@
                     <i class='bx bx-directions' data-taskID="{{this.id}}" title="flip card"></i>
                     {{#if this.iscompleted}}
                     <i class='bx bxs-star'></i>
+                    {{else}}
+                    <div class="expire" data-taskID="{{this.id}}"></div>
                     {{/if}}
+                    
                     <div class="card__title">
                     <h6 class="card__heading" data-taskID="{{this.id}}">{{this.task_name}}</h6>
                     </div>
@@ -86,7 +89,7 @@
                         <ul>
                                 <li data-clientID="{{this.clientid}}">{{this.clientName}}</li>
                                 <li>Start date: {{this.task_start_date}}</li>
-                                <li>End date: {{this.task_end_date}}</li>
+                                <li class="end-date" data-taskID="{{this.id}}">End date: {{this.task_end_date}}</li>
                                 <li>{{this.task_description}}</li>
                         </ul>
                     </div>

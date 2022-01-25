@@ -350,8 +350,31 @@ body {
     background-color: #fff;
     background-color: rgba(0, 0, 0, 0.2);
     box-shadow: 0 0 5px 5px rgba(234, 238, 241, 0.3);
-
+    position: relative;
   }
+  .expire::after {
+    content: 'Expired';
+    color: rgba(245, 33, 69, 0.8);
+    font-weight: bold;
+    display: block;
+    border: 1px solid grey;
+    width: 150px;
+    height: fit-content;
+    text-align: center;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    position: absolute;
+    top: 15px;
+    left: -38px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+}
   
   
   .card__side--back {
@@ -364,16 +387,6 @@ body {
     color:rgba(163, 247, 7, 0.8);
   }
   
-  
-  /* .card:hover .card__side--front {
-    -webkit-transform: rotateY(-180deg);
-            transform: rotateY(-180deg);
-  }
-  
-  .card:hover .card__side--back {
-    -webkit-transform: rotateY(0);
-            transform: rotateY(0);
-  } */
 
   .turnBack {
     -webkit-transform: rotateY(-180deg);

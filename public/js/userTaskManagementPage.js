@@ -3,7 +3,20 @@ import {changeLocationHref,direction,sanitizer} from "./helper.js";
 window.addEventListener("load",()=>{
     const navOptions=document.querySelectorAll(".nav li"),allCards=document.querySelectorAll(".eachTask");
     const nav1Text=navOptions[0].innerText,nav2Text=navOptions[1].innerText,nav3Text=navOptions[2].innerText;
+    const end_dates=document.querySelectorAll(".end-date");
 
+    /**
+     * Set expireIcon
+     */
+    end_dates.forEach(end_date => {
+        let content=end_date.innerText.substring(10).replace(/-/g,"");
+        let taskID=end_date.getAttribute("data-taskID");
+        let expireIcon=document.querySelector(`.expire[data-taskID="${taskID}"]`);
+
+        if(expireIcon&&content>=getCurrentTime()){
+            document.querySelector(`.expire[data-taskID="${taskID}"]`).style.display="none";
+        }
+    });
       /**
      * Sanitize the input
      */
@@ -203,6 +216,24 @@ window.addEventListener("load",()=>{
             document.querySelector(`.card__side--back[data-taskID="${taskID}"]`).classList.toggle("turnFront");
         })
     })
+
+
+    function getCurrentTime(){
+        let today = new Date();
+        let month=today.getMonth()+1;
+        if(month<10){
+            month='0'+month;
+        }
+        let day=today.getDate();
+        if(day<10){
+            day='0'+day;
+        }
+        let date = Number(today.getFullYear()+''+month+''+day);
+        // let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        // let dateTime = date+' '+time;
+        
+        return date;
+    };
 
 
     
