@@ -26,13 +26,14 @@ router.get("/task",verifyAuthenticated,function(req,res){
  */
 router.get("/taskManagement",verifyAuthenticated,async function(req,res){
     res.locals.message=req.query.message;
+    const companyTasks=[];
     let tasks=(await clientDao.retrieveAllTasksPostgre()).rows;
     for(let i=0;i<tasks.length;i++){
         tasks[i].task_start_date=returnDateFormat(tasks[i].task_start_date);
         tasks[i].task_end_date=returnDateFormat(tasks[i].task_end_date);
-        let userName=(await userDao.retrieveUserNameByIDPostgre(tasks[i].userid)).rows[0];
-        if(userName){
-            tasks[i].responsiblePerson=userName.first_name+" "+userName.last_name;
+        let user=(await userDao.retrieveUserByIdPostgre(tasks[i].userid)).rows[0];
+        if(user){
+            tasks[i].responsiblePerson=user.first_name+" "+user.last_name;
         }else{
             tasks[i].responsiblePerson="none";
         }
@@ -42,8 +43,12 @@ router.get("/taskManagement",verifyAuthenticated,async function(req,res){
         }else{
             tasks[i].clientName="none";
         }
+        if(user&&user.isqualifiedcompany===res.locals.user.isqualifiedcompany){
+            companyTasks.push(tasks[i]);
+        }
     }
-    res.locals.tasks=tasks;
+
+    res.locals.tasks=companyTasks;
     res.locals.clients=(await clientDao.retrieveAllClientsByCompanyPostgre(res.locals.user.isqualifiedcompany)).rows;
     res.locals.users=(await userDao.retrieveAllUsersByCompanyPostgre(res.locals.user.isqualifiedcompany)).rows;
     res.render("taskManagement",{
